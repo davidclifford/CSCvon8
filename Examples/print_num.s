@@ -1,8 +1,23 @@
-# First testing program
 #
-start:  LCA $FF
-    STO 0 i
-    STO A num
+# Output num as an unsigned decimal string
+#
+#define OUT(x)	     JOU .; OUT x
+
+start:
+    STO 0 count
+go: LDA count
+    STO count A+1
+    STO num A+1
+    JSR print_num
+    OUT($0a)
+    JMP go
+
+print_num:  STO i 0
+    LCA '0'
+    STO str A
+    LCB $01
+    LDA num
+    JAZ next
 loop:   LDA num
     JAZ print
     LCB $0a
@@ -17,14 +32,12 @@ loop:   LDA num
 print:  LDB i
 next:   LDB B-1
     LDA str,B
-    OUT A
+    OUT(A)
     JBZ end
     JMP next
-end:    OUT $0A
-    JMP .
+end:    RTS print_num
 
 str:    EQU $F000
+count:  EQU $F006
 num:    EQU $F008
 i:      EQU $F00A
-
-
