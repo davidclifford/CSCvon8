@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3549ba3a-48c4-4329-889b-c960ce91db7b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/print_num.s" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/print_num.s" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,13 +96,23 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="139422940">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="2" />
+          <entry key="project.open.time.20" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/microcode">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3168">
+            <state relative-caret-position="7344">
               <caret line="432" column="6" selection-start-line="432" selection-start-column="3" selection-end-line="432" selection-end-column="6" />
             </state>
           </provider>
@@ -130,7 +139,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/opcodes">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
+            <state relative-caret-position="1870">
               <caret line="110" column="8" selection-start-line="110" selection-start-column="5" selection-end-line="110" selection-end-column="8" />
             </state>
           </provider>
@@ -189,6 +198,7 @@
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
+      <autoscrollFromSource ProjectPane="true" />
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
@@ -262,6 +272,7 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16385669" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="DB Browser" order="3" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -274,6 +285,8 @@
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Messages" order="11" />
+      <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
+      <window_info anchor="bottom" id="DB Execution Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -311,22 +324,8 @@
     <entry file="file://$PROJECT_DIR$/csim">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Docs/cas_assembler.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SECOND">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Docs/clc_compiler.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Docs/cas_assembler.md" />
+    <entry file="file://$PROJECT_DIR$/Docs/clc_compiler.md" />
     <entry file="file://$PROJECT_DIR$/ROMs/aluread">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -343,14 +342,7 @@
     <entry file="file://$PROJECT_DIR$/Examples/signedprint.cl">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Docs/CSCvon8_design.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Docs/CSCvon8_design.md" />
     <entry file="file://$PROJECT_DIR$/Examples/example05.s">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -365,9 +357,7 @@
     <entry file="file://$PROJECT_DIR$/empty.ram">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/alu.rom">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/alu.rom" />
     <entry file="file://$PROJECT_DIR$/rom.v">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -414,18 +404,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Docs/bom_20190601.csv">
       <provider editor-type-id="text-editor" />
-      <provider selected="true" editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3">
-          <column index="0" width="374" />
-          <column index="1" width="501" />
-          <column index="2" width="512" />
-        </state>
-      </provider>
-      <provider editor-type-id="csv-text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="47" selection-start-line="32" selection-start-column="47" selection-end-line="32" selection-end-column="47" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Examples/tttmoves.s">
       <provider selected="true" editor-type-id="text-editor" />
@@ -436,9 +414,7 @@
     <entry file="file://$PROJECT_DIR$/Examples/example04.s">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/ucode.rom">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ucode.rom" />
     <entry file="file://$PROJECT_DIR$/gen_ucode">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1099" />
@@ -450,21 +426,8 @@
     <entry file="file://$PROJECT_DIR$/instr.bin">
       <provider selected="true" editor-type-id="org.exbin.bined" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/instr.rom">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="36" column="48" lean-forward="true" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Docs/building_the_CSCvon8.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SECOND">
-          <first_editor />
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/instr.rom" />
+    <entry file="file://$PROJECT_DIR$/Docs/building_the_CSCvon8.md" />
     <entry file="file://$PROJECT_DIR$/Examples/ttt.s">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -509,16 +472,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="272">
-            <caret line="16" column="12" lean-forward="true" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md" />
     <entry file="file://$PROJECT_DIR$/Examples/print_indir_str.s">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -526,6 +480,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="9" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/microcode">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7344">
+          <caret line="432" column="6" selection-start-line="432" selection-start-column="3" selection-end-line="432" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -538,15 +499,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/opcodes">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
+        <state relative-caret-position="1870">
           <caret line="110" column="8" selection-start-line="110" selection-start-column="5" selection-end-line="110" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/microcode">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3168">
-          <caret line="432" column="6" selection-start-line="432" selection-start-column="3" selection-end-line="432" selection-end-column="6" />
         </state>
       </provider>
     </entry>
