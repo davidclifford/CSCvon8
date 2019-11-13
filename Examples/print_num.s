@@ -4,13 +4,16 @@
 #define OUT(x)	     JOU .; OUT x
 
 start:
-    STO 0 count
+#    STO 0 count
+    LCA $7A
+    STO A count
 go: LDA count
     STO count A+1
     STO num A+1
     JSR print_num
     OUT($0a)
     JMP go
+    JMP $ffff
 
 print_num:  STO i 0
     LCA '0'
