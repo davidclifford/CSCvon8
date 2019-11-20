@@ -224,6 +224,14 @@ sub parse2 {
                 next;
             }
 
+            # Decimal value
+            if ( $line =~ m{^\s*@(\d+)(.*)} )
+            {
+                push( @constant, $1 );
+                $line = $2;
+                next;
+            }
+
             # One byte hex value
             if ( $line =~ m{^\s*\$([0-9A-Fa-f][0-9A-Fa-f])(.*)} ) {
                 push( @constant, hex($1) );
