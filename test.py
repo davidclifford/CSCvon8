@@ -1,9 +1,17 @@
-num = 0xff01
-hi = int(num >> 8)
-low = int(num & 0xFF)
-print(num, hi, low)
+def div10(num):
+    div = int(num*6554)
+    res = div >> 16
+    rem = num - res*10
+    rem = rem + 10 if rem < 0 else rem
+    print(num, res, rem)
+    return res, rem
 
-b = hi*25
-s = int(hi*6/10)
 
-print(b, s, b+s+int(low/10))
+for num in range(65500, 65536):
+    n = num
+    res = 1
+    while res != 0:
+        res, rem = div10(n)
+        n = res
+
+    print()
