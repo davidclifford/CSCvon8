@@ -1,4 +1,303 @@
-EESchema Schematic File Version 2
-EELAYER 25 0
+EESchema Schematic File Version 4
+EELAYER 30 0
 EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 74xx:74LS161 U1
+U 1 1 5DECDA9F
+P 10150 4700
+F 0 "U1" V 10196 3856 50  0000 R CNN
+F 1 "74LS161" V 10105 3856 50  0000 R CNN
+F 2 "" H 10150 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS161" H 10150 4700 50  0001 C CNN
+	1    10150 4700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Oscillator:CXO_DIP14 X1
+U 1 1 5DECFCD6
+P 10450 5950
+F 0 "X1" H 10794 5996 50  0000 L CNN
+F 1 "ESC-100 27.175 MHz" H 10794 5905 50  0000 L CNN
+F 2 "Oscillator:Oscillator_DIP-14" H 10900 5600 50  0001 C CNN
+F 3 "http://cdn-reichelt.de/documents/datenblatt/B400/OSZI.pdf" H 10350 5950 50  0001 C CNN
+	1    10450 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS163 U2
+U 1 1 5DED03E3
+P 8350 4700
+F 0 "U2" V 8396 3856 50  0000 R CNN
+F 1 "74LS163" V 8305 3856 50  0000 R CNN
+F 2 "" H 8350 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS163" H 8350 4700 50  0001 C CNN
+	1    8350 4700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74LS163 U3
+U 1 1 5DED17E8
+P 6450 4700
+F 0 "U3" V 6496 3856 50  0000 R CNN
+F 1 "74LS163" V 6405 3856 50  0000 R CNN
+F 2 "" H 6450 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS163" H 6450 4700 50  0001 C CNN
+	1    6450 4700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74LS163 U4
+U 1 1 5DED2F52
+P 4700 4700
+F 0 "U4" V 4746 3856 50  0000 R CNN
+F 1 "74LS163" V 4655 3856 50  0000 R CNN
+F 2 "" H 4700 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS163" H 4700 4700 50  0001 C CNN
+	1    4700 4700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L 74xx:74LS163 U5
+U 1 1 5DED3E25
+P 3000 4700
+F 0 "U5" V 3046 3856 50  0000 R CNN
+F 1 "74LS163" V 2955 3856 50  0000 R CNN
+F 2 "" H 3000 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS163" H 3000 4700 50  0001 C CNN
+	1    3000 4700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2500 5400 2600 5400
+$Comp
+L power:GND #PWR?
+U 1 1 5DEE3B15
+P 2750 5400
+F 0 "#PWR?" H 2750 5150 50  0001 C CNN
+F 1 "GND" H 2755 5227 50  0000 C CNN
+F 2 "" H 2750 5400 50  0001 C CNN
+F 3 "" H 2750 5400 50  0001 C CNN
+	1    2750 5400
+	1    0    0    -1  
+$EndComp
+Connection ~ 2750 5400
+Wire Wire Line
+	2500 5400 2500 5200
+Wire Wire Line
+	2750 5400 2800 5400
+Wire Wire Line
+	2600 5200 2600 5400
+Connection ~ 2600 5400
+Wire Wire Line
+	2600 5400 2700 5400
+Wire Wire Line
+	2700 5200 2700 5400
+Connection ~ 2700 5400
+Wire Wire Line
+	2700 5400 2750 5400
+Wire Wire Line
+	2800 5200 2800 5400
+Connection ~ 2800 5400
+Wire Wire Line
+	2800 5400 3800 5400
+Wire Wire Line
+	4200 5200 4200 5400
+Connection ~ 4200 5400
+Wire Wire Line
+	4200 5400 4300 5400
+Wire Wire Line
+	4300 5200 4300 5400
+Connection ~ 4300 5400
+Wire Wire Line
+	4300 5400 4400 5400
+Wire Wire Line
+	4400 5200 4400 5400
+Connection ~ 4400 5400
+Wire Wire Line
+	4400 5400 4500 5400
+Wire Wire Line
+	4500 5200 4500 5400
+Connection ~ 4500 5400
+Wire Wire Line
+	5950 5200 5950 5400
+Connection ~ 5950 5400
+Wire Wire Line
+	6050 5200 6050 5400
+Wire Wire Line
+	5950 5400 6050 5400
+Connection ~ 6050 5400
+Wire Wire Line
+	6050 5400 6150 5400
+Wire Wire Line
+	6150 5200 6150 5400
+Connection ~ 6150 5400
+Wire Wire Line
+	6150 5400 6250 5400
+Wire Wire Line
+	6250 5200 6250 5400
+Connection ~ 6250 5400
+Wire Wire Line
+	6250 5400 7250 5400
+Wire Wire Line
+	7850 5200 7850 5400
+Connection ~ 7850 5400
+Wire Wire Line
+	7850 5400 7950 5400
+Wire Wire Line
+	7950 5200 7950 5400
+Connection ~ 7950 5400
+Wire Wire Line
+	7950 5400 8050 5400
+Wire Wire Line
+	8050 5200 8050 5400
+Connection ~ 8050 5400
+Wire Wire Line
+	8050 5400 8150 5400
+Wire Wire Line
+	8150 5200 8150 5400
+Connection ~ 8150 5400
+Wire Wire Line
+	8150 5400 9150 5400
+Wire Wire Line
+	9650 5200 9650 5400
+Connection ~ 9650 5400
+Wire Wire Line
+	9650 5400 9750 5400
+Wire Wire Line
+	9750 5200 9750 5400
+Connection ~ 9750 5400
+Wire Wire Line
+	9750 5400 9850 5400
+Wire Wire Line
+	9850 5200 9850 5400
+Connection ~ 9850 5400
+Wire Wire Line
+	9850 5400 9950 5400
+Wire Wire Line
+	9950 5200 9950 5400
+Connection ~ 9950 5400
+Wire Wire Line
+	9950 5400 10950 5400
+Wire Wire Line
+	10450 6250 9650 6250
+Wire Wire Line
+	9650 6250 9650 5400
+$Comp
+L power:+5V #PWR?
+U 1 1 5DEFD6F5
+P 10450 5650
+F 0 "#PWR?" H 10450 5500 50  0001 C CNN
+F 1 "+5V" H 10465 5823 50  0000 C CNN
+F 2 "" H 10450 5650 50  0001 C CNN
+F 3 "" H 10450 5650 50  0001 C CNN
+	1    10450 5650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10950 4700 10950 5400
+Connection ~ 10950 5400
+Wire Wire Line
+	10950 5400 11700 5400
+Wire Wire Line
+	9150 4700 9150 5400
+Connection ~ 9150 5400
+Wire Wire Line
+	9150 5400 9650 5400
+Wire Wire Line
+	7250 4700 7250 5400
+Connection ~ 7250 5400
+Wire Wire Line
+	7250 5400 7850 5400
+Wire Wire Line
+	5500 4700 5500 5400
+Wire Wire Line
+	4500 5400 5500 5400
+Connection ~ 5500 5400
+Wire Wire Line
+	5500 5400 5950 5400
+Wire Wire Line
+	3800 4700 3800 5400
+Connection ~ 3800 5400
+Wire Wire Line
+	3800 5400 4200 5400
+$Comp
+L 74xx:74LS163 U6
+U 1 1 5DF01376
+P 1350 4700
+F 0 "U6" V 1396 3856 50  0000 R CNN
+F 1 "74LS163" V 1305 3856 50  0000 R CNN
+F 2 "" H 1350 4700 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS163" H 1350 4700 50  0001 C CNN
+	1    1350 4700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2500 5400 1150 5400
+Wire Wire Line
+	850  5400 850  5200
+Connection ~ 2500 5400
+Wire Wire Line
+	950  5200 950  5400
+Connection ~ 950  5400
+Wire Wire Line
+	950  5400 850  5400
+Wire Wire Line
+	1050 5200 1050 5400
+Connection ~ 1050 5400
+Wire Wire Line
+	1050 5400 950  5400
+Wire Wire Line
+	1150 5200 1150 5400
+Connection ~ 1150 5400
+Wire Wire Line
+	1150 5400 1050 5400
+Wire Wire Line
+	10650 5200 10650 5650
+Wire Wire Line
+	10650 5650 10450 5650
+Connection ~ 10450 5650
+Wire Wire Line
+	10450 5650 10150 5650
+Wire Wire Line
+	10150 5650 10150 5200
+Wire Wire Line
+	10250 5200 10350 5200
+Wire Wire Line
+	10150 5200 10250 5200
+Connection ~ 10150 5200
+Connection ~ 10250 5200
+Wire Wire Line
+	10450 5200 10450 5250
+Wire Wire Line
+	10450 5250 10750 5250
+Wire Wire Line
+	10750 5250 10750 5950
+Wire Wire Line
+	9850 4200 9850 4150
+Wire Wire Line
+	9850 4150 9250 4150
+Wire Wire Line
+	9250 4150 9250 5300
+Wire Wire Line
+	9250 5300 8650 5300
+Wire Wire Line
+	8650 5300 8650 5200
+Wire Wire Line
+	8850 5200 8850 5250
+Wire Wire Line
+	8850 5250 6950 5250
+Wire Wire Line
+	6950 5250 6950 5200
 $EndSCHEMATC
