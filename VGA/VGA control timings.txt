@@ -1,0 +1,17 @@
+			    <160ns->
+
+CLK:			____----
+
+CLK2:           __--__--  
+
+CLK4:           _-_-_-_-
+
+Counter Out:    ____---- CLK
+
+RAM Out:        --__---- CLK|!CLK2
+
+Pixel Reg:      ____---- CLK
+
+XYD Out:        ----____ !CLK
+
+RAM Write:      ------__ !CLK|!CLK2
