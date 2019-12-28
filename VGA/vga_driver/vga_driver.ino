@@ -167,10 +167,10 @@ void draw_stripes() {
       int c = 0;
       if (x%8 == 1) c = RED;
       if (x%8 == 2) c = GREEN;
-      if (x%8 == 3) c = BLUE;      
-      if (x%8 == 4) c = GREEN | BLUE;      
-      if (x%8 == 5) c = GREEN | RED;      
-      if (x%8 == 6) c = RED | BLUE;      
+      if (x%8 == 3) c = GREEN | RED;      
+      if (x%8 == 4) c = BLUE;      
+      if (x%8 == 5) c = RED | BLUE;      
+      if (x%8 == 6) c = GREEN | BLUE;      
       if (x%8 == 7) c = RED | GREEN | BLUE;      
       plot(x, y, c);
     }
@@ -217,6 +217,9 @@ void pulse_write() {
 
 void loop() {
   draw_finch();
+  delay(1000);
   draw_stripes();
+  delay(1000);
   draw_diagonals();
+  delay(1000);
 }
