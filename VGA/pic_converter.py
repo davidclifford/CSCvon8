@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'boys'
+filename = 'gf4'
 
 
 def plot(x, y, r, g, b):
@@ -28,6 +28,7 @@ pixels = image.load()
 pic_file = open(filename+'.bin', 'wb')
 
 for y in range(512):
+    print()
     for x in range(256):
         try:
             pix = pixels[x, y]
@@ -37,6 +38,7 @@ for y in range(512):
             colour = red << 4 | grn << 2 | blu << 0
             pic_file.write(uint8(colour))
             plot(x, y, red, grn, blu)
+            print(str(colour)+',', end='');
 
         except IndexError:
             pic_file.write(uint8(0))
