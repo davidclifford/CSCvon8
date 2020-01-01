@@ -26,9 +26,11 @@ image = Image.open(filename+'.png')
 pixels = image.load()
 
 pic_file = open(filename+'.bin', 'wb')
+hex_file = open(filename+'.hex', 'w')
+hex_file.write('C0000')
 
-for y in range(512):
-    print()
+for y in range(128):
+    hex_file.write('\n')
     for x in range(256):
         try:
             pix = pixels[x, y]
@@ -37,18 +39,20 @@ for y in range(512):
             blu = pix[2] >> 6
             colour = red << 4 | grn << 2 | blu << 0
             pic_file.write(uint8(colour))
+            hex_file.write(f'{colour:02x} ')
             plot(x, y, red, grn, blu)
-            print(str(colour)+',', end='');
 
         except IndexError:
             pic_file.write(uint8(0))
+            hex_file.write('00 ')
     pygame.display.update()
 
 pic_file.close()
+hex_file.write(' Z')
+hex_file.close()
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
