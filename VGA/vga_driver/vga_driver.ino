@@ -209,9 +209,7 @@ void set_data(int data) {
 
 void pulse_write() {
   digitalWrite(WRITE, 0);
-//  delayMicroseconds(1);
   digitalWrite(WRITE, 1);
-//  delayMicroseconds(1);
   digitalWrite(WRITE, 0);    
 }
 

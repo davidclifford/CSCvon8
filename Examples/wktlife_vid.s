@@ -29,9 +29,29 @@ botrightcell:	EQU $F005		# Copy of cell to our bot-right
 midcell:	EQU $F006		# Cached copy of our cell value
 row:		EQU $F007		# Current row number: $D0 .. $EF
 col:		EQU $F008		# Current column number: $00 .. $7F
+cell:       EQU $FF09       # Current cell colour
 
-midrowcache:	EQU $CF00		# Cache of the previous mid row
-toprowcache:	EQU $CE00		# Cache of the previous top row
+midrowcache:	EQU $9F00		# Cache of the previous mid row
+toprowcache:	EQU $9E00		# Cache of the previous top row
+
+    JIU .
+#
+# Clear screen.
+#
+	STO 0 cls+1
+1:
+	LDA 0
+	LDB 0
+cls:
+    STO 0 $0000,B
+	LDB B+1
+	JBZ 2f
+	JMP cls
+2:
+    LDA cls+1
+    STO A+1 cls+1
+    LCB $7F
+    JLT 1b
 
 # Initialisation. Zero both cached rows and the board. Use
 # self-modifying code to do this.
@@ -48,23 +68,17 @@ sm1:	STO 0 toprowcache,B
 
 # Set up an r-pentomino pattern in the centre of the board
 		LCA $01
-		STO A $E040
-		STO A $E041
-		STO A $E13F
-		STO A $E140
-		STO A $E240
-
-# Print out ESC [ 2 J to clear the screen
-		JOUT($1B)
-		JOUT('[')
-		JOUT('2')
-		JOUT('J')
+		STO A $C040
+		STO A $C041
+		STO A $C13F
+		STO A $C140
+		STO A $C240
 
 # Do some set up before we can start work on the first row
 # Set up row below us and column we are in.
 firstrow:	LCA $01
 		STO A col
-		LCA $D2
+		LCA $A2
 		STO A row
 
 # Clear the two row caches
@@ -76,13 +90,8 @@ firstrow:	LCA $01
 		JNE 1b			# while we are below $80
 
 # Self-modify all the row addresses used in the loop below
-		LCA $D1; STO A sm6+1
-		LCA $D2; STO A sm5+1
-
-# Print out ESC [ H to return to the top of the screen
-		JOUT($1B)
-		JOUT('[')
-		JOUT('H')
+		LCA $A1; STO A sm6+1
+		LCA $A2; STO A sm5+1
 
 # Set up the left and mid sum to zero, and our cell value to zero
 firstcolumn:	LCA $00
@@ -98,7 +107,7 @@ columloop:	LDB col
 		STO A toprightcell
 		LDA midrowcache,B
 		STO A rightcell; STO A toprowcache,B
-sm5:		LDA $D200,B
+sm5:		LDA $A200,B
 		STO A botrightcell; STO A midrowcache,B
 
 # Add them to get the three neighbour sum to our right
@@ -127,14 +136,24 @@ deadcell:	LCA $00; JMP updatecell
 livecell:	LCA $01
 
 updatecell:	LDB col
-sm6:		STO A $D100,B		# Update the actual cell in RAM
+sm6:		STO A $A100,B		# Update the actual cell in RAM
 
 		LCB $01
 		JEQ pralive		# Print either '@' or '.'
-prdead:		JOUT('.'); JMP 1f
-pralive:	JOUT('@')
-
+prdead:
+        LCA $03 # Blue
+        JMP 1f
+pralive:
+        LCA $3C # Yellow
 1:
+        STO A cell
+# Output to video memory
+        LDB row
+        LCA $A0
+        STO B-A vid+1
+        LDB col
+        LDA cell
+vid:    STO A $0000,B
 
 # Now move up to the next column. Break out of the loop when we hit $80
 		LDB col
@@ -157,14 +176,14 @@ pralive:	JOUT('@')
 		JMP columloop
 
 # We've reached the end of a row, move down a line
-rowsend:	JOUT('\n')
+rowsend:
 
 # Increment the row. If this is the last row, skip some
 # code to deal with that fact
 # the first row.
 		LDB row
 		LCA $F0
-		JEQ lastrow
+		JEQ firstrow
 		STO B+1 row
 
 # Ripple down the row values and start on the first column of the next row
@@ -173,13 +192,3 @@ rowsend:	JOUT('\n')
 		LCA $01
         STO A col
 		JMP firstcolumn
-
-# We've done the last row. Print out a dummy row of empty cells
-# to make the output vertically symmetrical.
-lastrow:	LCB $00			# B is the index
-		LCA $80			# A is the exit value
-1:		JOUT('.')
-		LDB B+1			# Increment B and loop
-		JNE 1b			# while we are below $80
-		JOUT('\n')
-		JEQ firstrow		# Now go back to top of board
