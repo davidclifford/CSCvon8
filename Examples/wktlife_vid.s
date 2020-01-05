@@ -29,7 +29,7 @@ botrightcell:	EQU $F005		# Copy of cell to our bot-right
 midcell:	EQU $F006		# Cached copy of our cell value
 row:		EQU $F007		# Current row number: $D0 .. $EF
 col:		EQU $F008		# Current column number: $00 .. $7F
-cell:       EQU $FF09       # Current cell colour
+cell:       EQU $F009       # Current cell colour
 
 midrowcache:	EQU $9F00		# Cache of the previous mid row
 toprowcache:	EQU $9E00		# Cache of the previous top row

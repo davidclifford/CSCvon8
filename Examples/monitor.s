@@ -7,12 +7,25 @@
 #define JOUT(x)	     JOU .; OUT x
 #define JINA	     JIU .; INA 
 
-main:	NOP			# Six NOPs are needed for the CPU to
+main:	NOP			# Sixteen NOPs are needed for the CPU to
 	NOP			# "settle down" after Reset# goes high
 	NOP
 	NOP
 	NOP
 	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+
+	JSR cls         # Clear video memory
+
 	LCB $00			# Print out the welcome message
 1:	LDA welcome,B
 	JAZ prompt
@@ -285,6 +298,27 @@ prhex:	LDA hexchar	# Load a copy of A
 	JOUT(A)
 	RTS prhex
 
+## Clear screen. Using indirect addressing
+#
+cls:
+    STO 0 vidaddr
+    STO 0 vidaddr+1
+1:
+    LCA $00
+    SIA vidaddr
+    LDA vidaddr+1
+    STO A+1 vidaddr+1
+    LCB $FE
+    JNE 1b
+
+# Next line
+    STO 0 vidaddr+1
+    LDA vidaddr
+    STO A+1 vidaddr
+    LCB $77
+    JNE 1b
+    RTS cls
+
 # String constants
 	 PAG
 welcome: STR "[2J[HCSCvon8 Monitor, $Revision: 1.15 $, type ? for help\n\n"
@@ -305,3 +339,4 @@ addr:	  HEX "80"		# Address used by all commands
 	  HEX "00"
 count:	  HEX "00"		# 16-bit counter, used when loading a program
 	  HEX "00"
+vidaddr: HEX "00 00"    # Video address

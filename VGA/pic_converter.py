@@ -32,7 +32,7 @@ hex_file.write('C0000')
 for y in range(128):
     hex_file.write('\n')
     for x in range(256):
-        try:
+        if x < 160 and y < 120:
             pix = pixels[x, y]
             red = pix[0] >> 6
             grn = pix[1] >> 6
@@ -42,9 +42,10 @@ for y in range(128):
             hex_file.write(f'{colour:02x} ')
             plot(x, y, red, grn, blu)
 
-        except IndexError:
+        else:
             pic_file.write(uint8(0))
             hex_file.write('00 ')
+
     pygame.display.update()
 
 pic_file.close()
