@@ -102,6 +102,15 @@ font = [
    ]
 
 
+def hex_convert():
+    for char in range(96):
+        print('\tHEX "', end='')
+        for j in range(7):
+            hex = f'{font[char][j]:02x}'
+            print(hex, end=' ')
+        print('"')
+
+
 def plot(x, y, col):
     psize = 8
     for yy in range(psize):
@@ -121,6 +130,8 @@ def video_print(x, y, text, fcol, bcol):
         pygame.display.update()
 
 
+hex_convert()
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 960))
 
@@ -135,5 +146,3 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
-
