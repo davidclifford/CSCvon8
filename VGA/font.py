@@ -104,9 +104,11 @@ font = [
 
 def hex_convert():
     for char in range(96):
+        if char%8 == 0:
+           print('\tPAG')
         print('\tHEX "', end='')
         for j in range(7):
-            hex = f'{font[char][j]:02x}'
+            hex = f'{font[char][j]*4:02x}'
             print(hex, end=' ')
         print('"')
 
@@ -122,9 +124,10 @@ def video_print(x, y, text, fcol, bcol):
     for i in range(len(text)):
         char = ord(text[i]) - 32
         for j in range(7):
-            bits = font[char][j]
+            bits = (font[char][j]*4) & 0xff
             for k in range(6):
-                bit = (bits << k) & 0x10
+                bit = (bits*2) >> 8
+                bits = bits*2 & 0xFF
                 col = fcol if bit else bcol
                 plot(x+k+i*6, y+j, col)
         pygame.display.update()

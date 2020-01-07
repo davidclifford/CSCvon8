@@ -1,54 +1,76 @@
 # Print char to VGA
 #
+    LCA 'A'
+    STO A char
+    JSR pchar
+    JMP $0000
+    
 pchar:
     LDA char
     LCB $20   # space ' '
     JLT cntrl # is control character
     STO A-B chr
 
-1: # Calculate start of character bitmap
+# Calculate start of character bitmap
     LDA chr   # index  = chr*7
     LDB $07
     STO A*B indx+1
-    LDA chr
-    LDB $07
     LDA A*BHI
-    LBH ascii
-    STO A+B indx
+    LHB ascii
+    STO A+B indx # store character bitmap start in indx
 
-2: # Calculate x,y coords for top left pixel of character
+# Calculate x,y coords for top left pixel of character
     LDA xpos
     LCB $06
     STO A*B xcoord
     LDA ypos
-    LDC $07
+    LCB $07
     STO A*B ycoord
 
-3: # plot 6 pixels of character bitmap
-    LCA $06
-    STO A count
-4:
-    LIA indx
-    LCB $04
-    LDB A*BHI
-    JAZ background
-    LDA forg
-    SIA ycoord
-    JMP 5f
-background:
-    LDA bakg
-    SIA ycoord
-5:
-    LDB count
-    LDB B-1
-    STO B count
-    JPZ 6f
-    JMP 4b
-6:
-    LDA xcoord
-    LCB
+    LCA $07
+    STO A line_count
 
-    JMP $0000
+# plot 6 pixels of character bitmap of each line
+1:
+    LCA $06
+    STO A bit_count
+    LIA indx
+    STO A bmp
+2: # loop through bits
+    LDA bmp
+    JAN 3f
+    LDA bakg
+    JMP 4f
+3:
+    LDA forg
+4:
+    SIA coord  # plot bit
+    LDA bmp     # shift bit map left one
+    LCB $01
+    STO A<<B bmp # store it
+    LDB bit_count   # dec bitcount
+    LDB B-1
+    STO B bit_count
+    JAZ 5f
+    LDA xcoord  # inc x coord
+    STO A+1 xcoord
+    JMP 2b      # loop to next bit in bitmap
+5:
+    # loop to next line in bit map
+    LDA indx
+    STO A+1 indx
+    LDA xcoord  # restore x coord (ie go back 6 pixels)
+    LCB $06
+    STO A-B xcoord
+    LDA ycoord # increment y coord
+    STO A+1 ycoord
+    LDA line_count
+    LDA A-1
+    STO A line_count
+    JAZ 6f
+    JMP 1b
+6:
+    RTS pchar
 
 cntrl:
     RTS pchar
@@ -57,121 +79,125 @@ cntrl:
 char: HEX "21"
 xpos: HEX "00"
 ypos: HEX "00"
+coord:
 ycoord: HEX "00"
 xcoord: HEX "00"
 chr: HEX "00 00"
 indx: HEX "00 00"
 bakg: HEX "03"
 forg: HEX "3C"
-count: HEX "00"
+bit_count: HEX "00"
+line_count: HEX "00"
+bmp: HEX "00"
 
 # Ascii chars 32-96
     PAG
 ascii:
+	PAG
 	HEX "00 00 00 00 00 00 00 "
-	HEX "04 04 04 04 04 00 04 "
-	HEX "09 09 12 00 00 00 00 "
-	HEX "0a 0a 1f 0a 1f 0a 0a "
-	HEX "04 0f 14 0e 05 1e 04 "
-	HEX "19 19 02 04 08 13 13 "
-	HEX "04 0a 0a 0a 15 12 0d "
-	HEX "04 04 08 00 00 00 00 "
+	HEX "10 10 10 10 10 00 10 "
+	HEX "24 24 48 00 00 00 00 "
+	HEX "28 28 7c 28 7c 28 28 "
+	HEX "10 3c 50 38 14 78 10 "
+	HEX "64 64 08 10 20 4c 4c "
+	HEX "10 28 28 28 54 48 34 "
+	HEX "10 10 20 00 00 00 00 "
 	PAG
-	HEX "02 04 08 08 08 04 02 "
-	HEX "08 04 02 02 02 04 08 "
-	HEX "04 15 0e 1f 0e 15 04 "
-	HEX "00 04 04 1f 04 04 00 "
-	HEX "00 00 00 00 04 04 08 "
-	HEX "00 00 00 1f 00 00 00 "
-	HEX "00 00 00 00 00 0c 0c "
-	HEX "01 01 02 04 08 10 10 "
+	HEX "08 10 20 20 20 10 08 "
+	HEX "20 10 08 08 08 10 20 "
+	HEX "10 54 38 7c 38 54 10 "
+	HEX "00 10 10 7c 10 10 00 "
+	HEX "00 00 00 00 10 10 20 "
+	HEX "00 00 00 7c 00 00 00 "
+	HEX "00 00 00 00 00 30 30 "
+	HEX "04 04 08 10 20 40 40 "
 	PAG
-	HEX "0e 11 13 15 19 11 0e "
-	HEX "04 0c 04 04 04 04 0e "
-	HEX "0e 11 01 02 04 08 1f "
-	HEX "0e 11 01 06 01 11 0e "
-	HEX "02 06 0a 12 1f 02 02 "
-	HEX "1f 10 1e 01 01 11 0e "
-	HEX "06 08 10 1e 11 11 0e "
-	HEX "1f 01 02 04 08 08 08 "
+	HEX "38 44 4c 54 64 44 38 "
+	HEX "10 30 10 10 10 10 38 "
+	HEX "38 44 04 08 10 20 7c "
+	HEX "38 44 04 18 04 44 38 "
+	HEX "08 18 28 48 7c 08 08 "
+	HEX "7c 40 78 04 04 44 38 "
+	HEX "18 20 40 78 44 44 38 "
+	HEX "7c 04 08 10 20 20 20 "
 	PAG
-	HEX "0e 11 11 0e 11 11 0e "
-	HEX "0e 11 11 0f 01 02 0c "
-	HEX "00 0c 0c 00 0c 0c 00 "
-	HEX "00 0c 0c 00 0c 04 08 "
-	HEX "02 04 08 10 08 04 02 "
-	HEX "00 00 1f 00 1f 00 00 "
-	HEX "08 04 02 01 02 04 08 "
-	HEX "0e 11 01 02 04 00 04 "
+	HEX "38 44 44 38 44 44 38 "
+	HEX "38 44 44 3c 04 08 30 "
+	HEX "00 30 30 00 30 30 00 "
+	HEX "00 30 30 00 30 10 20 "
+	HEX "08 10 20 40 20 10 08 "
+	HEX "00 00 7c 00 7c 00 00 "
+	HEX "20 10 08 04 08 10 20 "
+	HEX "38 44 04 08 10 00 10 "
 	PAG
-	HEX "0e 11 17 15 17 10 0f "
-	HEX "04 0a 11 11 1f 11 11 "
-	HEX "1e 11 11 1e 11 11 1e "
-	HEX "0e 11 10 10 10 11 0e "
-	HEX "1e 09 09 09 09 09 1e "
-	HEX "1f 10 10 1c 10 10 1f "
-	HEX "1f 10 10 1f 10 10 10 "
-	HEX "0e 11 10 10 13 11 0f "
+	HEX "38 44 5c 54 5c 40 3c "
+	HEX "10 28 44 44 7c 44 44 "
+	HEX "78 44 44 78 44 44 78 "
+	HEX "38 44 40 40 40 44 38 "
+	HEX "78 24 24 24 24 24 78 "
+	HEX "7c 40 40 70 40 40 7c "
+	HEX "7c 40 40 7c 40 40 40 "
+	HEX "38 44 40 40 4c 44 3c "
 	PAG
-	HEX "11 11 11 1f 11 11 11 "
-	HEX "0e 04 04 04 04 04 0e "
-	HEX "1f 02 02 02 02 12 0c "
-	HEX "11 12 14 18 14 12 11 "
-	HEX "10 10 10 10 10 10 1f "
-	HEX "11 1b 15 11 11 11 11 "
-	HEX "11 11 19 15 13 11 11 "
-	HEX "0e 11 11 11 11 11 0e "
+	HEX "44 44 44 7c 44 44 44 "
+	HEX "38 10 10 10 10 10 38 "
+	HEX "7c 08 08 08 08 48 30 "
+	HEX "44 48 50 60 50 48 44 "
+	HEX "40 40 40 40 40 40 7c "
+	HEX "44 6c 54 44 44 44 44 "
+	HEX "44 44 64 54 4c 44 44 "
+	HEX "38 44 44 44 44 44 38 "
 	PAG
-	HEX "1e 11 11 1e 10 10 10 "
-	HEX "0e 11 11 11 15 12 0d "
-	HEX "1e 11 11 1e 14 12 11 "
-	HEX "0e 11 10 0e 01 11 0e "
-	HEX "1f 04 04 04 04 04 04 "
-	HEX "11 11 11 11 11 11 0e "
-	HEX "11 11 11 11 11 0a 04 "
-	HEX "11 11 11 15 15 1b 11 "
+	HEX "78 44 44 78 40 40 40 "
+	HEX "38 44 44 44 54 48 34 "
+	HEX "78 44 44 78 50 48 44 "
+	HEX "38 44 40 38 04 44 38 "
+	HEX "7c 10 10 10 10 10 10 "
+	HEX "44 44 44 44 44 44 38 "
+	HEX "44 44 44 44 44 28 10 "
+	HEX "44 44 44 54 54 6c 44 "
 	PAG
-	HEX "11 11 0a 04 0a 11 11 "
-	HEX "11 11 0a 04 04 04 04 "
-	HEX "1f 01 02 04 08 10 1f "
-	HEX "0e 08 08 08 08 08 0e "
-	HEX "10 10 08 04 02 01 01 "
-	HEX "0e 02 02 02 02 02 0e "
-	HEX "04 0a 11 00 00 00 00 "
-	HEX "00 00 00 00 00 00 1f "
+	HEX "44 44 28 10 28 44 44 "
+	HEX "44 44 28 10 10 10 10 "
+	HEX "7c 04 08 10 20 40 7c "
+	HEX "38 20 20 20 20 20 38 "
+	HEX "40 40 20 10 08 04 04 "
+	HEX "38 08 08 08 08 08 38 "
+	HEX "10 28 44 00 00 00 00 "
+	HEX "00 00 00 00 00 00 7c "
 	PAG
-	HEX "04 04 02 00 00 00 00 "
-	HEX "00 0e 01 0d 13 13 0d "
-	HEX "10 10 10 1c 12 12 1c "
-	HEX "00 00 00 0e 10 10 0e "
-	HEX "01 01 01 07 09 09 07 "
-	HEX "00 00 0e 11 1f 10 0f "
-	HEX "06 09 08 1c 08 08 08 "
-	HEX "0e 11 13 0d 01 01 0e "
+	HEX "10 10 08 00 00 00 00 "
+	HEX "00 38 04 34 4c 4c 34 "
+	HEX "40 40 40 70 48 48 70 "
+	HEX "00 00 00 38 40 40 38 "
+	HEX "04 04 04 1c 24 24 1c "
+	HEX "00 00 38 44 7c 40 3c "
+	HEX "18 24 20 70 20 20 20 "
+	HEX "38 44 4c 34 04 04 38 "
 	PAG
-	HEX "10 10 10 16 19 11 11 "
-	HEX "00 04 00 0c 04 04 0e "
-	HEX "02 00 06 02 02 12 0c "
-	HEX "10 10 12 14 18 14 12 "
-	HEX "0c 04 04 04 04 04 04 "
-	HEX "00 00 0a 15 15 11 11 "
-	HEX "00 00 16 19 11 11 11 "
-	HEX "00 00 0e 11 11 11 0e "
+	HEX "40 40 40 58 64 44 44 "
+	HEX "00 10 00 30 10 10 38 "
+	HEX "08 00 18 08 08 48 30 "
+	HEX "40 40 48 50 60 50 48 "
+	HEX "30 10 10 10 10 10 10 "
+	HEX "00 00 28 54 54 44 44 "
+	HEX "00 00 58 64 44 44 44 "
+	HEX "00 00 38 44 44 44 38 "
 	PAG
-	HEX "00 1c 12 12 1c 10 10 "
-	HEX "00 07 09 09 07 01 01 "
-	HEX "00 00 16 19 10 10 10 "
-	HEX "00 00 0f 10 0e 01 1e "
-	HEX "08 08 1c 08 08 09 06 "
-	HEX "00 00 11 11 11 13 0d "
-	HEX "00 00 11 11 11 0a 04 "
-	HEX "00 00 11 11 15 15 0a "
+	HEX "00 70 48 48 70 40 40 "
+	HEX "00 1c 24 24 1c 04 04 "
+	HEX "00 00 58 64 40 40 40 "
+	HEX "00 00 3c 40 38 04 78 "
+	HEX "20 20 70 20 20 24 18 "
+	HEX "00 00 44 44 44 4c 34 "
+	HEX "00 00 44 44 44 28 10 "
+	HEX "00 00 44 44 54 54 28 "
 	PAG
-	HEX "00 00 11 0a 04 0a 11 "
-	HEX "00 11 11 0f 01 11 0e "
-	HEX "00 00 1f 02 04 08 1f "
-	HEX "06 08 08 10 08 08 06 "
-	HEX "04 04 04 00 04 04 04 "
-	HEX "0c 02 02 01 02 02 0c "
-	HEX "08 15 02 00 00 00 00 "
-	HEX "1f 1f 1f 1f 1f 1f 1f "
+	HEX "00 00 44 28 10 28 44 "
+	HEX "00 44 44 3c 04 44 38 "
+	HEX "00 00 7c 08 10 20 7c "
+	HEX "18 20 20 40 20 20 18 "
+	HEX "10 10 10 00 10 10 10 "
+	HEX "30 08 08 04 08 08 30 "
+	HEX "20 54 08 00 00 00 00 "
+	HEX "7c 7c 7c 7c 7c 7c 7c "
