@@ -45,9 +45,9 @@ pchar:
     LDA forg
 4:
     SIA coord  # plot bit
-    LDA bmp     # shift bit map left one
+    LDA bmp     # roll bit map left one
     LCB $01
-    STO A<<B bmp # store it
+    STO AROLB bmp # store it
     LDB bit_count   # dec bitcount
     LDB B-1
     STO B bit_count
