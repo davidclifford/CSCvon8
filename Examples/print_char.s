@@ -37,13 +37,11 @@ pchar:
     LIA indx
     STO A bmp
 2: # loop through bits
-    LDA bmp
-    JAN 3f
-    LDA bakg
-    JMP 4f
-3:
     LDA forg
-4:
+    LDB bmp
+    JBN 3f
+    LDA bakg
+3:
     SIA coord  # plot bit
     LDA bmp     # roll bit map left one
     LCB $01
