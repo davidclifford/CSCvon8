@@ -4,16 +4,18 @@
 #define JOUT(x)	     JOU .; OUT x
 #define putc(x)	     LCA x; JOU .; OUT A
 
+# Set up X & Y position, background and foreground colour
     LCA $00 # x = 0
     STO A xpos
     LCB $00 # y = 0
     STO B ypos
-    LCA $30 # forg = RED
+    LCA $3C # forg = YELLOW
     STO A forg
-    LCB $01 # bakg = BLUE
+    LCB $03 # bakg = BLUE
     STO B bakg
     LCA $00
     STO A pos
+# Iterate through the string
 1:
     LDB pos
     LDA message,B
@@ -22,33 +24,16 @@
     JSR pchar
     LDB pos
     STO B+1 pos
-    LDB xpos
-    STO B+1 xpos
     JMP 1b
 2:
-    LCA $00
-    STO A xpos
-    LCA $01
-    STO A ypos
-    STO 0 pos
-3:
-    LDB pos
-    LDA mess2,B
-    JAZ 4f
-    STO A char
-    JSR pchar
-    LDB pos
-    STO B+1 pos
-    LDB xpos
-    STO B+1 xpos
-    JMP 3b
-4:
-    JMP $001c
-    
+    JMP $001c # return to the Monitor
+
+#
+# Print a character (char) at postion (xpos, ypos) in colour (forg, bakg)
 pchar:
     LDA char
     LCB $20   # space ' '
-    # JLT cntrl # is control character
+    JLT cntrl # is control character
     LDA A-B
 
 # Calculate start of character bitmap
@@ -73,7 +58,7 @@ pchar:
     LCB $06
     STO A*B xcoord
     LDA ypos
-    LCB $07
+    LCB $08
     STO A*B ycoord
 
     LCA $07
@@ -119,6 +104,8 @@ pchar:
     JAZ 6f
     JMP 1b
 6:
+    LDA xpos
+    STO A+1 xpos
     RTS pchar
 7:
     LDA indx
@@ -126,7 +113,19 @@ pchar:
     JMP 8b
 
 cntrl:
+    LDA char
+    LCB '\n'
+    JEQ newline
+ret:
     RTS pchar
+newline:
+    STO 0 xpos
+    LDA ypos
+    STO A+1 ypos
+    LDA bakg
+    LCB $07
+    STO A+B bakg
+    JMP ret
 
 # prhex function: Print the value in hexchar
 # out as two hex digits
@@ -170,9 +169,7 @@ hexchar: HEX "00"
 pos: HEX "00"
 
     PAG
-message: STR "The quick brown fox jumps"
-    PAG
-mess2: STR "over the lazy dog!"
+message: STR "The\nquick brown\nfox Jumps\nover the\nlazy dog!"
 
 # Ascii chars 32-96
     PAG
@@ -213,9 +210,7 @@ ascii:
 	HEX "10 28 44 44 7c 44 44 " # A
 	HEX "78 44 44 78 44 44 78 " # B
 	HEX "38 44 40 40 40 44 38 " # C
-	HEX "78 24 24"              # D
-    PAG
-	HEX "24 24 78 "
+	HEX "78 24 24 24 24 24 78 " # D
 	HEX "7c 40 40 70 40 40 7c " # E
 	HEX "7c 40 40 7c 40 40 40 " # F
 	HEX "38 44 40 40 4c 44 3c " # G
@@ -253,8 +248,7 @@ ascii:
 	HEX "18 24 20 70 20 20 20 " # f
 	HEX "38 44 4c 34 04 04 38 " # g
 	HEX "40 40 40 58 64 44 44 " # h
-	PAG
-	HEX "10 00 30 10 10 38 " # i
+	HEX "00 10 00 30 10 10 38 " # i
 	HEX "10 00 18 08 08 48 30 " # j
 	HEX "40 40 48 50 60 50 48 " # k
 	HEX "30 10 10 10 10 10 10 " # l

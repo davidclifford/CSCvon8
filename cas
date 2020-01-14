@@ -415,8 +415,8 @@ sub parse2 {
             foreach my $hexpair ( split( " ", $string ) ) {
                 setMEM( $PC++, hex($hexpair) );
             }
-            die("Hex $string straddles pages\n")
-              if ( ( $oldPC >> 8 ) != ( $PC >> 8 ) );
+            warn("Warning: Hex $string straddles pages\n")
+              if ( $firstpass && ( $oldPC >> 8 ) != ( $PC >> 8 ) );
         }
 
         # Increment PC to the start of the next page
