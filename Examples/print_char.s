@@ -1,9 +1,6 @@
 # Print char to VGA
 #
 
-#define JOUT(x)	     JOU .; OUT x
-#define putc(x)	     LCA x; JOU .; OUT A
-
 # Set up X & Y position, background and foreground colour
     LCA $00 # x = 0
     STO A xpos
@@ -29,7 +26,7 @@
     JMP $001c # return to the Monitor
 
 #
-# Print a character (char) at postion (xpos, ypos) in colour (forg, bakg)
+# Print a character (char) at position (xpos, ypos) in colour (forg, bakg)
 pchar:
     LDA char
     LCB $20   # space ' '
@@ -42,16 +39,6 @@ pchar:
     LDA A*BHI
     LHB ascii
     STO A+B indx # store character bitmap start in indx
-
-#    # print out address
-#    LDA indx
-#    STO A hexchar
-#    JSR prhex
-#    LDA indx+1
-#    STO A hexchar
-#    JSR prhex
-#    putc(' ')
-
 
 # Calculate x,y coords for top left pixel of character
     LDA xpos
@@ -127,38 +114,12 @@ newline:
     STO A+B bakg
     JMP ret
 
-# prhex function: Print the value in hexchar
-# out as two hex digits
-prhex:	LDA hexchar	# Load a copy of A
-	LCB $04		# Get high nibble of A
-	LDA A>>B
-	LCB $09
-	JGT 1f		# Skip if in range A to F
-	LCB $30		# Otherwise add '0'
-	JMP 2f		# and print it
-1:	LCB $37		# Add 55 to get it in 'A' to 'F'
-2:	LDA A+B
-	JOUT(A)
-
-	LDA hexchar	# Get A back again
-	LCB $0F		# Get the low nibble of A
-	LDA A&B
-	LCB $09
-	JGT 1f		# Skip if in range A to F
-	LCB $30		# Otherwise add '0'
-	JMP 2f		# and print it
-1:	LCB $37		# Add 55 to get it in 'A' to 'F'
-2:	LDA A+B
-	JOUT(A)
-	RTS prhex
-
     PAG
 char: HEX "21"
 xpos: HEX "00"
 ypos: HEX "00"
 ycoord: HEX "00"
 xcoord: HEX "00"
-chr: HEX "00 00"
 indx: HEX "00 00"
 bakg: HEX "03"
 forg: HEX "3C"
@@ -169,7 +130,7 @@ hexchar: HEX "00"
 pos: HEX "00"
 
     PAG
-message: STR "The\nquick brown\nfox Jumps\nover the\nlazy dog!"
+message: STR "The quick\nbrown fox\njumps over\nthe lazy\ndog!"
 
 # Ascii chars 32-96
     PAG
