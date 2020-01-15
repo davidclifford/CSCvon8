@@ -485,6 +485,7 @@ while ( @ARGV > 1 ) {
     }
     if ( $ARGV[0] eq "-r" ) {
         $StartPC = 0x8000;
+        $nextreturnaddr = 0xFE00; 
         $ramimage++;
         shift(@ARGV);
         next;

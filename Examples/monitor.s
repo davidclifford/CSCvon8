@@ -316,7 +316,7 @@ welcome: STR "[2J[HCSCvon8 Monitor, $Revision: 1.15 $, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
-	  ORG $FF00
+	  ORG $FD00
 hexchar:  HEX "00"		# Place to store four hex chars, page aligned
 hexchar2: HEX "00"
 hexchar3: HEX "00"
