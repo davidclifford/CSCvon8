@@ -1,33 +1,34 @@
 # VGA card for CSCvon8
 
-A 64 colour (6-bit), 160x120 pixel add-on VGA card for the CSCvon8
+A 64 colour (6-bit tru-color), 160x120 pixel add-on VGA card for the CSCvon8
 or any other CPU that can output 8 bits for the X co-ord, 7-bits for
 the Y co-ord and 8 bits for pixel colour and a write signal.
 e.g. an Arduino Mega 2560.
 
-There are 3 input registers, called X, Y and D. They hold the X, Y and
-pixel colour respectively.
+There are 3 input registers, called X, Y and D. They hold the X, Y 
+co-ordinates and pixel colour respectively.
 
 For the CSCvon8 the 15 bits for the X/Y co-ords come from the address
 bus and the pixel colour from 6 bits of the data bus. A wire for the
 memory write signal is run from the CSCvon8 to the VGA card.
 
-If you write byte to the ROM address space of the CSCvon8 this will
-instead be written to the VGA internal memory, so that STO instructions
+If you write byte to the ROM address space (0x000 - 0x7fff) of the CSCvon8 this will
+instead be written to the VGA internal memory. Therefore STO instructions
 can be used to display pixels as if it was a memory mapped device.
 As the ROM is not usually written to and has a 32kb address space it can
 be used for the VGA memory memory space. The disadvantage is that it
 won't be possible to read from the video memory as it will return the
 contents of the ROM instead. To be able to read from the Video RAM would
-make the VGA card too complex, and compromises have to be made.
+make the VGA card too complex, so an engineering compromise not to include
+it has been made.
 
 ## How it works
 
 When the pixel clock is low the RAM is read with the address bus set
-to the XY co-ords from the counters using 2 8-bit bus transceivers.
+to the XY co-ords from the counters using 2x 8-bit bus transceivers.
 The pixel data and the V & H syncs are latched into a register and
 this will output the required VGA signal through some resistor/diode
-2 bit DACs.
+2 bit DACs giving 4 levels of red, green and blue making 64 possible colours.
 
 When the pixel clock is high, the RAM is written to from the D register
 with the address set to the X & Y registers. As the VGA signal is
