@@ -26,7 +26,7 @@ for y in range(0, 1024):
             control[addr] |= Hsync
         if y < 490 or y > 492:
             control[addr] |= Vsync
-        if x >= 80 and y >= 480:
+        if x >= 80 or y >= 480:
             control[addr] |= PICout
         if x > 100 or y > 525:
             control[addr] = 0xff

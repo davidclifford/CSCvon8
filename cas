@@ -341,11 +341,17 @@ sub parse2 {
 
            # Use the $constant[0], which is the function's start address, to get
            # the location of the return address in RAM for the function
-            printf( "JSR: for function at 0x%04x, ", $constant[0] ) if ($debug);
-            $constant[0] = get_return_address( $constant[0] );
-            printf( "store return address at 0x%04x\n", $constant[0] )
-              if ($debug);
-
+            printf( "JSR: for function at 0x%04x, ", $constant[0] )
+                if ($debug);
+            if ( defined $constant[1] ) {
+                $constant[0] = $constant[1];
+                printf( "override return address 0x%04x\n", $constant[1] )
+                    if ($debug);
+            } else {
+                $constant[0] = get_return_address( $constant[0] );
+                printf( "store return address at 0x%04x\n", $constant[0] )
+                    if ($debug);
+            }
             # Now put the return address into the instruction stream
             setMEM( $PC + 3, ( $PC + 7 ) >> 8 );
             setMEM( $PC + 4, ( $PC + 7 ) & 0xff );
