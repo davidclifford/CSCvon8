@@ -34,24 +34,21 @@ cell:       EQU $F009       # Current cell colour
 midrowcache:	EQU $9F00		# Cache of the previous mid row
 toprowcache:	EQU $9E00		# Cache of the previous top row
 
-    JIU .
 #
 # Clear screen.
 #
 	STO 0 cls+1
 1:
-	LDA 0
-	LDB 0
+	LDA @160
+	LDB $00
 cls:
     STO 0 $0000,B
 	LDB B+1
-	JBZ 2f
-	JMP cls
-2:
-    LDA cls+1
-    STO A+1 cls+1
-    LCB $7F
-    JLT 1b
+	JNE cls
+    LDB cls+1
+    STO B+1 cls+1
+    LCA @120
+    JNE 1b
 
 # Initialisation. Zero both cached rows and the board. Use
 # self-modifying code to do this.

@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'Tetris_Opener'
+filename = 'pic'
 
 
 def plot(x, y, r, g, b):

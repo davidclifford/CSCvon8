@@ -29,7 +29,7 @@
 2:
     JMP monitor # return to the Monitor
 
-monitor: EQU $001c
+monitor: EQU $001f
 pchar: EQU $02d3
 pchar_ret: EQU $fff4
 cls: EQU $02aa

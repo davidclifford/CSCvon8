@@ -5,6 +5,7 @@ use Data::Dumper;
 use Term::ReadKey;
 use IO::Pty;
 use Storable;
+use GD::Simple
 
 # CSCVon8 Simulator, (C) 2019 Warren Toomey, GPL3
 

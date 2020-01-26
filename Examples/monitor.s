@@ -1,19 +1,15 @@
 # Warren's monitor ROM for the CSCvon8 CPU
 # (c) 2019, GPL3
+# Modified by David Clifford 2020
 
 #define printstr(x)  LHA x; STO A strptr; LCA x; STO A strptr+1; JSR puts
 #define putc(x)	     LCA x; JOU .; OUT A
 #define getc(x)	     JIU .; INA; STO A x
 #define JOUT(x)	     JOU .; OUT x
-#define JINA	     JIU .; INA 
+#define JINA	     JIU .; INA
 
 main:
-    NOP			# Six NOPs are needed for the CPU to
-	NOP			# "settle down" after Reset# goes high
-	NOP
-	NOP
-	NOP
-	NOP
+    ORG $0006
 
     STO 0 bakg
 	JSR cls         # Clear video memory
@@ -88,7 +84,7 @@ newprompt:
 	JMP prompt
 
 terminate:
-	JMP $FFFF
+	JMP $0000
 
 printusage:
 	printstr(usage)
@@ -504,7 +500,7 @@ ascii:
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, $Revision: 1.15 $, type ? for help\n\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.01, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
