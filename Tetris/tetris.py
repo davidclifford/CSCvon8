@@ -66,6 +66,7 @@ blocks = [4, 2, 3, 3, 3, 3, 3]
 colours = [0x30, 0x0C, 0x0F, 0x3D, 0x33, 0x03, 0x34]
 offx = 30
 offy = 16
+score = 0
 
 
 def plot(x, y, colour):
@@ -130,6 +131,8 @@ def draw_whole_board():
 
 
 def delete_lines():
+    global score
+    lines = 0
     for y in range(20):
         filled = True
         for x in range(10):
@@ -137,6 +140,11 @@ def delete_lines():
                 filled = False
         if filled:
             scroll_down_board(y)
+            lines += 1
+    if lines > 0:
+        score += (lines-1)*60 + 40
+    else:
+        score += 5
 
 
 def scroll_down_board(height):
@@ -167,6 +175,7 @@ while not quited:
     play = True
     draw_shape(4, -3, next, 0, colours[next])
     drop = False
+    score = 0
 
     while play:
 
@@ -174,6 +183,9 @@ while not quited:
         _column = column
         _dir = dir
         _height = height
+        score_label = font.render("Score: " + str(score), 1, (128, 128, 128))
+        pygame.draw.rect(screen, (0, 0, 0), (520, 144, 180, 30))
+        screen.blit(score_label, (520, 140))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
