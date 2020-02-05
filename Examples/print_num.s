@@ -14,14 +14,16 @@ go: LDA count
     JMP go
     JMP $ffff
 
-print_num:  STO i 0
+print_num:
+    STO i 0
     LCA '0'
     STO str A
     LCB @1
     LDA num
-    JAZ next
-loop:   LDA num
-    JAZ print
+    JAZ 2f
+1:
+    LDA num
+    JAZ 4f
     LCB $0a
     STO num A/B
     LDA A%B
@@ -30,14 +32,17 @@ loop:   LDA num
     LDB i
     STO A str,B
     STO i B+1
-    JMP loop
-print:  LDB i
-next:   LDB B-1
+    JMP 1b
+4:
+    LDB i
+2:
+    LDB B-1
     LDA str,B
     OUT(A)
-    JBZ end
-    JMP next
-end:    RTS print_num
+    JBZ 3f
+    JMP 2b
+3:
+    RTS print_num
 
 str:    EQU $F000
 count:  EQU $F006

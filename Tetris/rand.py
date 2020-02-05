@@ -1,23 +1,15 @@
+# seed = (((seed+1)*75)%65537)-1
+
 seed = 0
 
-for x in range(256):
-    # ld    a, (seed)
-    # ld    b, a
-    #
-    # rrca
-    # rrca
-    # rrca
-    # xor 0x1f
-    #
-    # add a, b
-    # sbc a, 255
-    #
-    # ld(seed), a
-    # ret
-    a = (x*33)&0xff
-    b = int(((x*33)/256))
-    a = (a - b)
-    if a<0:
-        a = (a + 1)&0xff
-    if a != (x*33) % 257:
-        print(x, x*33, (x*33) % 257, a)
+for x in range(6):
+    s = ((seed+1)*33)
+    a = s % 257
+    b = s % 256
+    c = int(s/256)
+    d = b-c
+    if d<0:
+        d = (d+1)&255
+    e = d&255
+    print(x, seed, s, a, b, c, d, e)
+    seed = a
