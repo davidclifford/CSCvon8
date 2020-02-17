@@ -1,15 +1,18 @@
 #
 # Divide a 16-bit unsigned number by 10
 #
+
 #define OUT(x)	     JOU .; OUT x
 
     LCA     @255
     STO     A num
+div10:
+    STO     0 rem
+div10next:
     LCB     $07
     STO     B cnt
-    STO     0 rem
 
-loop:
+2:
     LCB     $02
     LDA     num
     STO     A*B num   # num*2
@@ -23,12 +26,12 @@ loop:
     JLT     1f
     STO     A-B rem     # sub 10 from rem
     LDA     num
-    STO     A+1 num
+    STO     A+1 num     # add 1 to num
 1:
     LDA     cnt
     JAZ     print
     STO     A-1 cnt
-    JMP     loop
+    JMP     2b
 
 # Print out num and rem in hex
 print:
@@ -44,8 +47,6 @@ print:
 # Back to command prompt
 
     JMP     prompt
-
-PAG
 
 num:    HEX "0B"
 rem:    HEX "00"
