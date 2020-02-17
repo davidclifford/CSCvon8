@@ -3,25 +3,56 @@
 #
 #define OUT(x)	     JOU .; OUT x
 
-    LCA     $00
-    LCB     $01
+    LCA     @255
     STO     A num
-    STO     B num+1
-start:
+    LCB     $07
+    STO     B cnt
+    STO     0 rem
+
+loop:
+    LCB     $02
     LDA     num
-    LDB     $99
-    STO     A*B mul1
-    STO     A*BHI mul2
+    STO     A*B num   # num*2
+    STO     A*BHI ovfl
+    LDA     rem
+    LDA     A*B rem
+    LDB     ovfl
+    LDA     A+B
+    STO     A rem
+    LCB     $0A         # if rem < 10 skip
+    JLT     1f
+    STO     A-B rem     # sub 10 from rem
+    LDA     num
+    STO     A+1 num
+1:
+    LDA     cnt
+    JAZ     print
+    STO     A-1 cnt
+    JMP     loop
 
-    LDA     num+1
-    LDB     $19
-    STO     A*B mul3
-    STO     A*BHI mul4
+# Print out num and rem in hex
+print:
+    LDA     num
+    STO     A hexchar
+    JSR     prhex prhex_ret
+    OUT     (' ')
+    LDA     rem
+    STO     A hexchar
+    JSR     prhex prhex_ret
+    OUT     ('\n')
 
-    JMP     $FFFF
+# Back to command prompt
 
-num:    EQU $f000
-mul1:   EQU $f002
-mul2:   EQU $f003
-mul3:   EQU $f004
-mul4:   EQU $f005
+    JMP     prompt
+
+PAG
+
+num:    HEX "0B"
+rem:    HEX "00"
+ovfl:   HEX "00"
+cnt:    HEX "08"
+
+hexchar: EQU $FD00
+prhex:   EQU $0279
+prhex_ret:EQU $FFF8
+prompt:  EQU $001f

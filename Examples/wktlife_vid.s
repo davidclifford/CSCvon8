@@ -30,6 +30,8 @@ midcell:	EQU $F006		# Cached copy of our cell value
 row:		EQU $F007		# Current row number: $D0 .. $EF
 col:		EQU $F008		# Current column number: $00 .. $7F
 cell:       EQU $F009       # Current cell colour
+seed:       EQU $F00A       # random number
+seed2:      EQU $F00B
 
 midrowcache:	EQU $9F00		# Cache of the previous mid row
 toprowcache:	EQU $9E00		# Cache of the previous top row
@@ -70,6 +72,29 @@ sm1:	STO 0 toprowcache,B
 		STO A $C13F
 		STO A $C140
 		STO A $C240
+
+# Add some random stuff
+        STO 0 row
+1:
+        JSR random
+        LDA seed
+        LCB $7F
+        STO A&B col
+        JSR random
+        LDA seed
+        LCB $20
+        LDA A%B
+        LCB $A0
+        STO A+B plot+1
+        LDB col
+        LCA $01
+plot:
+        STO A $A000,B
+        LDA row
+        LDA A-1
+        JAZ firstrow
+        STO A row
+        JMP 1b
 
 # Do some set up before we can start work on the first row
 # Set up row below us and column we are in.
@@ -189,3 +214,23 @@ rowsend:
 		LCA $01
         STO A col
 		JMP firstcolumn
+
+random:
+    LDA seed
+    LDA A+1             # seed+1
+    LCB @33
+    STO A*BHI seed2    # (seed+1)*33
+    LDA A*B
+    LDB seed2
+    TST A-B JC 1f
+    STO A-B-1 seed
+    JMP 2f
+1:
+    LDA A-B
+    STO A seed
+    LCB $ff
+    JNE 2f
+    LCA @223 # Hack
+    STO A seed
+2:
+    RTS random
