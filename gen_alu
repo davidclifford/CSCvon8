@@ -96,38 +96,28 @@ sub ASR {
   }
 }
 
-# Two digit BCD addition of $A and $B.
-# Any result >100 is reduced by 100 and carry set.
-# Result is also two BCD digits.
-sub BCD_ADD {
-  # Convert both to 8-bit values
-  my $a= $BCDtoNum[ $A ];
-  my $b= $BCDtoNum[ $B ];
-
-  my $c=0;
-  $result= $a + $b;
-  if ($result > 99) {
-    $result -= 99;
-    $c= CARRYFLAG;	# This is active high at this point
-  }
-  $result= $NumtoBCD[ $result] + $c;
+# Produce the result as if you divided
+# A by 10 using shifts and used
+# B as a starting remainder.
+# Used with A/B and A%B to convert
+# a number to a decimal string
+sub BCD_DIV {
+  $result= 0;
+  $result= int(($A + ($B * 256)) / 10) & 255 if $B < 10;
+  print "\n" if $B == 0;
+  print $result . " - " if $B < 10;
 }
 
-# Two digit BCD addition of $A and $B.
-# Any result <0 is incremented by 100 and carry set.
-# Result is also two BCD digits.
-sub BCD_SUB {
-  # Convert both to 8-bit values
-  my $a= $BCDtoNum[ $A ];
-  my $b= $BCDtoNum[ $B ];
-
-  my $c=0;
-  $result= $a - $b;
-  if ($result < 0) {
-    $result += 99;
-    $c= CARRYFLAG;	# This is active high at this point
-  }
-  $result= $NumtoBCD[ $result] + $c;
+# Produce the Remainder as if you divided
+# A by 10 using shifts and used
+# B as a starting remainder.
+# Used with A/B and A%B to convert
+# a number to a decimal string
+sub BCD_REM {
+  $result= 0;
+  $result= ($A + ($B * 256)) % 10 if $B < 10;
+  print "\n" if $B == 0;
+  print $result . " = " if $B < 10;
 }
 
 # Array of subroutines, some anonymous, which calculate the result
@@ -163,8 +153,8 @@ my @Opsub= (
   sub { $result= $A^$B; },				# A XOR B
   sub { $result= (~$A) & 0xff; },			# NOT A
   sub { $result= (~$B) & 0xff; },			# NOT B
-  \&BCD_ADD,						# BCD A + B
-  \&BCD_SUB,						# BCD A + B
+  \&BCD_DIV,						# A/10 with B as remainder
+  \&BCD_REM,						# A%10 with B as remainder
 );
 
 ### MAIN PROGRAM ###

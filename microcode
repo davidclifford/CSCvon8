@@ -34,8 +34,8 @@ A|B        = 001A
 A^B        = 001B
 !A         = 001C
 !B         = 001D
-A+BCD      = 001E
-A-BCD      = 001F
+ADIVB      = 001E
+AREMB      = 001F
 
 # Loads from the data bus
 IRload	   = 0020
@@ -139,9 +139,9 @@ START := MEMresult IRload PCincr
 		uSreset
 1D LDA_!B:	ALUresult !B Aload
 		uSreset
-1E LDA_A+BCD:	ALUresult A+BCD Aload
+1E LDA_ADIVB:	ALUresult ADIVB Aload
 		uSreset
-1F LDA_A-BCD:	ALUresult A-BCD Aload
+1F LDA_AREMB:	ALUresult AREMB Aload
 		uSreset
 
 # ALU Operations into the B register
@@ -202,9 +202,9 @@ START := MEMresult IRload PCincr
 		uSreset
 3D LDB_!B:	ALUresult !B Bload
 		uSreset
-3E LDB_A+BCD:	ALUresult A+BCD	Bload
+3E LDB_ADIVB:	ALUresult ADIVB	Bload
 		uSreset
-3F LDB_A-BCD:	ALUresult A-BCD	Bload
+3F LDB_AREMB:	ALUresult AREMB	Bload
 		uSreset
 
 # ALU Operations stored into memory
@@ -324,13 +324,13 @@ START := MEMresult IRload PCincr
 	MEMresult ALload PCincr
 	ALUresult !B ARena MEMload
 	uSreset
-5E STO_A+BCD: MEMresult AHload PCincr
+5E STO_ADIVB: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A+BCD ARena MEMload
+	ALUresult ADIVB ARena MEMload
 	uSreset
-5F STO_A-BCD: MEMresult AHload PCincr
+5F STO_AREMB: MEMresult AHload PCincr
 	MEMresult ALload PCincr
-	ALUresult A-BCD ARena MEMload
+	ALUresult AREMB ARena MEMload
 	uSreset
 
 # 60-6F: Misc 1
