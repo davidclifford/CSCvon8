@@ -1,5 +1,4 @@
 # Clear screen as quickly as possible
-    ORG $8100
     STO 0 plot+1
 1:
     LCB $00

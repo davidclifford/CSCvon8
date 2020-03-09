@@ -554,11 +554,15 @@ foreach my $i ( 0 .. ( @Line - 1 ) ) {
 if ($ramimage) {
     my $hexfile = $ARGV[0];
     $hexfile =~ s{\.s$}{};
+    my $binfile = $hexfile . ".bin";
     $hexfile = $hexfile . ".hex";
+
     open( my $OUT, ">", $hexfile ) || die("Can't write to $hexfile: $!\n");
+    open( my $BIN, ">:raw", $binfile ) || die("Can't write to $binfile: $!\n");
     printf( $OUT "C%04x\n", $lomemused );
     for my $i ( $lomemused .. $himemused ) {
         printf( $OUT "%02x ", $MEM[$i] ? $MEM[$i] : 0 );
+        print( $BIN pack("C", $MEM[$i] ? $MEM[$i] : 0 ));
         print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
     }
     print( $OUT "Z\n" );

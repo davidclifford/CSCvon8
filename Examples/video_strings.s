@@ -2,7 +2,7 @@
 #
     LCA $02
     STO A bakg
-    JSR cls cls_ret
+#    JSR cls cls_ret
 
 # Set up X & Y position, background and foreground colour
     LCA $00 # x = 0

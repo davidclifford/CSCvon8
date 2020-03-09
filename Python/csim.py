@@ -1,6 +1,7 @@
 # CSCVon8 Simulator written in Python
 #  based on csim by Warren Toomey, GPL3 2019
 # Added VGA graphics window
+# UNFORTUNATELY TOO SLOW!!
 
 import sys
 import pygame
@@ -19,7 +20,7 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 960))
 
 debug = 0
-PC = 0
+PC = 0x8000
 A = 0
 B = 0
 AH = 0
@@ -95,6 +96,11 @@ file = open('27Cucode.bin', 'rb')
 DecodeRom = list(file.read())
 file.close()
 
+file = open('../Examples/video_strings.bin', 'rb')
+Ram = list(file.read())
+Ram = Ram + [0 for _ in range(0x8000 - len(Ram))]
+file.close()
+
 file = open('../instr.bin', 'rb')
 Rom = list(file.read())
 file.close()
@@ -160,7 +166,7 @@ while True:
 
     # Get the memory value
     if dbusop == MEMRESULT:
-        databus = Ram[address-0x8000] if address & 0x8000 else Rom[address]
+        databus = Ram[address-0x8000] if address >= 0x8000 else Rom[address]
 
     # Read UART
     if dbusop == UARTRESULT:
@@ -188,10 +194,14 @@ while True:
         if debug:
             print("->B %02x" % B)
     if loadop == 4:
-        if address & 0x8000:
+        if address >= 0x8000:
             Ram[address-0x8000] = databus
             if debug:
                 print("->RAM %04x %02x" % (address-0x8000, Ram[address-0x8000]))
+        else:
+            x = address & 0x00FF
+            y = (address >> 8) & 0xFF
+            plot(x, y, databus)
     if loadop == 5:
         AH = databus
         if debug:
