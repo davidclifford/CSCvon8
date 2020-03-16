@@ -4,6 +4,7 @@
 # UNFORTUNATELY TOO SLOW!!
 
 import sys
+import time
 import pygame
 from pygame import gfxdraw
 
@@ -19,8 +20,7 @@ def plot(x, y, colour):
 pygame.init()
 screen = pygame.display.set_mode((1280, 960))
 
-debug = 0
-PC = 0x8000
+PC = 0x0000
 A = 0
 B = 0
 AH = 0
@@ -86,7 +86,7 @@ ALUop = [
     "AREMB"
 ]
 
-Ram = [0]*0x8000
+Ram = [0]*0x0000
 
 file = open('alu.bin', 'rb')
 ALURom = list(file.read())
@@ -96,7 +96,7 @@ file = open('27Cucode.bin', 'rb')
 DecodeRom = list(file.read())
 file.close()
 
-file = open('../Examples/video_strings.bin', 'rb')
+file = open('../Examples/ttt.bin', 'rb')
 Ram = list(file.read())
 Ram = Ram + [0 for _ in range(0x8000 - len(Ram))]
 file.close()
@@ -108,6 +108,7 @@ file.close()
 debug = False
 input_string = ''
 inchar = None
+elapsed = 0
 
 ### LOOP
 while True:
@@ -257,7 +258,9 @@ while True:
             print("\n")
         break
 
-    pygame.display.flip()
+    if time.time() - elapsed > 1:
+        pygame.display.flip()
+        elapsed = time.time()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
