@@ -96,7 +96,7 @@ file = open('27Cucode.bin', 'rb')
 DecodeRom = list(file.read())
 file.close()
 
-file = open('../Examples/ttt.bin', 'rb')
+file = open('../Examples/video_strings.bin', 'rb')
 Ram = list(file.read())
 Ram = Ram + [0 for _ in range(0x8000 - len(Ram))]
 file.close()

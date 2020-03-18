@@ -1,352 +1,351 @@
 PC 0006, Recognised ORG => 257 0
-PC 0006, Recognised STO_0 => 64 3
-PC 0009, Recognised LCB => 97 2
-PC 000b, Recognised LDA_,B => 144 2
-PC 000d, Recognised JAZ => 121 3
-PC 0010, Recognised JOU => 119 3
-PC 0013, Recognised OUT_A => 100 1
-PC 0014, Recognised LDB_B+1 => 38 1
-PC 0015, Recognised JMP => 112 3
-PC 0018, Recognised LCA => 96 2
-PC 001a, Recognised JOU => 119 3
-PC 001d, Recognised OUT_A => 100 1
-PC 001e, Recognised LCA => 96 2
-PC 0020, Recognised JOU => 119 3
-PC 0023, Recognised OUT_A => 100 1
-PC 0024, Recognised JIU => 120 3
-PC 0027, Recognised INA => 102 1
-PC 0028, Recognised STO_A => 65 3
-PC 002b, Recognised JOU => 119 3
-PC 002e, Recognised OUT_A => 100 1
-PC 002f, Recognised LCB => 97 2
-PC 0031, Recognised JEQ => 113 3
-PC 0034, Recognised LCB => 97 2
-PC 0036, Recognised JEQ => 113 3
-PC 0039, Recognised STO_0 => 64 3
-PC 003c, Recognised JIU => 120 3
-PC 003f, Recognised INA => 102 1
-PC 0040, Recognised JOU => 119 3
-PC 0043, Recognised OUT_A => 100 1
-PC 0044, Recognised LCB => 97 2
-PC 0046, Recognised JEQ => 113 3
-PC 0049, Recognised LCB => 97 2
-PC 004b, Recognised JEQ => 113 3
-PC 004e, Recognised LCB => 97 2
-PC 0050, Recognised JEQ => 113 3
-PC 0053, Recognised LDB => 99 3
-PC 0056, Recognised STO_A_,B => 146 2
-PC 0058, Recognised STO_B+1 => 70 3
-PC 005b, Recognised LCA => 96 2
-PC 005d, Recognised JEQ => 113 3
-PC 0060, Recognised JMP => 112 3
-PC 0063, Recognised JIU => 120 3
-PC 0066, Recognised INA => 102 1
-PC 0067, Recognised JOU => 119 3
-PC 006a, Recognised OUT_A => 100 1
-PC 006b, Recognised LCB => 97 2
-PC 006d, Recognised JEQ => 113 3
-PC 0070, Recognised LCB => 97 2
-PC 0072, Recognised JEQ => 113 3
-PC 0075, Recognised JMP => 112 3
-PC 0078, Recognised JSR => 240 7
-PC 007f, Recognised JOU => 119 3
-PC 0082, Recognised OUT => 104 2
-PC 0084, Recognised LDA => 98 3
-PC 0087, Recognised LCB => 97 2
-PC 0089, Recognised JEQ => 113 3
-PC 008c, Recognised LCB => 97 2
-PC 008e, Recognised JEQ => 113 3
-PC 0091, Recognised LCB => 97 2
-PC 0093, Recognised JEQ => 113 3
-PC 0096, Recognised LCB => 97 2
-PC 0098, Recognised JEQ => 113 3
-PC 009b, Recognised LCB => 97 2
-PC 009d, Recognised JEQ => 113 3
-PC 00a0, Recognised LCB => 97 2
-PC 00a2, Recognised JEQ => 113 3
-PC 00a5, Recognised LCB => 97 2
-PC 00a7, Recognised JEQ => 113 3
-PC 00aa, Recognised LCB => 97 2
-PC 00ac, Recognised JEQ => 113 3
-PC 00af, Recognised LCB => 97 2
-PC 00b1, Recognised JEQ => 113 3
-PC 00b4, Recognised JOU => 119 3
-PC 00b7, Recognised OUT => 104 2
-PC 00b9, Recognised JOU => 119 3
-PC 00bc, Recognised OUT => 104 2
+PC 0006, Recognised LCB => 97 2
+PC 0008, Recognised LDA_,B => 144 2
+PC 000a, Recognised JAZ => 121 3
+PC 000d, Recognised JOU => 119 3
+PC 0010, Recognised OUT_A => 100 1
+PC 0011, Recognised LDB_B+1 => 38 1
+PC 0012, Recognised JMP => 112 3
+PC 0015, Recognised LCA => 96 2
+PC 0017, Recognised JOU => 119 3
+PC 001a, Recognised OUT_A => 100 1
+PC 001b, Recognised LCA => 96 2
+PC 001d, Recognised JOU => 119 3
+PC 0020, Recognised OUT_A => 100 1
+PC 0021, Recognised JIU => 120 3
+PC 0024, Recognised INA => 102 1
+PC 0025, Recognised STO_A => 65 3
+PC 0028, Recognised JOU => 119 3
+PC 002b, Recognised OUT_A => 100 1
+PC 002c, Recognised LCB => 97 2
+PC 002e, Recognised JEQ => 113 3
+PC 0031, Recognised LCB => 97 2
+PC 0033, Recognised JEQ => 113 3
+PC 0036, Recognised STO_0 => 64 3
+PC 0039, Recognised JIU => 120 3
+PC 003c, Recognised INA => 102 1
+PC 003d, Recognised JOU => 119 3
+PC 0040, Recognised OUT_A => 100 1
+PC 0041, Recognised LCB => 97 2
+PC 0043, Recognised JEQ => 113 3
+PC 0046, Recognised LCB => 97 2
+PC 0048, Recognised JEQ => 113 3
+PC 004b, Recognised LCB => 97 2
+PC 004d, Recognised JEQ => 113 3
+PC 0050, Recognised LDB => 99 3
+PC 0053, Recognised STO_A_,B => 146 2
+PC 0055, Recognised STO_B+1 => 70 3
+PC 0058, Recognised LCA => 96 2
+PC 005a, Recognised JEQ => 113 3
+PC 005d, Recognised JMP => 112 3
+PC 0060, Recognised JIU => 120 3
+PC 0063, Recognised INA => 102 1
+PC 0064, Recognised JOU => 119 3
+PC 0067, Recognised OUT_A => 100 1
+PC 0068, Recognised LCB => 97 2
+PC 006a, Recognised JEQ => 113 3
+PC 006d, Recognised LCB => 97 2
+PC 006f, Recognised JEQ => 113 3
+PC 0072, Recognised JMP => 112 3
+PC 0075, Recognised JSR => 240 7
+PC 007c, Recognised JOU => 119 3
+PC 007f, Recognised OUT => 104 2
+PC 0081, Recognised LDA => 98 3
+PC 0084, Recognised LCB => 97 2
+PC 0086, Recognised JEQ => 113 3
+PC 0089, Recognised LCB => 97 2
+PC 008b, Recognised JEQ => 113 3
+PC 008e, Recognised LCB => 97 2
+PC 0090, Recognised JEQ => 113 3
+PC 0093, Recognised LCB => 97 2
+PC 0095, Recognised JEQ => 113 3
+PC 0098, Recognised LCB => 97 2
+PC 009a, Recognised JEQ => 113 3
+PC 009d, Recognised LCB => 97 2
+PC 009f, Recognised JEQ => 113 3
+PC 00a2, Recognised LCB => 97 2
+PC 00a4, Recognised JEQ => 113 3
+PC 00a7, Recognised LCB => 97 2
+PC 00a9, Recognised JEQ => 113 3
+PC 00ac, Recognised LCB => 97 2
+PC 00ae, Recognised JEQ => 113 3
+PC 00b1, Recognised JOU => 119 3
+PC 00b4, Recognised OUT => 104 2
+PC 00b6, Recognised JOU => 119 3
+PC 00b9, Recognised OUT => 104 2
+PC 00bb, Recognised JMP => 112 3
 PC 00be, Recognised JMP => 112 3
-PC 00c1, Recognised JMP => 112 3
-PC 00c4, Recognised LHA => 260 2
-PC 00c6, Recognised STO_A => 65 3
-PC 00c9, Recognised LCA => 96 2
-PC 00cb, Recognised STO_A => 65 3
-PC 00ce, Recognised JSR => 240 7
-PC 00d5, Recognised JMP => 112 3
-PC 00d8, Recognised LCB => 97 2
-PC 00da, Recognised STO_B => 66 3
+PC 00c1, Recognised LHA => 260 2
+PC 00c3, Recognised STO_A => 65 3
+PC 00c6, Recognised LCA => 96 2
+PC 00c8, Recognised STO_A => 65 3
+PC 00cb, Recognised JSR => 240 7
+PC 00d2, Recognised JMP => 112 3
+PC 00d5, Recognised LCB => 97 2
+PC 00d7, Recognised STO_B => 66 3
+PC 00da, Recognised JMP => 112 3
 PC 00dd, Recognised JMP => 112 3
-PC 00e0, Recognised JMP => 112 3
-PC 00e3, Recognised LCB => 97 2
-PC 00e5, Recognised STO_B => 66 3
-PC 00e8, Recognised LDB => 99 3
-PC 00eb, Recognised STO_B => 66 3
-PC 00ee, Recognised JSR => 240 7
-PC 00f5, Recognised LDB => 99 3
-PC 00f8, Recognised STO_B => 66 3
-PC 00fb, Recognised JSR => 240 7
-PC 0102, Recognised JOU => 119 3
-PC 0105, Recognised OUT => 104 2
-PC 0107, Recognised JOU => 119 3
-PC 010a, Recognised OUT => 104 2
-PC 010c, Recognised LIA => 242 3
-PC 010f, Recognised STO_A => 65 3
-PC 0112, Recognised JSR => 240 7
-PC 0119, Recognised JOU => 119 3
-PC 011c, Recognised OUT => 104 2
-PC 011e, Recognised LDB => 99 3
-PC 0121, Recognised LDB_B-1 => 40 1
-PC 0122, Recognised JBN => 124 3
-PC 0125, Recognised STO_B => 66 3
-PC 0128, Recognised LDB => 99 3
-PC 012b, Recognised STO_B+1 => 70 3
-PC 012e, Recognised JMP => 112 3
-PC 0131, Recognised JOU => 119 3
-PC 0134, Recognised OUT => 104 2
-PC 0136, Recognised JOU => 119 3
-PC 0139, Recognised OUT => 104 2
-PC 013b, Recognised LDB => 99 3
-PC 013e, Recognised STO_B+1 => 70 3
-PC 0141, Recognised TST_B+1_JC => 132 3
-PC 0144, Recognised JMP => 112 3
-PC 0147, Recognised LDB => 99 3
-PC 014a, Recognised STO_B+1 => 70 3
-PC 014d, Recognised JMP => 112 3
-PC 0150, Recognised LHA => 260 2
-PC 0152, Recognised STO_A => 65 3
-PC 0155, Recognised LCA => 96 2
-PC 0157, Recognised STO_A => 65 3
-PC 015a, Recognised JSR => 240 7
-PC 0161, Recognised JIU => 120 3
-PC 0164, Recognised INA => 102 1
-PC 0165, Recognised JOU => 119 3
-PC 0168, Recognised OUT_A => 100 1
-PC 0169, Recognised LCB => 97 2
-PC 016b, Recognised JEQ => 113 3
-PC 016e, Recognised LCB => 97 2
-PC 0170, Recognised JEQ => 113 3
-PC 0173, Recognised LCB => 97 2
-PC 0175, Recognised JEQ => 113 3
-PC 0178, Recognised LCB => 97 2
-PC 017a, Recognised JEQ => 113 3
-PC 017d, Recognised LCB => 97 2
-PC 017f, Recognised JEQ => 113 3
-PC 0182, Recognised STO_A => 65 3
-PC 0185, Recognised JIU => 120 3
-PC 0188, Recognised INA => 102 1
-PC 0189, Recognised JOU => 119 3
-PC 018c, Recognised OUT_A => 100 1
-PC 018d, Recognised LCB => 97 2
-PC 018f, Recognised JEQ => 113 3
-PC 0192, Recognised LCB => 97 2
-PC 0194, Recognised JEQ => 113 3
-PC 0197, Recognised LCB => 97 2
-PC 0199, Recognised JEQ => 113 3
-PC 019c, Recognised LCB => 97 2
-PC 019e, Recognised JEQ => 113 3
-PC 01a1, Recognised LCB => 97 2
-PC 01a3, Recognised JEQ => 113 3
-PC 01a6, Recognised STO_A => 65 3
-PC 01a9, Recognised JSR => 240 7
-PC 01b0, Recognised LDA => 98 3
-PC 01b3, Recognised SIA => 244 4
-PC 01b7, Recognised LDB => 99 3
-PC 01ba, Recognised STO_B+1 => 70 3
-PC 01bd, Recognised TST_B+1_JC => 132 3
-PC 01c0, Recognised JMP => 112 3
-PC 01c3, Recognised LDB => 99 3
-PC 01c6, Recognised STO_B+1 => 70 3
-PC 01c9, Recognised JMP => 112 3
-PC 01cc, Recognised LIA => 242 3
-PC 01cf, Recognised JAZ => 121 3
-PC 01d2, Recognised JOU => 119 3
-PC 01d5, Recognised OUT_A => 100 1
-PC 01d6, Recognised LDB => 99 3
-PC 01d9, Recognised STO_B+1 => 70 3
-PC 01dc, Recognised JMP => 112 3
-PC 01df, Recognised RTS => 241 3
-PC 01e2, Recognised LDB => 99 3
-PC 01e5, Recognised LCA => 96 2
-PC 01e7, Recognised LDA_A+B => 9 1
-PC 01e8, Recognised JAN => 123 3
-PC 01eb, Recognised LDA_B => 2 1
-PC 01ec, Recognised JMP => 112 3
+PC 00e0, Recognised LCB => 97 2
+PC 00e2, Recognised STO_B => 66 3
+PC 00e5, Recognised LDB => 99 3
+PC 00e8, Recognised STO_B => 66 3
+PC 00eb, Recognised JSR => 240 7
+PC 00f2, Recognised LDB => 99 3
+PC 00f5, Recognised STO_B => 66 3
+PC 00f8, Recognised JSR => 240 7
+PC 00ff, Recognised JOU => 119 3
+PC 0102, Recognised OUT => 104 2
+PC 0104, Recognised JOU => 119 3
+PC 0107, Recognised OUT => 104 2
+PC 0109, Recognised LIA => 242 3
+PC 010c, Recognised STO_A => 65 3
+PC 010f, Recognised JSR => 240 7
+PC 0116, Recognised JOU => 119 3
+PC 0119, Recognised OUT => 104 2
+PC 011b, Recognised LDB => 99 3
+PC 011e, Recognised LDB_B-1 => 40 1
+PC 011f, Recognised JBN => 124 3
+PC 0122, Recognised STO_B => 66 3
+PC 0125, Recognised LDB => 99 3
+PC 0128, Recognised STO_B+1 => 70 3
+PC 012b, Recognised JMP => 112 3
+PC 012e, Recognised JOU => 119 3
+PC 0131, Recognised OUT => 104 2
+PC 0133, Recognised JOU => 119 3
+PC 0136, Recognised OUT => 104 2
+PC 0138, Recognised LDB => 99 3
+PC 013b, Recognised STO_B+1 => 70 3
+PC 013e, Recognised TST_B+1_JC => 132 3
+PC 0141, Recognised JMP => 112 3
+PC 0144, Recognised LDB => 99 3
+PC 0147, Recognised STO_B+1 => 70 3
+PC 014a, Recognised JMP => 112 3
+PC 014d, Recognised LHA => 260 2
+PC 014f, Recognised STO_A => 65 3
+PC 0152, Recognised LCA => 96 2
+PC 0154, Recognised STO_A => 65 3
+PC 0157, Recognised JSR => 240 7
+PC 015e, Recognised JIU => 120 3
+PC 0161, Recognised INA => 102 1
+PC 0162, Recognised JOU => 119 3
+PC 0165, Recognised OUT_A => 100 1
+PC 0166, Recognised LCB => 97 2
+PC 0168, Recognised JEQ => 113 3
+PC 016b, Recognised LCB => 97 2
+PC 016d, Recognised JEQ => 113 3
+PC 0170, Recognised LCB => 97 2
+PC 0172, Recognised JEQ => 113 3
+PC 0175, Recognised LCB => 97 2
+PC 0177, Recognised JEQ => 113 3
+PC 017a, Recognised LCB => 97 2
+PC 017c, Recognised JEQ => 113 3
+PC 017f, Recognised STO_A => 65 3
+PC 0182, Recognised JIU => 120 3
+PC 0185, Recognised INA => 102 1
+PC 0186, Recognised JOU => 119 3
+PC 0189, Recognised OUT_A => 100 1
+PC 018a, Recognised LCB => 97 2
+PC 018c, Recognised JEQ => 113 3
+PC 018f, Recognised LCB => 97 2
+PC 0191, Recognised JEQ => 113 3
+PC 0194, Recognised LCB => 97 2
+PC 0196, Recognised JEQ => 113 3
+PC 0199, Recognised LCB => 97 2
+PC 019b, Recognised JEQ => 113 3
+PC 019e, Recognised LCB => 97 2
+PC 01a0, Recognised JEQ => 113 3
+PC 01a3, Recognised STO_A => 65 3
+PC 01a6, Recognised JSR => 240 7
+PC 01ad, Recognised LDA => 98 3
+PC 01b0, Recognised SIA => 244 4
+PC 01b4, Recognised LDB => 99 3
+PC 01b7, Recognised STO_B+1 => 70 3
+PC 01ba, Recognised TST_B+1_JC => 132 3
+PC 01bd, Recognised JMP => 112 3
+PC 01c0, Recognised LDB => 99 3
+PC 01c3, Recognised STO_B+1 => 70 3
+PC 01c6, Recognised JMP => 112 3
+PC 01c9, Recognised LIA => 242 3
+PC 01cc, Recognised JAZ => 121 3
+PC 01cf, Recognised JOU => 119 3
+PC 01d2, Recognised OUT_A => 100 1
+PC 01d3, Recognised LDB => 99 3
+PC 01d6, Recognised STO_B+1 => 70 3
+PC 01d9, Recognised JMP => 112 3
+PC 01dc, Recognised RTS => 241 3
+PC 01df, Recognised LDB => 99 3
+PC 01e2, Recognised LCA => 96 2
+PC 01e4, Recognised LDA_A+B => 9 1
+PC 01e5, Recognised JAN => 123 3
+PC 01e8, Recognised LDA_B => 2 1
+PC 01e9, Recognised JMP => 112 3
+PC 01ec, Recognised LCB => 97 2
+PC 01ee, Recognised LDA_A+B => 9 1
 PC 01ef, Recognised LCB => 97 2
-PC 01f1, Recognised LDA_A+B => 9 1
-PC 01f2, Recognised LCB => 97 2
-PC 01f4, Recognised STO_A<<B => 84 3
-PC 01f7, Recognised LDB => 99 3
-PC 01fa, Recognised LCA => 96 2
-PC 01fc, Recognised LDA_A+B => 9 1
-PC 01fd, Recognised JAN => 123 3
-PC 0200, Recognised LDA_B => 2 1
-PC 0201, Recognised JMP => 112 3
+PC 01f1, Recognised STO_A<<B => 84 3
+PC 01f4, Recognised LDB => 99 3
+PC 01f7, Recognised LCA => 96 2
+PC 01f9, Recognised LDA_A+B => 9 1
+PC 01fa, Recognised JAN => 123 3
+PC 01fd, Recognised LDA_B => 2 1
+PC 01fe, Recognised JMP => 112 3
+PC 0201, Recognised LCB => 97 2
+PC 0203, Recognised LDA_A+B => 9 1
 PC 0204, Recognised LCB => 97 2
-PC 0206, Recognised LDA_A+B => 9 1
-PC 0207, Recognised LCB => 97 2
-PC 0209, Recognised LDB_A&B => 57 1
-PC 020a, Recognised LDA => 98 3
-PC 020d, Recognised STO_A|B => 90 3
-PC 0210, Recognised LDB => 99 3
-PC 0213, Recognised LCA => 96 2
-PC 0215, Recognised LDA_A+B => 9 1
-PC 0216, Recognised JAN => 123 3
-PC 0219, Recognised LDA_B => 2 1
-PC 021a, Recognised JMP => 112 3
+PC 0206, Recognised LDB_A&B => 57 1
+PC 0207, Recognised LDA => 98 3
+PC 020a, Recognised STO_A|B => 90 3
+PC 020d, Recognised LDB => 99 3
+PC 0210, Recognised LCA => 96 2
+PC 0212, Recognised LDA_A+B => 9 1
+PC 0213, Recognised JAN => 123 3
+PC 0216, Recognised LDA_B => 2 1
+PC 0217, Recognised JMP => 112 3
+PC 021a, Recognised LCB => 97 2
+PC 021c, Recognised LDA_A+B => 9 1
 PC 021d, Recognised LCB => 97 2
-PC 021f, Recognised LDA_A+B => 9 1
-PC 0220, Recognised LCB => 97 2
-PC 0222, Recognised STO_A<<B => 84 3
-PC 0225, Recognised LDB => 99 3
-PC 0228, Recognised LCA => 96 2
-PC 022a, Recognised LDA_A+B => 9 1
-PC 022b, Recognised JAN => 123 3
-PC 022e, Recognised LDA_B => 2 1
-PC 022f, Recognised JMP => 112 3
+PC 021f, Recognised STO_A<<B => 84 3
+PC 0222, Recognised LDB => 99 3
+PC 0225, Recognised LCA => 96 2
+PC 0227, Recognised LDA_A+B => 9 1
+PC 0228, Recognised JAN => 123 3
+PC 022b, Recognised LDA_B => 2 1
+PC 022c, Recognised JMP => 112 3
+PC 022f, Recognised LCB => 97 2
+PC 0231, Recognised LDA_A+B => 9 1
 PC 0232, Recognised LCB => 97 2
-PC 0234, Recognised LDA_A+B => 9 1
-PC 0235, Recognised LCB => 97 2
-PC 0237, Recognised LDB_A&B => 57 1
-PC 0238, Recognised LDA => 98 3
-PC 023b, Recognised STO_A|B => 90 3
-PC 023e, Recognised RTS => 241 3
-PC 0241, Recognised LDB => 99 3
-PC 0244, Recognised LCA => 96 2
-PC 0246, Recognised LDA_A+B => 9 1
-PC 0247, Recognised JAN => 123 3
-PC 024a, Recognised LDA_B => 2 1
-PC 024b, Recognised JMP => 112 3
+PC 0234, Recognised LDB_A&B => 57 1
+PC 0235, Recognised LDA => 98 3
+PC 0238, Recognised STO_A|B => 90 3
+PC 023b, Recognised RTS => 241 3
+PC 023e, Recognised LDB => 99 3
+PC 0241, Recognised LCA => 96 2
+PC 0243, Recognised LDA_A+B => 9 1
+PC 0244, Recognised JAN => 123 3
+PC 0247, Recognised LDA_B => 2 1
+PC 0248, Recognised JMP => 112 3
+PC 024b, Recognised LCB => 97 2
+PC 024d, Recognised LDA_A+B => 9 1
 PC 024e, Recognised LCB => 97 2
-PC 0250, Recognised LDA_A+B => 9 1
-PC 0251, Recognised LCB => 97 2
-PC 0253, Recognised STO_A<<B => 84 3
-PC 0256, Recognised LDB => 99 3
-PC 0259, Recognised LCA => 96 2
-PC 025b, Recognised LDA_A+B => 9 1
-PC 025c, Recognised JAN => 123 3
-PC 025f, Recognised LDA_B => 2 1
-PC 0260, Recognised JMP => 112 3
+PC 0250, Recognised STO_A<<B => 84 3
+PC 0253, Recognised LDB => 99 3
+PC 0256, Recognised LCA => 96 2
+PC 0258, Recognised LDA_A+B => 9 1
+PC 0259, Recognised JAN => 123 3
+PC 025c, Recognised LDA_B => 2 1
+PC 025d, Recognised JMP => 112 3
+PC 0260, Recognised LCB => 97 2
+PC 0262, Recognised LDA_A+B => 9 1
 PC 0263, Recognised LCB => 97 2
-PC 0265, Recognised LDA_A+B => 9 1
-PC 0266, Recognised LCB => 97 2
-PC 0268, Recognised LDB_A&B => 57 1
-PC 0269, Recognised LDA => 98 3
-PC 026c, Recognised STO_A|B => 90 3
-PC 026f, Recognised RTS => 241 3
-PC 0272, Recognised LDA => 98 3
+PC 0265, Recognised LDB_A&B => 57 1
+PC 0266, Recognised LDA => 98 3
+PC 0269, Recognised STO_A|B => 90 3
+PC 026c, Recognised RTS => 241 3
+PC 026f, Recognised LDA => 98 3
+PC 0272, Recognised LCB => 97 2
+PC 0274, Recognised LDA_A>>B => 21 1
 PC 0275, Recognised LCB => 97 2
-PC 0277, Recognised LDA_A>>B => 21 1
-PC 0278, Recognised LCB => 97 2
-PC 027a, Recognised JGT => 115 3
-PC 027d, Recognised LCB => 97 2
-PC 027f, Recognised JMP => 112 3
-PC 0282, Recognised LCB => 97 2
-PC 0284, Recognised LDA_A+B => 9 1
-PC 0285, Recognised JOU => 119 3
-PC 0288, Recognised OUT_A => 100 1
-PC 0289, Recognised LDA => 98 3
+PC 0277, Recognised JGT => 115 3
+PC 027a, Recognised LCB => 97 2
+PC 027c, Recognised JMP => 112 3
+PC 027f, Recognised LCB => 97 2
+PC 0281, Recognised LDA_A+B => 9 1
+PC 0282, Recognised JOU => 119 3
+PC 0285, Recognised OUT_A => 100 1
+PC 0286, Recognised LDA => 98 3
+PC 0289, Recognised LCB => 97 2
+PC 028b, Recognised LDA_A&B => 25 1
 PC 028c, Recognised LCB => 97 2
-PC 028e, Recognised LDA_A&B => 25 1
-PC 028f, Recognised LCB => 97 2
-PC 0291, Recognised JGT => 115 3
-PC 0294, Recognised LCB => 97 2
-PC 0296, Recognised JMP => 112 3
-PC 0299, Recognised LCB => 97 2
-PC 029b, Recognised LDA_A+B => 9 1
-PC 029c, Recognised JOU => 119 3
-PC 029f, Recognised OUT_A => 100 1
-PC 02a0, Recognised RTS => 241 3
+PC 028e, Recognised JGT => 115 3
+PC 0291, Recognised LCB => 97 2
+PC 0293, Recognised JMP => 112 3
+PC 0296, Recognised LCB => 97 2
+PC 0298, Recognised LDA_A+B => 9 1
+PC 0299, Recognised JOU => 119 3
+PC 029c, Recognised OUT_A => 100 1
+PC 029d, Recognised RTS => 241 3
+PC 02a0, Recognised STO_0 => 64 3
 PC 02a3, Recognised STO_0 => 64 3
-PC 02a6, Recognised STO_0 => 64 3
-PC 02a9, Recognised LDA => 98 3
-PC 02ac, Recognised SIA => 244 4
-PC 02b0, Recognised LDA => 98 3
-PC 02b3, Recognised STO_A+1 => 69 3
-PC 02b6, Recognised LCB => 97 2
-PC 02b8, Recognised JNE => 114 3
-PC 02bb, Recognised STO_0 => 64 3
-PC 02be, Recognised LDA => 98 3
-PC 02c1, Recognised STO_A+1 => 69 3
-PC 02c4, Recognised LCB => 97 2
-PC 02c6, Recognised JNE => 114 3
-PC 02c9, Recognised RTS => 241 3
-PC 02cc, Recognised LDA => 98 3
-PC 02cf, Recognised LCB => 97 2
-PC 02d1, Recognised JLT => 116 3
-PC 02d4, Recognised LDA_A-B => 11 1
-PC 02d5, Recognised LCB => 97 2
-PC 02d7, Recognised STO_A*B => 81 3
-PC 02da, Recognised LDA_A*BHI => 16 1
-PC 02db, Recognised LHB => 259 2
-PC 02dd, Recognised STO_A+B => 73 3
-PC 02e0, Recognised LDA => 98 3
-PC 02e3, Recognised LCB => 97 2
-PC 02e5, Recognised STO_A*B => 81 3
-PC 02e8, Recognised LDA => 98 3
-PC 02eb, Recognised LCB => 97 2
-PC 02ed, Recognised STO_A*B => 81 3
-PC 02f0, Recognised LCA => 96 2
-PC 02f2, Recognised STO_A => 65 3
-PC 02f5, Recognised LCA => 96 2
-PC 02f7, Recognised STO_A => 65 3
-PC 02fa, Recognised LIA => 242 3
-PC 02fd, Recognised STO_A => 65 3
-PC 0300, Recognised LDA => 98 3
-PC 0303, Recognised LDB => 99 3
-PC 0306, Recognised JBN => 124 3
-PC 0309, Recognised LDA => 98 3
-PC 030c, Recognised SIA => 244 4
-PC 0310, Recognised LDA => 98 3
-PC 0313, Recognised LCB => 97 2
-PC 0315, Recognised STO_AROLB => 87 3
-PC 0318, Recognised LDB => 99 3
-PC 031b, Recognised LDB_B-1 => 40 1
-PC 031c, Recognised STO_B => 66 3
-PC 031f, Recognised JBZ => 122 3
-PC 0322, Recognised LDA => 98 3
-PC 0325, Recognised STO_A+1 => 69 3
-PC 0328, Recognised JMP => 112 3
-PC 032b, Recognised LDA => 98 3
-PC 032e, Recognised STO_A+1 => 69 3
-PC 0331, Recognised TST_A+1_JC => 131 3
-PC 0334, Recognised LDA => 98 3
-PC 0337, Recognised LCB => 97 2
-PC 0339, Recognised STO_A-B => 75 3
-PC 033c, Recognised LDA => 98 3
-PC 033f, Recognised STO_A+1 => 69 3
-PC 0342, Recognised LDA => 98 3
-PC 0345, Recognised LDA_A-1 => 7 1
-PC 0346, Recognised STO_A => 65 3
-PC 0349, Recognised JAZ => 121 3
-PC 034c, Recognised JMP => 112 3
-PC 034f, Recognised LDA => 98 3
-PC 0352, Recognised STO_A+1 => 69 3
-PC 0355, Recognised RTS => 241 3
-PC 0358, Recognised LDA => 98 3
-PC 035b, Recognised STO_A+1 => 69 3
-PC 035e, Recognised JMP => 112 3
-PC 0361, Recognised LDA => 98 3
-PC 0364, Recognised LCB => 97 2
-PC 0366, Recognised JEQ => 113 3
-PC 0369, Recognised RTS => 241 3
-PC 036c, Recognised STO_0 => 64 3
-PC 036f, Recognised LDA => 98 3
-PC 0372, Recognised STO_A+1 => 69 3
-PC 0375, Recognised LDA => 98 3
-PC 0378, Recognised LCB => 97 2
-PC 037a, Recognised STO_A+B => 73 3
-PC 037d, Recognised JMP => 112 3
-PC 0380, Recognised PAG => 262 0
-Page aligned PC 0380 -> 0400
+PC 02a6, Recognised LDA => 98 3
+PC 02a9, Recognised SIA => 244 4
+PC 02ad, Recognised LDA => 98 3
+PC 02b0, Recognised STO_A+1 => 69 3
+PC 02b3, Recognised LCB => 97 2
+PC 02b5, Recognised JNE => 114 3
+PC 02b8, Recognised STO_0 => 64 3
+PC 02bb, Recognised LDA => 98 3
+PC 02be, Recognised STO_A+1 => 69 3
+PC 02c1, Recognised LCB => 97 2
+PC 02c3, Recognised JNE => 114 3
+PC 02c6, Recognised RTS => 241 3
+PC 02c9, Recognised LDA => 98 3
+PC 02cc, Recognised LCB => 97 2
+PC 02ce, Recognised JLT => 116 3
+PC 02d1, Recognised LDA_A-B => 11 1
+PC 02d2, Recognised LCB => 97 2
+PC 02d4, Recognised STO_A*B => 81 3
+PC 02d7, Recognised LDA_A*BHI => 16 1
+PC 02d8, Recognised LHB => 259 2
+PC 02da, Recognised STO_A+B => 73 3
+PC 02dd, Recognised LDA => 98 3
+PC 02e0, Recognised LCB => 97 2
+PC 02e2, Recognised STO_A*B => 81 3
+PC 02e5, Recognised LDA => 98 3
+PC 02e8, Recognised LCB => 97 2
+PC 02ea, Recognised STO_A*B => 81 3
+PC 02ed, Recognised LCA => 96 2
+PC 02ef, Recognised STO_A => 65 3
+PC 02f2, Recognised LCA => 96 2
+PC 02f4, Recognised STO_A => 65 3
+PC 02f7, Recognised LIA => 242 3
+PC 02fa, Recognised STO_A => 65 3
+PC 02fd, Recognised LDA => 98 3
+PC 0300, Recognised LDB => 99 3
+PC 0303, Recognised JBN => 124 3
+PC 0306, Recognised LDA => 98 3
+PC 0309, Recognised SIA => 244 4
+PC 030d, Recognised LDA => 98 3
+PC 0310, Recognised LCB => 97 2
+PC 0312, Recognised STO_AROLB => 87 3
+PC 0315, Recognised LDB => 99 3
+PC 0318, Recognised LDB_B-1 => 40 1
+PC 0319, Recognised STO_B => 66 3
+PC 031c, Recognised JBZ => 122 3
+PC 031f, Recognised LDA => 98 3
+PC 0322, Recognised STO_A+1 => 69 3
+PC 0325, Recognised JMP => 112 3
+PC 0328, Recognised LDA => 98 3
+PC 032b, Recognised STO_A+1 => 69 3
+PC 032e, Recognised TST_A+1_JC => 131 3
+PC 0331, Recognised LDA => 98 3
+PC 0334, Recognised LCB => 97 2
+PC 0336, Recognised STO_A-B => 75 3
+PC 0339, Recognised LDA => 98 3
+PC 033c, Recognised STO_A+1 => 69 3
+PC 033f, Recognised LDA => 98 3
+PC 0342, Recognised LDA_A-1 => 7 1
+PC 0343, Recognised STO_A => 65 3
+PC 0346, Recognised JAZ => 121 3
+PC 0349, Recognised JMP => 112 3
+PC 034c, Recognised LDA => 98 3
+PC 034f, Recognised STO_A+1 => 69 3
+PC 0352, Recognised RTS => 241 3
+PC 0355, Recognised LDA => 98 3
+PC 0358, Recognised STO_A+1 => 69 3
+PC 035b, Recognised JMP => 112 3
+PC 035e, Recognised LDA => 98 3
+PC 0361, Recognised LCB => 97 2
+PC 0363, Recognised JEQ => 113 3
+PC 0366, Recognised RTS => 241 3
+PC 0369, Recognised STO_0 => 64 3
+PC 036c, Recognised LDA => 98 3
+PC 036f, Recognised STO_A+1 => 69 3
+PC 0372, Recognised LDA => 98 3
+PC 0375, Recognised LCB => 97 2
+PC 0377, Recognised STO_A+B => 73 3
+PC 037a, Recognised JMP => 112 3
+PC 037d, Recognised PAG => 262 0
+Page aligned PC 037d -> 0400
 PC 0400, Recognised HEX => 261 0
 PC 0407, Recognised HEX => 261 0
 PC 040e, Recognised HEX => 261 0
@@ -482,769 +481,767 @@ ascii:	0400
 bakg:	fd12
 bit_count:	fd19
 bmp:	fd1b
-bytecvt:	0241
-change:	0150
-changeloop:	0161
+bytecvt:	023e
+change:	014d
+changeloop:	015e
 char:	fd11
-cls:	02a3
+cls:	02a0
 cmdchar:	fd06
 count:	fd0b
-cvtaddr:	0078
-docmd:	007f
-dump:	00e3
+cvtaddr:	0075
+docmd:	007c
+dump:	00e0
 forg:	fd13
 hexchar:	fd00
 hexchar2:	fd01
 hexchar3:	fd02
 hexchar4:	fd03
 hexcnt:	fd07
-hexcvt:	01e2
+hexcvt:	01df
 indx:	fd14
 jmpaddr:	fd08
 line_count:	fd1a
 main:	0000
-newprompt:	00b4
-pchar:	02cc
-prhex:	0272
-printusage:	00c4
-prompt:	0018
-puts:	01cc
-run:	00d8
+newprompt:	00b1
+pchar:	02c9
+prhex:	026f
+printusage:	00c1
+prompt:	0015
+puts:	01c9
+run:	00d5
 setstr:	076a
-sploop:	003c
+sploop:	0039
 strptr:	fd04
-terminate:	00c1
+terminate:	00be
 usage:	073a
 vidaddr:	fd0d
-waitnl:	0063
+waitnl:	0060
 welcome:	0700
 xcoord:	fd18
 xpos:	fd10
 ycoord:	fd17
 ypos:	fd0f
 Numeric labels:
-1: 11, 268, 451, 479, 495, 590, 642, 665, 681, 757
-2: 305, 498, 593, 644, 667, 768
-3: 327, 516, 611, 780
-4: 519, 614
-5: 541, 811
-6: 544, 847
-7: 562, 856
-8: 565, 820
-9: 865
-10: 873
-11: 876
+1: 8, 265, 448, 476, 492, 587, 639, 662, 678, 754
+2: 302, 495, 590, 641, 664, 765
+3: 324, 513, 608, 777
+4: 516, 611
+5: 538, 808
+6: 541, 844
+7: 559, 853
+8: 562, 817
+9: 862
+10: 870
+11: 873
 PC 0006, Recognised ORG => 257 0
-PC 0006, Recognised STO_0 => 64 3
-  40 fd 12
-PC 0009, Recognised LCB => 97 2
+PC 0006, Recognised LCB => 97 2
   61 00
-PC 000b, Recognised LDA_,B => 144 2
+PC 0008, Recognised LDA_,B => 144 2
 	Shifting addr 0700 as indexed
   90 07
-PC 000d, Recognised JAZ => 121 3
-  79 00 18
-PC 0010, Recognised JOU => 119 3
-  77 00 10
-PC 0013, Recognised OUT_A => 100 1
+PC 000a, Recognised JAZ => 121 3
+  79 00 15
+PC 000d, Recognised JOU => 119 3
+  77 00 0d
+PC 0010, Recognised OUT_A => 100 1
   64
-PC 0014, Recognised LDB_B+1 => 38 1
+PC 0011, Recognised LDB_B+1 => 38 1
   26
-PC 0015, Recognised JMP => 112 3
-  70 00 0b
-PC 0018, Recognised LCA => 96 2
+PC 0012, Recognised JMP => 112 3
+  70 00 08
+PC 0015, Recognised LCA => 96 2
   60 3e
-PC 001a, Recognised JOU => 119 3
-  77 00 1a
-PC 001d, Recognised OUT_A => 100 1
+PC 0017, Recognised JOU => 119 3
+  77 00 17
+PC 001a, Recognised OUT_A => 100 1
   64
-PC 001e, Recognised LCA => 96 2
+PC 001b, Recognised LCA => 96 2
   60 20
-PC 0020, Recognised JOU => 119 3
-  77 00 20
-PC 0023, Recognised OUT_A => 100 1
+PC 001d, Recognised JOU => 119 3
+  77 00 1d
+PC 0020, Recognised OUT_A => 100 1
   64
-PC 0024, Recognised JIU => 120 3
-  78 00 24
-PC 0027, Recognised INA => 102 1
+PC 0021, Recognised JIU => 120 3
+  78 00 21
+PC 0024, Recognised INA => 102 1
   66
-PC 0028, Recognised STO_A => 65 3
+PC 0025, Recognised STO_A => 65 3
   41 fd 06
-PC 002b, Recognised JOU => 119 3
-  77 00 2b
-PC 002e, Recognised OUT_A => 100 1
+PC 0028, Recognised JOU => 119 3
+  77 00 28
+PC 002b, Recognised OUT_A => 100 1
   64
-PC 002f, Recognised LCB => 97 2
+PC 002c, Recognised LCB => 97 2
   61 0a
-PC 0031, Recognised JEQ => 113 3
-  71 00 18
-PC 0034, Recognised LCB => 97 2
+PC 002e, Recognised JEQ => 113 3
+  71 00 15
+PC 0031, Recognised LCB => 97 2
   61 0d
-PC 0036, Recognised JEQ => 113 3
-  71 00 18
-PC 0039, Recognised STO_0 => 64 3
+PC 0033, Recognised JEQ => 113 3
+  71 00 15
+PC 0036, Recognised STO_0 => 64 3
   40 fd 07
-PC 003c, Recognised JIU => 120 3
-  78 00 3c
-PC 003f, Recognised INA => 102 1
+PC 0039, Recognised JIU => 120 3
+  78 00 39
+PC 003c, Recognised INA => 102 1
   66
-PC 0040, Recognised JOU => 119 3
-  77 00 40
-PC 0043, Recognised OUT_A => 100 1
+PC 003d, Recognised JOU => 119 3
+  77 00 3d
+PC 0040, Recognised OUT_A => 100 1
   64
-PC 0044, Recognised LCB => 97 2
+PC 0041, Recognised LCB => 97 2
   61 20
-PC 0046, Recognised JEQ => 113 3
-  71 00 3c
-PC 0049, Recognised LCB => 97 2
+PC 0043, Recognised JEQ => 113 3
+  71 00 39
+PC 0046, Recognised LCB => 97 2
   61 0a
-PC 004b, Recognised JEQ => 113 3
-  71 00 7f
-PC 004e, Recognised LCB => 97 2
+PC 0048, Recognised JEQ => 113 3
+  71 00 7c
+PC 004b, Recognised LCB => 97 2
   61 0d
-PC 0050, Recognised JEQ => 113 3
-  71 00 7f
-PC 0053, Recognised LDB => 99 3
+PC 004d, Recognised JEQ => 113 3
+  71 00 7c
+PC 0050, Recognised LDB => 99 3
   63 fd 07
-PC 0056, Recognised STO_A_,B => 146 2
+PC 0053, Recognised STO_A_,B => 146 2
 	Shifting addr fd00 as indexed
   92 fd
-PC 0058, Recognised STO_B+1 => 70 3
+PC 0055, Recognised STO_B+1 => 70 3
   46 fd 07
-PC 005b, Recognised LCA => 96 2
+PC 0058, Recognised LCA => 96 2
   60 03
-PC 005d, Recognised JEQ => 113 3
-  71 00 63
-PC 0060, Recognised JMP => 112 3
-  70 00 3c
-PC 0063, Recognised JIU => 120 3
-  78 00 63
-PC 0066, Recognised INA => 102 1
+PC 005a, Recognised JEQ => 113 3
+  71 00 60
+PC 005d, Recognised JMP => 112 3
+  70 00 39
+PC 0060, Recognised JIU => 120 3
+  78 00 60
+PC 0063, Recognised INA => 102 1
   66
-PC 0067, Recognised JOU => 119 3
-  77 00 67
-PC 006a, Recognised OUT_A => 100 1
+PC 0064, Recognised JOU => 119 3
+  77 00 64
+PC 0067, Recognised OUT_A => 100 1
   64
-PC 006b, Recognised LCB => 97 2
+PC 0068, Recognised LCB => 97 2
   61 0a
-PC 006d, Recognised JEQ => 113 3
-  71 00 78
-PC 0070, Recognised LCB => 97 2
+PC 006a, Recognised JEQ => 113 3
+  71 00 75
+PC 006d, Recognised LCB => 97 2
   61 0d
-PC 0072, Recognised JEQ => 113 3
-  71 00 78
-PC 0075, Recognised JMP => 112 3
-  70 00 63
-PC 0078, Recognised JSR => 240 7
-JSR: for function at 0x01e2, store return address at 0xfffe
+PC 006f, Recognised JEQ => 113 3
+  71 00 75
+PC 0072, Recognised JMP => 112 3
+  70 00 60
+PC 0075, Recognised JSR => 240 7
+JSR: for function at 0x01df, store return address at 0xfffe
   f0 ff fe
-PC 007f, Recognised JOU => 119 3
-  77 00 7f
-PC 0082, Recognised OUT => 104 2
+PC 007c, Recognised JOU => 119 3
+  77 00 7c
+PC 007f, Recognised OUT => 104 2
   68 0a
-PC 0084, Recognised LDA => 98 3
+PC 0081, Recognised LDA => 98 3
   62 fd 06
-PC 0087, Recognised LCB => 97 2
+PC 0084, Recognised LCB => 97 2
   61 3f
-PC 0089, Recognised JEQ => 113 3
-  71 00 c4
-PC 008c, Recognised LCB => 97 2
+PC 0086, Recognised JEQ => 113 3
+  71 00 c1
+PC 0089, Recognised LCB => 97 2
   61 44
-PC 008e, Recognised JEQ => 113 3
-  71 00 e3
-PC 0091, Recognised LCB => 97 2
+PC 008b, Recognised JEQ => 113 3
+  71 00 e0
+PC 008e, Recognised LCB => 97 2
   61 64
-PC 0093, Recognised JEQ => 113 3
-  71 00 e3
-PC 0096, Recognised LCB => 97 2
+PC 0090, Recognised JEQ => 113 3
+  71 00 e0
+PC 0093, Recognised LCB => 97 2
   61 52
-PC 0098, Recognised JEQ => 113 3
-  71 00 d8
-PC 009b, Recognised LCB => 97 2
+PC 0095, Recognised JEQ => 113 3
+  71 00 d5
+PC 0098, Recognised LCB => 97 2
   61 72
-PC 009d, Recognised JEQ => 113 3
-  71 00 d8
-PC 00a0, Recognised LCB => 97 2
+PC 009a, Recognised JEQ => 113 3
+  71 00 d5
+PC 009d, Recognised LCB => 97 2
   61 43
-PC 00a2, Recognised JEQ => 113 3
-  71 01 50
-PC 00a5, Recognised LCB => 97 2
+PC 009f, Recognised JEQ => 113 3
+  71 01 4d
+PC 00a2, Recognised LCB => 97 2
   61 63
-PC 00a7, Recognised JEQ => 113 3
-  71 01 50
-PC 00aa, Recognised LCB => 97 2
+PC 00a4, Recognised JEQ => 113 3
+  71 01 4d
+PC 00a7, Recognised LCB => 97 2
   61 58
-PC 00ac, Recognised JEQ => 113 3
-  71 00 c1
-PC 00af, Recognised LCB => 97 2
+PC 00a9, Recognised JEQ => 113 3
+  71 00 be
+PC 00ac, Recognised LCB => 97 2
   61 78
-PC 00b1, Recognised JEQ => 113 3
-  71 00 c1
-PC 00b4, Recognised JOU => 119 3
-  77 00 b4
-PC 00b7, Recognised OUT => 104 2
+PC 00ae, Recognised JEQ => 113 3
+  71 00 be
+PC 00b1, Recognised JOU => 119 3
+  77 00 b1
+PC 00b4, Recognised OUT => 104 2
   68 0d
-PC 00b9, Recognised JOU => 119 3
-  77 00 b9
-PC 00bc, Recognised OUT => 104 2
+PC 00b6, Recognised JOU => 119 3
+  77 00 b6
+PC 00b9, Recognised OUT => 104 2
   68 0a
+PC 00bb, Recognised JMP => 112 3
+  70 00 15
 PC 00be, Recognised JMP => 112 3
-  70 00 18
-PC 00c1, Recognised JMP => 112 3
   70 00 00
-PC 00c4, Recognised LHA => 260 2
+PC 00c1, Recognised LHA => 260 2
   60 07
-PC 00c6, Recognised STO_A => 65 3
+PC 00c3, Recognised STO_A => 65 3
   41 fd 04
-PC 00c9, Recognised LCA => 96 2
+PC 00c6, Recognised LCA => 96 2
   60 3a
-PC 00cb, Recognised STO_A => 65 3
+PC 00c8, Recognised STO_A => 65 3
   41 fd 05
-PC 00ce, Recognised JSR => 240 7
-JSR: for function at 0x01cc, store return address at 0xfffc
+PC 00cb, Recognised JSR => 240 7
+JSR: for function at 0x01c9, store return address at 0xfffc
   f0 ff fc
-PC 00d5, Recognised JMP => 112 3
-  70 00 18
-PC 00d8, Recognised LCB => 97 2
+PC 00d2, Recognised JMP => 112 3
+  70 00 15
+PC 00d5, Recognised LCB => 97 2
   61 70
-PC 00da, Recognised STO_B => 66 3
+PC 00d7, Recognised STO_B => 66 3
   42 fd 08
-PC 00dd, Recognised JMP => 112 3
+PC 00da, Recognised JMP => 112 3
   70 fd 08
-PC 00e0, Recognised JMP => 112 3
-  70 00 18
-PC 00e3, Recognised LCB => 97 2
+PC 00dd, Recognised JMP => 112 3
+  70 00 15
+PC 00e0, Recognised LCB => 97 2
   61 0f
-PC 00e5, Recognised STO_B => 66 3
+PC 00e2, Recognised STO_B => 66 3
   42 fd 0b
-PC 00e8, Recognised LDB => 99 3
+PC 00e5, Recognised LDB => 99 3
   63 fd 09
-PC 00eb, Recognised STO_B => 66 3
+PC 00e8, Recognised STO_B => 66 3
   42 fd 00
-PC 00ee, Recognised JSR => 240 7
-JSR: for function at 0x0272, store return address at 0xfffa
+PC 00eb, Recognised JSR => 240 7
+JSR: for function at 0x026f, store return address at 0xfffa
   f0 ff fa
-PC 00f5, Recognised LDB => 99 3
+PC 00f2, Recognised LDB => 99 3
   63 fd 0a
-PC 00f8, Recognised STO_B => 66 3
+PC 00f5, Recognised STO_B => 66 3
   42 fd 00
-PC 00fb, Recognised JSR => 240 7
-JSR: for function at 0x0272, store return address at 0xfffa
+PC 00f8, Recognised JSR => 240 7
+JSR: for function at 0x026f, store return address at 0xfffa
   f0 ff fa
-PC 0102, Recognised JOU => 119 3
-  77 01 02
-PC 0105, Recognised OUT => 104 2
+PC 00ff, Recognised JOU => 119 3
+  77 00 ff
+PC 0102, Recognised OUT => 104 2
   68 3a
-PC 0107, Recognised JOU => 119 3
-  77 01 07
-PC 010a, Recognised OUT => 104 2
+PC 0104, Recognised JOU => 119 3
+  77 01 04
+PC 0107, Recognised OUT => 104 2
   68 20
-PC 010c, Recognised LIA => 242 3
+PC 0109, Recognised LIA => 242 3
   f2 fd 09
-PC 010f, Recognised STO_A => 65 3
+PC 010c, Recognised STO_A => 65 3
   41 fd 00
-PC 0112, Recognised JSR => 240 7
-JSR: for function at 0x0272, store return address at 0xfffa
+PC 010f, Recognised JSR => 240 7
+JSR: for function at 0x026f, store return address at 0xfffa
   f0 ff fa
-PC 0119, Recognised JOU => 119 3
-  77 01 19
-PC 011c, Recognised OUT => 104 2
+PC 0116, Recognised JOU => 119 3
+  77 01 16
+PC 0119, Recognised OUT => 104 2
   68 20
-PC 011e, Recognised LDB => 99 3
+PC 011b, Recognised LDB => 99 3
   63 fd 0b
-PC 0121, Recognised LDB_B-1 => 40 1
+PC 011e, Recognised LDB_B-1 => 40 1
   28
-PC 0122, Recognised JBN => 124 3
-  7c 01 31
-PC 0125, Recognised STO_B => 66 3
+PC 011f, Recognised JBN => 124 3
+  7c 01 2e
+PC 0122, Recognised STO_B => 66 3
   42 fd 0b
-PC 0128, Recognised LDB => 99 3
+PC 0125, Recognised LDB => 99 3
   63 fd 0a
-PC 012b, Recognised STO_B+1 => 70 3
+PC 0128, Recognised STO_B+1 => 70 3
   46 fd 0a
-PC 012e, Recognised JMP => 112 3
-  70 01 0c
-PC 0131, Recognised JOU => 119 3
-  77 01 31
-PC 0134, Recognised OUT => 104 2
+PC 012b, Recognised JMP => 112 3
+  70 01 09
+PC 012e, Recognised JOU => 119 3
+  77 01 2e
+PC 0131, Recognised OUT => 104 2
   68 0d
-PC 0136, Recognised JOU => 119 3
-  77 01 36
-PC 0139, Recognised OUT => 104 2
+PC 0133, Recognised JOU => 119 3
+  77 01 33
+PC 0136, Recognised OUT => 104 2
   68 0a
-PC 013b, Recognised LDB => 99 3
+PC 0138, Recognised LDB => 99 3
   63 fd 0a
-PC 013e, Recognised STO_B+1 => 70 3
+PC 013b, Recognised STO_B+1 => 70 3
   46 fd 0a
-PC 0141, Recognised TST_B+1_JC => 132 3
-  84 01 47
-PC 0144, Recognised JMP => 112 3
-  70 00 18
-PC 0147, Recognised LDB => 99 3
+PC 013e, Recognised TST_B+1_JC => 132 3
+  84 01 44
+PC 0141, Recognised JMP => 112 3
+  70 00 15
+PC 0144, Recognised LDB => 99 3
   63 fd 09
-PC 014a, Recognised STO_B+1 => 70 3
+PC 0147, Recognised STO_B+1 => 70 3
   46 fd 09
-PC 014d, Recognised JMP => 112 3
-  70 00 18
-PC 0150, Recognised LHA => 260 2
+PC 014a, Recognised JMP => 112 3
+  70 00 15
+PC 014d, Recognised LHA => 260 2
   60 07
-PC 0152, Recognised STO_A => 65 3
+PC 014f, Recognised STO_A => 65 3
   41 fd 04
-PC 0155, Recognised LCA => 96 2
+PC 0152, Recognised LCA => 96 2
   60 6a
-PC 0157, Recognised STO_A => 65 3
+PC 0154, Recognised STO_A => 65 3
   41 fd 05
-PC 015a, Recognised JSR => 240 7
-JSR: for function at 0x01cc, store return address at 0xfffc
+PC 0157, Recognised JSR => 240 7
+JSR: for function at 0x01c9, store return address at 0xfffc
   f0 ff fc
-PC 0161, Recognised JIU => 120 3
-  78 01 61
-PC 0164, Recognised INA => 102 1
+PC 015e, Recognised JIU => 120 3
+  78 01 5e
+PC 0161, Recognised INA => 102 1
   66
-PC 0165, Recognised JOU => 119 3
-  77 01 65
-PC 0168, Recognised OUT_A => 100 1
+PC 0162, Recognised JOU => 119 3
+  77 01 62
+PC 0165, Recognised OUT_A => 100 1
   64
-PC 0169, Recognised LCB => 97 2
+PC 0166, Recognised LCB => 97 2
   61 20
-PC 016b, Recognised JEQ => 113 3
-  71 01 61
-PC 016e, Recognised LCB => 97 2
+PC 0168, Recognised JEQ => 113 3
+  71 01 5e
+PC 016b, Recognised LCB => 97 2
   61 0a
-PC 0170, Recognised JEQ => 113 3
-  71 01 61
-PC 0173, Recognised LCB => 97 2
+PC 016d, Recognised JEQ => 113 3
+  71 01 5e
+PC 0170, Recognised LCB => 97 2
   61 0d
-PC 0175, Recognised JEQ => 113 3
-  71 01 61
-PC 0178, Recognised LCB => 97 2
+PC 0172, Recognised JEQ => 113 3
+  71 01 5e
+PC 0175, Recognised LCB => 97 2
   61 5a
-PC 017a, Recognised JEQ => 113 3
-  71 00 b4
-PC 017d, Recognised LCB => 97 2
+PC 0177, Recognised JEQ => 113 3
+  71 00 b1
+PC 017a, Recognised LCB => 97 2
   61 7a
-PC 017f, Recognised JEQ => 113 3
-  71 00 b4
-PC 0182, Recognised STO_A => 65 3
+PC 017c, Recognised JEQ => 113 3
+  71 00 b1
+PC 017f, Recognised STO_A => 65 3
   41 fd 00
-PC 0185, Recognised JIU => 120 3
-  78 01 85
-PC 0188, Recognised INA => 102 1
+PC 0182, Recognised JIU => 120 3
+  78 01 82
+PC 0185, Recognised INA => 102 1
   66
-PC 0189, Recognised JOU => 119 3
-  77 01 89
-PC 018c, Recognised OUT_A => 100 1
+PC 0186, Recognised JOU => 119 3
+  77 01 86
+PC 0189, Recognised OUT_A => 100 1
   64
-PC 018d, Recognised LCB => 97 2
+PC 018a, Recognised LCB => 97 2
   61 20
-PC 018f, Recognised JEQ => 113 3
-  71 01 61
-PC 0192, Recognised LCB => 97 2
+PC 018c, Recognised JEQ => 113 3
+  71 01 5e
+PC 018f, Recognised LCB => 97 2
   61 0a
-PC 0194, Recognised JEQ => 113 3
-  71 01 61
-PC 0197, Recognised LCB => 97 2
+PC 0191, Recognised JEQ => 113 3
+  71 01 5e
+PC 0194, Recognised LCB => 97 2
   61 0d
-PC 0199, Recognised JEQ => 113 3
-  71 01 61
-PC 019c, Recognised LCB => 97 2
+PC 0196, Recognised JEQ => 113 3
+  71 01 5e
+PC 0199, Recognised LCB => 97 2
   61 5a
-PC 019e, Recognised JEQ => 113 3
-  71 00 b4
-PC 01a1, Recognised LCB => 97 2
+PC 019b, Recognised JEQ => 113 3
+  71 00 b1
+PC 019e, Recognised LCB => 97 2
   61 7a
-PC 01a3, Recognised JEQ => 113 3
-  71 00 b4
-PC 01a6, Recognised STO_A => 65 3
+PC 01a0, Recognised JEQ => 113 3
+  71 00 b1
+PC 01a3, Recognised STO_A => 65 3
   41 fd 01
-PC 01a9, Recognised JSR => 240 7
-JSR: for function at 0x0241, store return address at 0xfff8
+PC 01a6, Recognised JSR => 240 7
+JSR: for function at 0x023e, store return address at 0xfff8
   f0 ff f8
-PC 01b0, Recognised LDA => 98 3
+PC 01ad, Recognised LDA => 98 3
   62 fd 06
-PC 01b3, Recognised SIA => 244 4
+PC 01b0, Recognised SIA => 244 4
   f4 fd 09
-PC 01b7, Recognised LDB => 99 3
+PC 01b4, Recognised LDB => 99 3
   63 fd 0a
-PC 01ba, Recognised STO_B+1 => 70 3
+PC 01b7, Recognised STO_B+1 => 70 3
   46 fd 0a
-PC 01bd, Recognised TST_B+1_JC => 132 3
-  84 01 c3
-PC 01c0, Recognised JMP => 112 3
-  70 01 61
-PC 01c3, Recognised LDB => 99 3
+PC 01ba, Recognised TST_B+1_JC => 132 3
+  84 01 c0
+PC 01bd, Recognised JMP => 112 3
+  70 01 5e
+PC 01c0, Recognised LDB => 99 3
   63 fd 09
-PC 01c6, Recognised STO_B+1 => 70 3
+PC 01c3, Recognised STO_B+1 => 70 3
   46 fd 09
-PC 01c9, Recognised JMP => 112 3
-  70 01 61
-PC 01cc, Recognised LIA => 242 3
+PC 01c6, Recognised JMP => 112 3
+  70 01 5e
+PC 01c9, Recognised LIA => 242 3
   f2 fd 04
-PC 01cf, Recognised JAZ => 121 3
-  79 01 df
-PC 01d2, Recognised JOU => 119 3
-  77 01 d2
-PC 01d5, Recognised OUT_A => 100 1
+PC 01cc, Recognised JAZ => 121 3
+  79 01 dc
+PC 01cf, Recognised JOU => 119 3
+  77 01 cf
+PC 01d2, Recognised OUT_A => 100 1
   64
-PC 01d6, Recognised LDB => 99 3
+PC 01d3, Recognised LDB => 99 3
   63 fd 05
-PC 01d9, Recognised STO_B+1 => 70 3
+PC 01d6, Recognised STO_B+1 => 70 3
   46 fd 05
-PC 01dc, Recognised JMP => 112 3
-  70 01 cc
-PC 01df, Recognised RTS => 241 3
-RTS: for function at 0x01cc, return address is 0xfffc
+PC 01d9, Recognised JMP => 112 3
+  70 01 c9
+PC 01dc, Recognised RTS => 241 3
+RTS: for function at 0x01c9, return address is 0xfffc
   f1 ff fc
-PC 01e2, Recognised LDB => 99 3
+PC 01df, Recognised LDB => 99 3
   63 fd 00
-PC 01e5, Recognised LCA => 96 2
+PC 01e2, Recognised LCA => 96 2
   60 3f
-PC 01e7, Recognised LDA_A+B => 9 1
+PC 01e4, Recognised LDA_A+B => 9 1
   09
-PC 01e8, Recognised JAN => 123 3
-  7b 01 ef
-PC 01eb, Recognised LDA_B => 2 1
+PC 01e5, Recognised JAN => 123 3
+  7b 01 ec
+PC 01e8, Recognised LDA_B => 2 1
   02
-PC 01ec, Recognised JMP => 112 3
-  70 01 f2
+PC 01e9, Recognised JMP => 112 3
+  70 01 ef
+PC 01ec, Recognised LCB => 97 2
+  61 0a
+PC 01ee, Recognised LDA_A+B => 9 1
+  09
 PC 01ef, Recognised LCB => 97 2
-  61 0a
-PC 01f1, Recognised LDA_A+B => 9 1
-  09
-PC 01f2, Recognised LCB => 97 2
   61 04
-PC 01f4, Recognised STO_A<<B => 84 3
+PC 01f1, Recognised STO_A<<B => 84 3
   54 fd 09
-PC 01f7, Recognised LDB => 99 3
+PC 01f4, Recognised LDB => 99 3
   63 fd 01
-PC 01fa, Recognised LCA => 96 2
+PC 01f7, Recognised LCA => 96 2
   60 3f
-PC 01fc, Recognised LDA_A+B => 9 1
+PC 01f9, Recognised LDA_A+B => 9 1
   09
-PC 01fd, Recognised JAN => 123 3
-  7b 02 04
-PC 0200, Recognised LDA_B => 2 1
+PC 01fa, Recognised JAN => 123 3
+  7b 02 01
+PC 01fd, Recognised LDA_B => 2 1
   02
-PC 0201, Recognised JMP => 112 3
-  70 02 07
+PC 01fe, Recognised JMP => 112 3
+  70 02 04
+PC 0201, Recognised LCB => 97 2
+  61 0a
+PC 0203, Recognised LDA_A+B => 9 1
+  09
 PC 0204, Recognised LCB => 97 2
-  61 0a
-PC 0206, Recognised LDA_A+B => 9 1
-  09
-PC 0207, Recognised LCB => 97 2
   61 0f
-PC 0209, Recognised LDB_A&B => 57 1
+PC 0206, Recognised LDB_A&B => 57 1
   39
-PC 020a, Recognised LDA => 98 3
+PC 0207, Recognised LDA => 98 3
   62 fd 09
-PC 020d, Recognised STO_A|B => 90 3
+PC 020a, Recognised STO_A|B => 90 3
   5a fd 09
-PC 0210, Recognised LDB => 99 3
+PC 020d, Recognised LDB => 99 3
   63 fd 02
-PC 0213, Recognised LCA => 96 2
+PC 0210, Recognised LCA => 96 2
   60 3f
-PC 0215, Recognised LDA_A+B => 9 1
+PC 0212, Recognised LDA_A+B => 9 1
   09
-PC 0216, Recognised JAN => 123 3
-  7b 02 1d
-PC 0219, Recognised LDA_B => 2 1
+PC 0213, Recognised JAN => 123 3
+  7b 02 1a
+PC 0216, Recognised LDA_B => 2 1
   02
-PC 021a, Recognised JMP => 112 3
-  70 02 20
+PC 0217, Recognised JMP => 112 3
+  70 02 1d
+PC 021a, Recognised LCB => 97 2
+  61 0a
+PC 021c, Recognised LDA_A+B => 9 1
+  09
 PC 021d, Recognised LCB => 97 2
-  61 0a
-PC 021f, Recognised LDA_A+B => 9 1
-  09
-PC 0220, Recognised LCB => 97 2
   61 04
-PC 0222, Recognised STO_A<<B => 84 3
+PC 021f, Recognised STO_A<<B => 84 3
   54 fd 0a
-PC 0225, Recognised LDB => 99 3
+PC 0222, Recognised LDB => 99 3
   63 fd 03
-PC 0228, Recognised LCA => 96 2
+PC 0225, Recognised LCA => 96 2
   60 3f
-PC 022a, Recognised LDA_A+B => 9 1
+PC 0227, Recognised LDA_A+B => 9 1
   09
-PC 022b, Recognised JAN => 123 3
-  7b 02 32
-PC 022e, Recognised LDA_B => 2 1
+PC 0228, Recognised JAN => 123 3
+  7b 02 2f
+PC 022b, Recognised LDA_B => 2 1
   02
-PC 022f, Recognised JMP => 112 3
-  70 02 35
+PC 022c, Recognised JMP => 112 3
+  70 02 32
+PC 022f, Recognised LCB => 97 2
+  61 0a
+PC 0231, Recognised LDA_A+B => 9 1
+  09
 PC 0232, Recognised LCB => 97 2
-  61 0a
-PC 0234, Recognised LDA_A+B => 9 1
-  09
-PC 0235, Recognised LCB => 97 2
   61 0f
-PC 0237, Recognised LDB_A&B => 57 1
+PC 0234, Recognised LDB_A&B => 57 1
   39
-PC 0238, Recognised LDA => 98 3
+PC 0235, Recognised LDA => 98 3
   62 fd 0a
-PC 023b, Recognised STO_A|B => 90 3
+PC 0238, Recognised STO_A|B => 90 3
   5a fd 0a
-PC 023e, Recognised RTS => 241 3
-RTS: for function at 0x01e2, return address is 0xfffe
+PC 023b, Recognised RTS => 241 3
+RTS: for function at 0x01df, return address is 0xfffe
   f1 ff fe
-PC 0241, Recognised LDB => 99 3
+PC 023e, Recognised LDB => 99 3
   63 fd 00
-PC 0244, Recognised LCA => 96 2
+PC 0241, Recognised LCA => 96 2
   60 3f
-PC 0246, Recognised LDA_A+B => 9 1
+PC 0243, Recognised LDA_A+B => 9 1
   09
-PC 0247, Recognised JAN => 123 3
-  7b 02 4e
-PC 024a, Recognised LDA_B => 2 1
+PC 0244, Recognised JAN => 123 3
+  7b 02 4b
+PC 0247, Recognised LDA_B => 2 1
   02
-PC 024b, Recognised JMP => 112 3
-  70 02 51
+PC 0248, Recognised JMP => 112 3
+  70 02 4e
+PC 024b, Recognised LCB => 97 2
+  61 0a
+PC 024d, Recognised LDA_A+B => 9 1
+  09
 PC 024e, Recognised LCB => 97 2
-  61 0a
-PC 0250, Recognised LDA_A+B => 9 1
-  09
-PC 0251, Recognised LCB => 97 2
   61 04
-PC 0253, Recognised STO_A<<B => 84 3
+PC 0250, Recognised STO_A<<B => 84 3
   54 fd 06
-PC 0256, Recognised LDB => 99 3
+PC 0253, Recognised LDB => 99 3
   63 fd 01
-PC 0259, Recognised LCA => 96 2
+PC 0256, Recognised LCA => 96 2
   60 3f
-PC 025b, Recognised LDA_A+B => 9 1
+PC 0258, Recognised LDA_A+B => 9 1
   09
-PC 025c, Recognised JAN => 123 3
-  7b 02 63
-PC 025f, Recognised LDA_B => 2 1
+PC 0259, Recognised JAN => 123 3
+  7b 02 60
+PC 025c, Recognised LDA_B => 2 1
   02
-PC 0260, Recognised JMP => 112 3
-  70 02 66
+PC 025d, Recognised JMP => 112 3
+  70 02 63
+PC 0260, Recognised LCB => 97 2
+  61 0a
+PC 0262, Recognised LDA_A+B => 9 1
+  09
 PC 0263, Recognised LCB => 97 2
-  61 0a
-PC 0265, Recognised LDA_A+B => 9 1
-  09
-PC 0266, Recognised LCB => 97 2
   61 0f
-PC 0268, Recognised LDB_A&B => 57 1
+PC 0265, Recognised LDB_A&B => 57 1
   39
-PC 0269, Recognised LDA => 98 3
+PC 0266, Recognised LDA => 98 3
   62 fd 06
-PC 026c, Recognised STO_A|B => 90 3
+PC 0269, Recognised STO_A|B => 90 3
   5a fd 06
-PC 026f, Recognised RTS => 241 3
-RTS: for function at 0x0241, return address is 0xfff8
+PC 026c, Recognised RTS => 241 3
+RTS: for function at 0x023e, return address is 0xfff8
   f1 ff f8
-PC 0272, Recognised LDA => 98 3
+PC 026f, Recognised LDA => 98 3
   62 fd 00
-PC 0275, Recognised LCB => 97 2
+PC 0272, Recognised LCB => 97 2
   61 04
-PC 0277, Recognised LDA_A>>B => 21 1
+PC 0274, Recognised LDA_A>>B => 21 1
   15
-PC 0278, Recognised LCB => 97 2
+PC 0275, Recognised LCB => 97 2
   61 09
-PC 027a, Recognised JGT => 115 3
-  73 02 82
-PC 027d, Recognised LCB => 97 2
+PC 0277, Recognised JGT => 115 3
+  73 02 7f
+PC 027a, Recognised LCB => 97 2
   61 30
-PC 027f, Recognised JMP => 112 3
-  70 02 84
-PC 0282, Recognised LCB => 97 2
+PC 027c, Recognised JMP => 112 3
+  70 02 81
+PC 027f, Recognised LCB => 97 2
   61 37
-PC 0284, Recognised LDA_A+B => 9 1
+PC 0281, Recognised LDA_A+B => 9 1
   09
-PC 0285, Recognised JOU => 119 3
-  77 02 85
-PC 0288, Recognised OUT_A => 100 1
+PC 0282, Recognised JOU => 119 3
+  77 02 82
+PC 0285, Recognised OUT_A => 100 1
   64
-PC 0289, Recognised LDA => 98 3
+PC 0286, Recognised LDA => 98 3
   62 fd 00
-PC 028c, Recognised LCB => 97 2
+PC 0289, Recognised LCB => 97 2
   61 0f
-PC 028e, Recognised LDA_A&B => 25 1
+PC 028b, Recognised LDA_A&B => 25 1
   19
-PC 028f, Recognised LCB => 97 2
+PC 028c, Recognised LCB => 97 2
   61 09
-PC 0291, Recognised JGT => 115 3
-  73 02 99
-PC 0294, Recognised LCB => 97 2
+PC 028e, Recognised JGT => 115 3
+  73 02 96
+PC 0291, Recognised LCB => 97 2
   61 30
-PC 0296, Recognised JMP => 112 3
-  70 02 9b
-PC 0299, Recognised LCB => 97 2
+PC 0293, Recognised JMP => 112 3
+  70 02 98
+PC 0296, Recognised LCB => 97 2
   61 37
-PC 029b, Recognised LDA_A+B => 9 1
+PC 0298, Recognised LDA_A+B => 9 1
   09
-PC 029c, Recognised JOU => 119 3
-  77 02 9c
-PC 029f, Recognised OUT_A => 100 1
+PC 0299, Recognised JOU => 119 3
+  77 02 99
+PC 029c, Recognised OUT_A => 100 1
   64
-PC 02a0, Recognised RTS => 241 3
-RTS: for function at 0x0272, return address is 0xfffa
+PC 029d, Recognised RTS => 241 3
+RTS: for function at 0x026f, return address is 0xfffa
   f1 ff fa
-PC 02a3, Recognised STO_0 => 64 3
+PC 02a0, Recognised STO_0 => 64 3
   40 fd 0d
-PC 02a6, Recognised STO_0 => 64 3
+PC 02a3, Recognised STO_0 => 64 3
   40 fd 0e
-PC 02a9, Recognised LDA => 98 3
+PC 02a6, Recognised LDA => 98 3
   62 fd 12
-PC 02ac, Recognised SIA => 244 4
+PC 02a9, Recognised SIA => 244 4
   f4 fd 0d
-PC 02b0, Recognised LDA => 98 3
+PC 02ad, Recognised LDA => 98 3
   62 fd 0e
-PC 02b3, Recognised STO_A+1 => 69 3
+PC 02b0, Recognised STO_A+1 => 69 3
   45 fd 0e
-PC 02b6, Recognised LCB => 97 2
+PC 02b3, Recognised LCB => 97 2
   61 a0
-PC 02b8, Recognised JNE => 114 3
-  72 02 a9
-PC 02bb, Recognised STO_0 => 64 3
+PC 02b5, Recognised JNE => 114 3
+  72 02 a6
+PC 02b8, Recognised STO_0 => 64 3
   40 fd 0e
-PC 02be, Recognised LDA => 98 3
+PC 02bb, Recognised LDA => 98 3
   62 fd 0d
-PC 02c1, Recognised STO_A+1 => 69 3
+PC 02be, Recognised STO_A+1 => 69 3
   45 fd 0d
-PC 02c4, Recognised LCB => 97 2
+PC 02c1, Recognised LCB => 97 2
   61 78
-PC 02c6, Recognised JNE => 114 3
-  72 02 a9
-PC 02c9, Recognised RTS => 241 3
-RTS: for function at 0x02a3, return address is 0xfff6
+PC 02c3, Recognised JNE => 114 3
+  72 02 a6
+PC 02c6, Recognised RTS => 241 3
+RTS: for function at 0x02a0, return address is 0xfff6
   f1 ff f6
-PC 02cc, Recognised LDA => 98 3
+PC 02c9, Recognised LDA => 98 3
   62 fd 11
-PC 02cf, Recognised LCB => 97 2
+PC 02cc, Recognised LCB => 97 2
   61 20
-PC 02d1, Recognised JLT => 116 3
-  74 03 61
-PC 02d4, Recognised LDA_A-B => 11 1
+PC 02ce, Recognised JLT => 116 3
+  74 03 5e
+PC 02d1, Recognised LDA_A-B => 11 1
   0b
-PC 02d5, Recognised LCB => 97 2
+PC 02d2, Recognised LCB => 97 2
   61 07
-PC 02d7, Recognised STO_A*B => 81 3
+PC 02d4, Recognised STO_A*B => 81 3
   51 fd 15
-PC 02da, Recognised LDA_A*BHI => 16 1
+PC 02d7, Recognised LDA_A*BHI => 16 1
   10
-PC 02db, Recognised LHB => 259 2
+PC 02d8, Recognised LHB => 259 2
   61 04
-PC 02dd, Recognised STO_A+B => 73 3
+PC 02da, Recognised STO_A+B => 73 3
   49 fd 14
-PC 02e0, Recognised LDA => 98 3
+PC 02dd, Recognised LDA => 98 3
   62 fd 10
-PC 02e3, Recognised LCB => 97 2
+PC 02e0, Recognised LCB => 97 2
   61 06
-PC 02e5, Recognised STO_A*B => 81 3
+PC 02e2, Recognised STO_A*B => 81 3
   51 fd 18
-PC 02e8, Recognised LDA => 98 3
+PC 02e5, Recognised LDA => 98 3
   62 fd 0f
-PC 02eb, Recognised LCB => 97 2
+PC 02e8, Recognised LCB => 97 2
   61 08
-PC 02ed, Recognised STO_A*B => 81 3
+PC 02ea, Recognised STO_A*B => 81 3
   51 fd 17
-PC 02f0, Recognised LCA => 96 2
+PC 02ed, Recognised LCA => 96 2
   60 07
-PC 02f2, Recognised STO_A => 65 3
+PC 02ef, Recognised STO_A => 65 3
   41 fd 1a
-PC 02f5, Recognised LCA => 96 2
+PC 02f2, Recognised LCA => 96 2
   60 06
-PC 02f7, Recognised STO_A => 65 3
+PC 02f4, Recognised STO_A => 65 3
   41 fd 19
-PC 02fa, Recognised LIA => 242 3
+PC 02f7, Recognised LIA => 242 3
   f2 fd 14
-PC 02fd, Recognised STO_A => 65 3
+PC 02fa, Recognised STO_A => 65 3
   41 fd 1b
-PC 0300, Recognised LDA => 98 3
+PC 02fd, Recognised LDA => 98 3
   62 fd 13
-PC 0303, Recognised LDB => 99 3
+PC 0300, Recognised LDB => 99 3
   63 fd 1b
-PC 0306, Recognised JBN => 124 3
-  7c 03 0c
-PC 0309, Recognised LDA => 98 3
+PC 0303, Recognised JBN => 124 3
+  7c 03 09
+PC 0306, Recognised LDA => 98 3
   62 fd 12
-PC 030c, Recognised SIA => 244 4
+PC 0309, Recognised SIA => 244 4
   f4 fd 17
-PC 0310, Recognised LDA => 98 3
+PC 030d, Recognised LDA => 98 3
   62 fd 1b
-PC 0313, Recognised LCB => 97 2
+PC 0310, Recognised LCB => 97 2
   61 01
-PC 0315, Recognised STO_AROLB => 87 3
+PC 0312, Recognised STO_AROLB => 87 3
   57 fd 1b
-PC 0318, Recognised LDB => 99 3
+PC 0315, Recognised LDB => 99 3
   63 fd 19
-PC 031b, Recognised LDB_B-1 => 40 1
+PC 0318, Recognised LDB_B-1 => 40 1
   28
-PC 031c, Recognised STO_B => 66 3
+PC 0319, Recognised STO_B => 66 3
   42 fd 19
-PC 031f, Recognised JBZ => 122 3
-  7a 03 2b
-PC 0322, Recognised LDA => 98 3
+PC 031c, Recognised JBZ => 122 3
+  7a 03 28
+PC 031f, Recognised LDA => 98 3
   62 fd 18
-PC 0325, Recognised STO_A+1 => 69 3
+PC 0322, Recognised STO_A+1 => 69 3
   45 fd 18
-PC 0328, Recognised JMP => 112 3
-  70 03 00
-PC 032b, Recognised LDA => 98 3
+PC 0325, Recognised JMP => 112 3
+  70 02 fd
+PC 0328, Recognised LDA => 98 3
   62 fd 15
-PC 032e, Recognised STO_A+1 => 69 3
+PC 032b, Recognised STO_A+1 => 69 3
   45 fd 15
-PC 0331, Recognised TST_A+1_JC => 131 3
-  83 03 58
-PC 0334, Recognised LDA => 98 3
+PC 032e, Recognised TST_A+1_JC => 131 3
+  83 03 55
+PC 0331, Recognised LDA => 98 3
   62 fd 18
-PC 0337, Recognised LCB => 97 2
+PC 0334, Recognised LCB => 97 2
   61 05
-PC 0339, Recognised STO_A-B => 75 3
+PC 0336, Recognised STO_A-B => 75 3
   4b fd 18
-PC 033c, Recognised LDA => 98 3
+PC 0339, Recognised LDA => 98 3
   62 fd 17
-PC 033f, Recognised STO_A+1 => 69 3
+PC 033c, Recognised STO_A+1 => 69 3
   45 fd 17
-PC 0342, Recognised LDA => 98 3
+PC 033f, Recognised LDA => 98 3
   62 fd 1a
-PC 0345, Recognised LDA_A-1 => 7 1
+PC 0342, Recognised LDA_A-1 => 7 1
   07
-PC 0346, Recognised STO_A => 65 3
+PC 0343, Recognised STO_A => 65 3
   41 fd 1a
-PC 0349, Recognised JAZ => 121 3
-  79 03 4f
-PC 034c, Recognised JMP => 112 3
-  70 02 f5
-PC 034f, Recognised LDA => 98 3
+PC 0346, Recognised JAZ => 121 3
+  79 03 4c
+PC 0349, Recognised JMP => 112 3
+  70 02 f2
+PC 034c, Recognised LDA => 98 3
   62 fd 10
-PC 0352, Recognised STO_A+1 => 69 3
+PC 034f, Recognised STO_A+1 => 69 3
   45 fd 10
-PC 0355, Recognised RTS => 241 3
-RTS: for function at 0x02cc, return address is 0xfff4
+PC 0352, Recognised RTS => 241 3
+RTS: for function at 0x02c9, return address is 0xfff4
   f1 ff f4
-PC 0358, Recognised LDA => 98 3
+PC 0355, Recognised LDA => 98 3
   62 fd 14
-PC 035b, Recognised STO_A+1 => 69 3
+PC 0358, Recognised STO_A+1 => 69 3
   45 fd 14
-PC 035e, Recognised JMP => 112 3
-  70 03 34
-PC 0361, Recognised LDA => 98 3
+PC 035b, Recognised JMP => 112 3
+  70 03 31
+PC 035e, Recognised LDA => 98 3
   62 fd 11
-PC 0364, Recognised LCB => 97 2
+PC 0361, Recognised LCB => 97 2
   61 0a
-PC 0366, Recognised JEQ => 113 3
-  71 03 6c
-PC 0369, Recognised RTS => 241 3
-RTS: for function at 0x02cc, return address is 0xfff4
+PC 0363, Recognised JEQ => 113 3
+  71 03 69
+PC 0366, Recognised RTS => 241 3
+RTS: for function at 0x02c9, return address is 0xfff4
   f1 ff f4
-PC 036c, Recognised STO_0 => 64 3
+PC 0369, Recognised STO_0 => 64 3
   40 fd 10
-PC 036f, Recognised LDA => 98 3
+PC 036c, Recognised LDA => 98 3
   62 fd 0f
-PC 0372, Recognised STO_A+1 => 69 3
+PC 036f, Recognised STO_A+1 => 69 3
   45 fd 0f
-PC 0375, Recognised LDA => 98 3
+PC 0372, Recognised LDA => 98 3
   62 fd 12
-PC 0378, Recognised LCB => 97 2
+PC 0375, Recognised LCB => 97 2
   61 07
-PC 037a, Recognised STO_A+B => 73 3
+PC 0377, Recognised STO_A+B => 73 3
   49 fd 12
-PC 037d, Recognised JMP => 112 3
-  70 03 69
-PC 0380, Recognised PAG => 262 0
-Page aligned PC 0380 -> 0400
+PC 037a, Recognised JMP => 112 3
+  70 03 66
+PC 037d, Recognised PAG => 262 0
+Page aligned PC 037d -> 0400
 PC 0400, Recognised HEX => 261 0
 PC 0407, Recognised HEX => 261 0
 PC 040e, Recognised HEX => 261 0
