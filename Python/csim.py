@@ -1,7 +1,6 @@
 # CSCVon8 Simulator written in Python
 #  based on csim by Warren Toomey, GPL3 2019
 # Added VGA graphics window
-# UNFORTUNATELY TOO SLOW!!
 
 import sys
 import time
@@ -96,7 +95,7 @@ file = open('27Cucode.bin', 'rb')
 DecodeRom = list(file.read())
 file.close()
 
-file = open('../Examples/video_strings.bin', 'rb')
+file = open('../Examples/vid_move.bin', 'rb')
 Ram = list(file.read())
 Ram = Ram + [0 for _ in range(0x8000 - len(Ram))]
 file.close()
@@ -258,7 +257,7 @@ while True:
             print("\n")
         break
 
-    if time.time() - elapsed > 1:
+    if time.time() - elapsed > 0.25:
         pygame.display.flip()
         elapsed = time.time()
 
