@@ -4,8 +4,9 @@
 
 #define OUT(x)	     JOU .; OUT x
 
-    LCA     $d4
-    LCB     $31
+loop:
+    LDA     number
+    LDB     number+1
     STO     A num1 # MSD
     STO     B num0 # LSD
 
@@ -23,7 +24,7 @@ divide:
     LDA     rem
     LCB     '0'
     LDA     A+B
-    OUT     A
+    STO     A out+4
 
     LDB     0           # 3
     LDA     num1        # 5
@@ -37,7 +38,7 @@ divide:
     LDA     rem
     LCB     '0'
     LDA     A+B
-    OUT     A
+    STO     A out+3
 
     LDB     0           # 3
     LDA     num1        # 5
@@ -51,7 +52,7 @@ divide:
     LDA     rem
     LCB     '0'
     LDA     A+B
-    OUT     A
+    STO     A out+2
 
     LDB     0           # 3
     LDA     num1        # 5
@@ -65,7 +66,7 @@ divide:
     LDA     rem
     LCB     '0'
     LDA     A+B
-    OUT     A
+    STO     A out+1
 
     LDB     0           # 3
     LDA     num1        # 5
@@ -79,13 +80,49 @@ divide:
     LDA     rem
     LCB     '0'
     LDA     A+B
-    OUT     A
+    STO     A out
 
+    LCB     '0'
+    LDA     out
+    JNE     1f
+    LDA     out+1
+    JNE     2f
+    LDA     out+2
+    JNE     3f
+    LDA     out+3
+    JNE     4f
+    JMP     5f
+1:
+    LDA     out
+    OUT     (A)
+2:
+    LDA     out+1
+    OUT     (A)
+3:
+    LDA     out+2
+    OUT     (A)
+4:
+    LDA     out+3
+    OUT     (A)
+5:
+    LDA     out+4
+    OUT     (A)
     OUT     ('\n')
-# Back to command prompt
 
+    LDA     number
+    LDB     number+1
+    TST     B+1 JC carry
+    STO     B+1 number+1
+    JMP     loop
+carry:
+    STO     0 number+1
+    STO     A+1 number
+    JMP loop
+
+# Back to command prompt
     JMP     prompt
 
+number: HEX "00 00"
 num0:   HEX "FF"
 num1:   HEX "FF"
 rem:    HEX "00"
@@ -94,6 +131,6 @@ PAG
 out:    STR "65536\n"
 
 hexchar: EQU $FD00
-prhex:   EQU $0279
-prhex_ret:EQU $FFF8
-prompt:  EQU $001f
+prhex:   EQU $026F
+prhex_ret:EQU $FFFA
+prompt:  EQU $0015
