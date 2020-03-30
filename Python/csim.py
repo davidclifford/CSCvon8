@@ -95,7 +95,7 @@ file = open('27Cucode.bin', 'rb')
 DecodeRom = list(file.read())
 file.close()
 
-file = open('../Examples/vid_move.bin', 'rb')
+file = open('../Examples/wktlife_vid.bin', 'rb')
 Ram = list(file.read())
 Ram = Ram + [0 for _ in range(0x8000 - len(Ram))]
 file.close()
