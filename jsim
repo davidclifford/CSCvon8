@@ -1,0 +1,2 @@
+
+java -jar csim.jar $1
