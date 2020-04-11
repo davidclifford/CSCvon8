@@ -152,7 +152,7 @@ border_plot3:
     LDB B+1
     JMP 1b
 
-# Wait for key release & press, update random
+# Wait for key released & pressed, update random
 2:
     LDA rand
     STO A+1 rand
@@ -194,8 +194,8 @@ border_plot3:
 
 # Choose next piece
 # Set rotation
-#    LDA rand
-    LCA @3 # !!! replace with above
+    LDA rand
+#    LCA @3 # !!! replace with above
     LCB $03
     STO A&B rota
 # set piece
@@ -204,17 +204,87 @@ border_plot3:
     LDA A/B
     LCB @7
     LDA A%B
-    LCA @2 # REMOVE
+#    LCA @2 # REMOVE
     STO A piece
-
-    LCA @0
+    # tile_x = 5
+    LCA @5
     STO A tile_x
-1:
+    # tile_y = 0
     LCB @0
     STO B tile_y
 
+    # do loop 1:
+1:
+    # display piece
+    LCA $FF
+    STO A erase
     JSR disp_piece
 
+    # next_tile_x = tile_x
+    LDA tile_x
+    STO A next_tile_x
+    # next_tile_y = tile_y
+    LDA tile_y
+    STO A next_tile_y
+    # next_rota = rota
+    LDA rota
+    STO A next_rota
+
+    # WAIT
+    JIU .
+    INA
+
+    # A pressed (move left)
+    LCB 'a'
+    JNE 2f
+    LDA tile_x
+    STO A-1 next_tile_x
+    JMP 9f
+2:
+    # D pressed (move right)
+    LCB 'd'
+    JNE 3f
+    LDA tile_x
+    STO A+1 next_tile_x
+    JMP 9f
+3:
+    # W pressed (rotate)
+    LCB 'w'
+    JNE 4f
+    # rota = (rota + 1) & 03h
+    LDA rota
+    LDA A+1
+    LCB $03
+    STO A&B next_rota
+    JMP 9f
+4:
+    # S pressed (down)
+    # tile_y += 1
+    LCB 's'
+    JNE 5f
+    LDA tile_y
+    STO A+1 next_tile_y
+    JMP 9f
+5:
+9:
+    # erase piece
+    STO 0 erase
+    JSR disp_piece
+
+    # rota = next_rota
+    LDA next_rota
+    STO A rota
+    # tile_x = next_tile_x
+    LDA next_tile_x
+    STO A tile_x
+    # tile_y = next_tile_y
+    LDA next_tile_y
+    STO A tile_y
+    # when tile_y != 16 loop back 1:
+    LCB @16
+    JNE 1b
+
+    # Exit game
     JMP exit_game
 
 # SUBROUTINE: Display piece on screen
@@ -281,7 +351,11 @@ disp_piece:
     # Do loop 3:
 3:
     # tile_plot[B] = pix
+    STO B tx
+    LDB erase
     LDA pix
+    LDA A&B
+    LDB tx
 tile_plot:
     STO A $0000,B
     # B += 1
@@ -295,7 +369,7 @@ tile_plot:
     # loop back to 3:
     JMP 3b
 4:
-    # don't plot pixel
+    # not plotting pixel
     # B += 4
     LCA @4
     LDB A+B
@@ -373,16 +447,20 @@ char_indx: HEX "00"
 rand: HEX "00"
 tile: HEX "00 00"
 rota: HEX "00"
+next_rota: HEX "00"
 tx: HEX "00"
 ty: HEX "00"
 tile_x: HEX "00"
 tile_y: HEX "00"
+next_tile_x: HEX "00"
+next_tile_y: HEX "00"
 txc: HEX "00"
 tyc: HEX "00"
 piece: HEX "00"
 pxc: HEX "00"
 pyc: HEX "00"
 pix: HEX "00"
+erase: HEX "00"
 
 PAG
 start_mess: STR "Press any key to Start"
@@ -390,38 +468,37 @@ PAG
 board: HEX "00"
 PAG
 shapes:
-#shape_I:
+#I
     HEX "0F 0F 0F 0F 00 00 00 00 00 00 00 00 00 00 00 00"
-#    HEX "0F 30 0F 30 3C 0C 3C 0C 03 2A 03 2A 3F 00 3F 00"
     HEX "00 0F 00 00 00 0F 00 00 00 0F 00 00 00 0F 00 00"
     HEX "0F 0F 0F 0F 00 00 00 00 00 00 00 00 00 00 00 00"
     HEX "00 00 0F 00 00 00 0F 00 00 00 0F 00 00 00 0F 00"
-shape_O:
+#O
     HEX "3C 3C 00 00 3C 3C 00 00 00 00 00 00 00 00 00 00"
     HEX "3C 3C 00 00 3C 3C 00 00 00 00 00 00 00 00 00 00"
     HEX "3C 3C 00 00 3C 3C 00 00 00 00 00 00 00 00 00 00"
     HEX "3C 3C 00 00 3C 3C 00 00 00 00 00 00 00 00 00 00"
-shape_T:
+#T
     HEX "33 33 33 00 00 33 00 00 00 00 00 00 00 00 00 00"
     HEX "00 33 00 00 33 33 00 00 00 33 00 00 00 00 00 00"
     HEX "00 33 00 00 33 33 33 00 00 00 00 00 00 00 00 00"
     HEX "33 00 00 00 33 33 00 00 33 00 00 00 00 00 00 00"
-shape_S:
+#S
     HEX "00 0C 0C 00 0C 0C 00 00 00 00 00 00 00 00 00 00"
     HEX "0C 00 00 00 0C 0C 00 00 00 0C 00 00 00 00 00 00"
     HEX "00 0C 0C 00 0C 0C 00 00 00 00 00 00 00 00 00 00"
     HEX "0C 00 00 00 0C 0C 00 00 00 0C 00 00 00 00 00 00"
-shape_J:
+#J
     HEX "00 03 00 00 00 03 00 00 03 03 00 00 00 00 00 00"
     HEX "03 00 00 00 03 03 03 00 00 00 00 00 00 00 00 00"
     HEX "03 03 00 00 03 00 00 00 03 00 00 00 00 00 00 00"
     HEX "03 03 03 00 00 00 03 00 00 00 00 00 00 00 00 00"
-shape_Z:
+#Z
     HEX "30 30 00 00 00 30 30 00 00 00 00 00 00 00 00 00"
     HEX "00 30 00 00 30 30 00 00 30 00 00 00 00 00 00 00"
     HEX "30 30 00 00 00 30 30 00 00 00 00 00 00 00 00 00"
     HEX "00 30 00 00 30 30 00 00 30 00 00 00 00 00 00 00"
-shape_L:
+#L
     HEX "34 00 00 00 34 00 00 00 34 34 00 00 00 00 00 00"
     HEX "34 34 34 00 34 00 00 00 00 00 00 00 00 00 00 00"
     HEX "34 34 00 00 00 34 00 00 00 34 00 00 00 00 00 00"
