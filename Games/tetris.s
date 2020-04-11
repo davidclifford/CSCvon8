@@ -117,12 +117,12 @@ border_plot2:
     JNE 2b
 
 # Bottom
-    LCA @100
+    LCA @101
     STO A border_plot3+1
 2:
     LCB @60
 1:
-    LCA $2A
+    LCA $2A # Grey
 border_plot3:
     STO A $0000,B
     LDB B+1
@@ -195,7 +195,6 @@ border_plot3:
 # Choose next piece
 # Set rotation
     LDA rand
-#    LCA @3 # !!! replace with above
     LCB $03
     STO A&B rota
 # set piece
@@ -204,7 +203,6 @@ border_plot3:
     LDA A/B
     LCB @7
     LDA A%B
-#    LCA @2 # REMOVE
     STO A piece
     # tile_x = 5
     LCA @5
@@ -280,15 +278,15 @@ border_plot3:
     # tile_y = next_tile_y
     LDA next_tile_y
     STO A tile_y
-    # when tile_y != 16 loop back 1:
-    LCB @16
+    # when tile_y != 19 loop back 1:
+    LCB @19
     JNE 1b
 
     # Exit game
     JMP exit_game
 
 # SUBROUTINE: Display piece on screen
-# input: piece, tile_x, tile_y
+# input: piece, tile_x, tile_y, erase (0 do, $FF don't)
 # output: None
 
 # Calculate address of piece
