@@ -297,14 +297,33 @@ next_piece:
     STO A next_rota
     # down = 0
     STO 0 down
+    # gravity = 0
+    STO 0 gravity+1
+    LCA @60
+    STO A gravity
 
     # WAIT
 wait_key:
     LDA rand
     STO A+1 rand
     INA
-    JAZ wait_key
-
+    JAZ 11f
+    JMP 10f
+11:
+    LDA gravity+1
+    LDA A-1
+    STO A gravity+1
+    JAZ 12f
+    JMP wait_key
+12:
+    LDA gravity
+    LDA A-1
+    STO A gravity
+    JAZ 13f
+    JMP wait_key
+13:
+    LCA 's'
+10:
     # A pressed (move left)
     LCB 'a'
     JNE 2f
@@ -339,6 +358,8 @@ wait_key:
     STO A+1 down
     JMP 9f
 5:
+    # Nothing happened - loop back to 8
+    JMP 8b
 9:
     # Can it fit in new position/orientation? 0=false 1=true
     JSR can_it_fit
@@ -350,6 +371,11 @@ wait_key:
     # when down == 0 (false) loop back 8
     LDA down
     JAZ 8b
+
+    # Are we still at the top?
+    # Yes: so restart game
+    LDA tile_y
+    JAZ game_over
 
     # add piece to board
     JSR add_piece_to_board
@@ -372,6 +398,60 @@ wait_key:
     STO A tile_y
     # Loop next move
     JMP 1b
+
+# Restart Game
+game_over:
+# Print GAME OVER message
+    LCA $33
+    STO A forg
+    STO 0 bakg
+    LCA @4
+    STO A xpos
+    LCA @14
+    STO A ypos
+    LDB 0
+1:
+    STO B char_indx
+    LDA game_over_mess,B
+    JAZ 2f
+    STO A char
+    JSR pchar pchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+
+# Wait for key released & pressed, update random
+2:
+    LDA rand
+    STO A+1 rand
+    INA
+    JAZ 3f
+    JMP 2b
+3:
+    LDA rand
+    STO A+1 rand
+    INA
+    JAZ 3b
+
+# Erase start message
+    STO 0 forg
+    STO 0 bakg
+    LCA @4
+    STO A xpos
+    LCA @14
+    STO A ypos
+    LDB 0
+1:
+    STO B char_indx
+    LDA game_over_mess,B
+    JAZ 2f
+    STO A char
+    JSR pchar pchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+2:
+    JMP tetris
 
     # Exit game
     JMP exit_game
@@ -699,9 +779,12 @@ pix: HEX "00"
 erase: HEX "00"
 fits: HEX "00"
 down: HEX "00"
+gravity: HEX "00 00"
 
 PAG
 start_mess: STR "Press any key to Start"
+PAG
+game_over_mess: STR "Game over, Man!"
 PAG
 board: HEX "00"
 PAG
