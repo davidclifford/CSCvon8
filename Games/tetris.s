@@ -86,13 +86,13 @@ border_plot:
     LCA @16
     STO A border_plot1+1
 2:
-    LCB @104
+    LCB @100
 1:
     LCA $2A
 border_plot1:
     STO A $0000,B
     LDB B+1
-    LCA @108
+    LCA @104
     JNE 1b
     LDA border_plot1+1
     STO A+1 border_plot1+1
@@ -253,7 +253,6 @@ border_plot3:
     JAZ 6f
     JMP 5b
 6:
-
 next_piece:
 # Choose random next piece
 # Set rotation
@@ -286,7 +285,7 @@ next_piece:
     LCA $FF
     STO A erase
     JSR disp_piece
-
+8:
     # next_tile_x = tile_x
     LDA tile_x
     STO A next_tile_x
@@ -296,6 +295,8 @@ next_piece:
     # next_rota = rota
     LDA rota
     STO A next_rota
+    # down = 0
+    STO 0 down
 
     # WAIT
 wait_key:
@@ -334,9 +335,22 @@ wait_key:
     JNE 5f
     LDA tile_y
     STO A+1 next_tile_y
+    LDA 0
+    STO A+1 down
     JMP 9f
 5:
 9:
+    # Can it fit in new position/orientation? 0=false 1=true
+    JSR can_it_fit
+    # when fits == 0 loop back wait_key
+    LDA fits
+    JAZ 7f
+    JMP 6f
+7:
+    LDA down
+    JAZ 8b
+    JMP next_piece
+6:
     # erase piece
     STO 0 erase
     JSR disp_piece
@@ -500,6 +514,82 @@ tile_plot:
 # END SUBROUTINE disp_piece
 
 
+# SUBROUTINE: can_it_fit
+can_it_fit:
+    # tx = ty = 0
+    STO 0 tx
+    STO 0 ty
+
+    # tile = shapes + piece*64
+    LDA piece
+    LCB @64 # address
+    STO A*BHI tile
+    STO A*B tile+1
+    LDA tile
+    LHB shapes
+    STO A+B tile
+# Add rotation factor
+    # tile += rota*16
+    LDA next_rota
+    LCB @16
+    LDA A*B
+    LDB tile+1
+    STO A+B tile+1
+
+    # fits = 0 (false)
+    STO 0 fits
+1:
+    # when (tile) == blank skip
+    LIA tile
+    JAZ 2f
+
+    ## has board got part there already?
+    # B = next_tile_x + tx + (next_tile_y + ty)*12 + 1  - index into board]
+    # A = next_tile_y+ty
+    LDA next_tile_y
+    LDB ty
+    LDA A+B
+    # A *= 12
+    LCB @12
+    LDA A*B
+    # A += tile_x
+    LDB next_tile_x
+    LDA A+B
+    # A += tx
+    LDB tx
+    LDA A+B
+    # B = A+1
+    LDB A+1
+    # A = board[B]
+    LDA board,B
+    # when A != 0 return false
+    JAZ 2f
+    JMP 9f
+2:
+    # tile += 1
+    LDA tile+1
+    STO A+1 tile+1
+    # tx +=1
+    LDA tx
+    STO A+1 tx
+    # when tx>3 next ty
+    LCB @3
+    JNE 1b
+    # tx = 0
+    STO 0 tx
+    # ty += 1
+    LDA ty
+    STO A+1 ty
+    # when ty!=4 next ty
+    LCB @3
+    JNE 1b
+    # It can fit - return 1 (true)
+    LDA 0
+    STO A+1 fits
+9:
+    RTS can_it_fit
+
+# END SUBROUTINE can_it_fit
 
 # Exit to monitor
 exit_game:
@@ -534,6 +624,8 @@ pxc: HEX "00"
 pyc: HEX "00"
 pix: HEX "00"
 erase: HEX "00"
+fits: HEX "00"
+down: HEX "00"
 
 PAG
 start_mess: STR "Press any key to Start"
