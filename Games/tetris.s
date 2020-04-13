@@ -184,28 +184,97 @@ border_plot3:
     JMP 1b
 2:
 
-# Initialise board with 200 zeros
+# Initialise board with 52 FFs and 200 zeros (ie 252 initialised bytes)
+    # pyc = 20
+    LCA @20
+    STO A pyc
+    # B = 0
     LDB 0
+    ## Do loop of 20 lines
 1:
-    STO 0 board,B
+    ## Put in FF at start
+    # pxc = 10
+    LCA @10
+    STO A pxc
+    # board[B] = $FF
+    LCA $FF
+    STO A board,B
+2:
+    ## Fill 10 zeros
+    ## Do loop of 10 zeros in line
+    # B += 1
     LDB B+1
-    LDA @200
-    JNE 1b
+    # board[B] = 0
+    STO 0 board,B
+    # pxc -= 1
+    LDA pxc
+    LDA A-1
+    STO A pxc
+    ## loop until 10 zeros filled in line
+    # when pcx>0 loop 2:
+    JAZ 3f
+    JMP 2b
+3:
+    ## Add FF at end of line
+    # B += 1
+    LDB B+1
+    # board[B] = $FF
+    LCA $FF
+    STO A board,B
+    # B += 1
+    LDB B+1
+    ## Next line
+    # pyc -= 1
+    LDA pyc
+    LDA A-1
+    STO A pyc
+    ## Loop until 20 lines filled
+    # when pyc>0 loop 1:
+    JAZ 4f
+    JMP 1b
+4:
+    ## Fill in last line with 12 FFs
+    # pxc = 12
+    LCA @12
+    STO A pxc
+    ## Do loop
+5:
+    # board[B] = FF
+    LCA $FF
+    STO A board,B
+    # B += 1
+    LDB B+1
+    # pxc -= 1
+    LDA pxc
+    LDA A-1
+    STO A pxc
+    ## Loop until 12 FFs in last line
+    # when pxc>0 loop 5:
+    JAZ 6f
+    JMP 5b
+6:
 
-# Choose next piece
+next_piece:
+# Choose random next piece
 # Set rotation
     LDA rand
     LCB $03
     STO A&B rota
 # set piece
     LDA rand
-    LCB @4
-    LDA A/B
+    LCB @2
+    LDA A>>B
     LCB @7
     LDA A%B
     STO A piece
-    # tile_x = 5
-    LCA @5
+# set x
+    LDA rand
+    LCB @5
+    LDA A>>B
+    LCB @6
+    LDA A%B
+    LDA A+1
+
     STO A tile_x
     # tile_y = 0
     LCB @0
@@ -229,8 +298,11 @@ border_plot3:
     STO A next_rota
 
     # WAIT
-    JIU .
+wait_key:
+    LDA rand
+    STO A+1 rand
     INA
+    JAZ wait_key
 
     # A pressed (move left)
     LCB 'a'
@@ -282,6 +354,7 @@ border_plot3:
     LCB @19
     JNE 1b
 
+    JMP next_piece
     # Exit game
     JMP exit_game
 
@@ -425,6 +498,8 @@ tile_plot:
 
     RTS disp_piece
 # END SUBROUTINE disp_piece
+
+
 
 # Exit to monitor
 exit_game:
