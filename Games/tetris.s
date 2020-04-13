@@ -330,7 +330,7 @@ wait_key:
     JMP 9f
 4:
     # S pressed (down)
-    # tile_y += 1
+    # next_tile_y = tile_y + 1
     LCB 's'
     JNE 5f
     LDA tile_y
@@ -347,8 +347,14 @@ wait_key:
     JAZ 7f
     JMP 6f
 7:
+    # when down == 0 (false) loop back 8
     LDA down
     JAZ 8b
+
+    # add piece to board
+    JSR add_piece_to_board
+
+    # loop back to get next piece
     JMP next_piece
 6:
     # erase piece
@@ -364,11 +370,9 @@ wait_key:
     # tile_y = next_tile_y
     LDA next_tile_y
     STO A tile_y
-    # when tile_y != 19 loop back 1:
-    LCB @19
-    JNE 1b
+    # Loop next move
+    JMP 1b
 
-    JMP next_piece
     # Exit game
     JMP exit_game
 
@@ -544,7 +548,7 @@ can_it_fit:
     JAZ 2f
 
     ## has board got part there already?
-    # B = next_tile_x + tx + (next_tile_y + ty)*12 + 1  - index into board]
+    # B = next_tile_x + tx + (next_tile_y + ty)*12 + 1  [index into board]
     # A = next_tile_y+ty
     LDA next_tile_y
     LDB ty
@@ -590,6 +594,75 @@ can_it_fit:
     RTS can_it_fit
 
 # END SUBROUTINE can_it_fit
+
+# SUBROUTINE add_piece_to_board
+# Add the piece to the board (as it has collided with the other pieces or got to the bottom)
+# Calculate address of piece
+add_piece_to_board:
+    # tx = ty = 0
+    STO 0 tx
+    STO 0 ty
+
+    # tile = shapes + piece*64
+    LDA piece
+    LCB @64 # address
+    STO A*BHI tile
+    STO A*B tile+1
+    LDA tile
+    LHB shapes
+    STO A+B tile
+# Add rotation factor
+    # tile += rota*16
+    LDA rota
+    LCB @16
+    LDA A*B
+    LDB tile+1
+    STO A+B tile+1
+1:
+    # when (tile) == blank skip
+    LIA tile
+    STO A pix
+    JAZ 2f
+
+    # B = tile_x + tx + (tile_y + ty)*12 + 1  [index into board]
+    # A = tile_y + ty
+    LDA tile_y
+    LDB ty
+    LDA A+B
+    # A *= 12
+    LCB @12
+    LDA A*B
+    # A += tile_x
+    LDB tile_x
+    LDA A+B
+    # A += tx
+    LDB tx
+    LDA A+B
+    # B = A+1
+    LDB A+1
+    # board[B] = (tile)
+    LDA pix
+    STO A board,B
+2:
+    # tile += 1
+    LDA tile+1
+    STO A+1 tile+1
+    # tx +=1
+    LDA tx
+    STO A+1 tx
+    # when tx>3 next ty
+    LCB @3
+    JNE 1b
+    # tx = 0
+    STO 0 tx
+    # ty += 1
+    LDA ty
+    STO A+1 ty
+    # when ty!=4 next ty
+    LCB @3
+    JNE 1b
+    # return
+    RTS add_piece_to_board
 
 # Exit to monitor
 exit_game:
