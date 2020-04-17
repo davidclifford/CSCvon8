@@ -279,6 +279,11 @@ next_piece:
     LCB @0
     STO B tile_y
 
+    # gravity = 0
+    STO 0 gravity+1
+    LCA @60
+    STO A gravity
+
     # do loop 1:
 1:
     # display piece
@@ -297,32 +302,41 @@ next_piece:
     STO A next_rota
     # down = 0
     STO 0 down
-    # gravity = 0
-    STO 0 gravity+1
-    LCA @60
-    STO A gravity
 
     # WAIT
 wait_key:
     LDA rand
     STO A+1 rand
     INA
-    JAZ 11f
-    JMP 10f
+    STO A keypress
 11:
     LDA gravity+1
     LDA A-1
     STO A gravity+1
     JAZ 12f
-    JMP wait_key
+    LDA keypress
+    JAZ wait_key
+    JMP 10f
 12:
+    LDA rand
+    STO A+1 rand
     LDA gravity
     LDA A-1
     STO A gravity
     JAZ 13f
-    JMP wait_key
+    LDA keypress
+    JAZ wait_key
+    JMP 10f
 13:
-    LCA 's'
+    LDA tile_y
+    STO A+1 next_tile_y
+    LDA 0
+    STO A+1 down
+    # gravity = 0
+    STO 0 gravity+1
+    LCA @60
+    STO A gravity
+    JMP 9f
 10:
     # A pressed (move left)
     LCB 'a'
@@ -743,6 +757,37 @@ add_piece_to_board:
     JNE 1b
     # return
     RTS add_piece_to_board
+# END SUBROUTINE add_piece_to_board
+
+# SUBROUTINE is_line_full
+# Check to see if a line is full i.e. all 10 squares across are not blank
+# Input: tile_y
+# Output: full 0 (not full) 1 (is full)
+# Calculate address on board
+is_line_full:
+    STO 0 full
+    LDA @10
+    STO A tyc
+    LDA tile_y
+    LCB @12
+    LDA A*B
+    LDB A+1
+1:
+    LDA board,B
+    JAZ 3f
+    LDB B+1
+    LDA tyc
+    LDA A-1
+    STO A tyc
+    JAZ 2f
+    JMP 1b
+2:
+    LDA 0
+    STO A+1 full
+3:
+    RTS is_line_full
+
+# END SUBROUTINE is_line_full
 
 # Exit to monitor
 exit_game:
@@ -779,7 +824,9 @@ pix: HEX "00"
 erase: HEX "00"
 fits: HEX "00"
 down: HEX "00"
+full: HEX "00"
 gravity: HEX "00 00"
+keypress: HEX "00"
 
 PAG
 start_mess: STR "Press any key to Start"
