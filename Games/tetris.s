@@ -811,12 +811,96 @@ is_line_full:
 
 # SUBROUTINE remove_line
 remove_line:
+    # Move 'board' down one square from top to tile_y
+    STO 0 tx
+    LDA tile_y
+    STO A ty
+1:
+    # B = (ty-1)*12 + tx + 1
+    LDA ty
+    LDA A-1
+    LCB @12
+    LDA A*B
+    LDB tx
+    LDA A+B
+    LDB A+1
+    # pix = board[B]
+    LDA board,B
+    STO A pix
+    # B += 12
+    LCA @12
+    LDB A+B
+    # board[B] = pix
+    LDA pix
+    STO A board,B
+    # tx += 1
+    LDA tx
+    LDA A+1
+    STO A tx
+    LCB @10
+    JNE 1b
+    # tx = 0
+    STO 0 tx
+    # ty -=1
+    LDA ty
+    LDA A-1
+    STO A ty
+    JAZ 2f
+    JMP 1b
+2:
     RTS remove_line
 # END SUBROUTINE remove_line
 
 
 # SUBROUTINE re_display_board
 re_display_board:
+    # px = py = 0
+    STO 0 px
+    STO 0 py
+1:
+    # B = px/4 + py/4*12 + 1
+    # A = board[B]
+    LDA px
+    LCB @4
+    LDA A/B
+    STO A tx
+    LDA py
+    LCB @4
+    LDA A/B
+    LCB @12
+    LDA A*B
+    LDB tx
+    LDB A+B
+    LDB B+1
+    LDA board,B
+    STO A pix
+
+    LDB py
+    LCA @21
+    STO A+B redisplay_plot+1
+    LDB px
+    LCA @60
+    LDB A+B
+    LDA pix
+redisplay_plot:
+    STO A $0000,B
+
+    # px += 1
+    LDA px
+    LDA A+1
+    STO A px
+    LCB @40
+    JNE 1b
+
+    # px = 0
+    # py += 1
+    STO 0 px
+    LDA py
+    LDA A+1
+    STO A py
+    LCB @80
+    JNE 1b
+
     RTS re_display_board
 # END SUBROUTINE re_display_board
 
@@ -852,6 +936,8 @@ piece: HEX "00"
 pxc: HEX "00"
 pyc: HEX "00"
 pix: HEX "00"
+px: HEX "00"
+py: HEX "00"
 erase: HEX "00"
 fits: HEX "00"
 down: HEX "00"
