@@ -58,7 +58,7 @@ cls_plot:
     STO A char
     JSR pchar pchar_ret
 
-    LCA $3F
+    LCA $34
     STO A forg
     LCA 'S'
     STO A char
@@ -394,8 +394,27 @@ wait_key:
     # add piece to board
     JSR add_piece_to_board
 
-    # loop back to get next piece
-    JMP next_piece
+    # check lines full
+    LCA @19
+    STO A tile_y
+14:
+    # do loop
+    # check line is full
+    JSR is_line_full
+    LDA full
+    JAZ 15f
+    # Remove line and re-display board
+    JSR remove_line
+    JSR re_display_board
+    JMP 14b
+15:
+    # tile_y -= 1
+    LDA tile_y
+    LDA A-1
+    STO A tile_y
+    # loop if tile_y > 0 else get next piece
+    JAZ next_piece
+    JMP 14b
 6:
     # erase piece
     STO 0 erase
@@ -766,8 +785,8 @@ add_piece_to_board:
 # Calculate address on board
 is_line_full:
     STO 0 full
-    LDA @10
-    STO A tyc
+    LCA @10
+    STO A txc
     LDA tile_y
     LCB @12
     LDA A*B
@@ -776,9 +795,9 @@ is_line_full:
     LDA board,B
     JAZ 3f
     LDB B+1
-    LDA tyc
+    LDA txc
     LDA A-1
-    STO A tyc
+    STO A txc
     JAZ 2f
     JMP 1b
 2:
@@ -788,6 +807,18 @@ is_line_full:
     RTS is_line_full
 
 # END SUBROUTINE is_line_full
+
+
+# SUBROUTINE remove_line
+remove_line:
+    RTS remove_line
+# END SUBROUTINE remove_line
+
+
+# SUBROUTINE re_display_board
+re_display_board:
+    RTS re_display_board
+# END SUBROUTINE re_display_board
 
 # Exit to monitor
 exit_game:
