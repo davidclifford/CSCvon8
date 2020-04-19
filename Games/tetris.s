@@ -156,14 +156,14 @@ border_plot3:
 2:
     LDA rand
     STO A+1 rand
+    JIU 3f
     INA
-    JAZ 3f
     JMP 2b
 3:
     LDA rand
     STO A+1 rand
+    JIU 3b
     INA
-    JAZ 3b
 
 # Erase start message
     STO 0 forg
@@ -307,8 +307,13 @@ next_piece:
 wait_key:
     LDA rand
     STO A+1 rand
+    JIU 16f
     INA
     STO A keypress
+    JMP 11f
+16:
+    INA
+    STO 0 keypress
 11:
     LDA gravity+1
     LDA A-1
@@ -457,14 +462,14 @@ game_over:
 2:
     LDA rand
     STO A+1 rand
+    JIU 3f
     INA
-    JAZ 3f
     JMP 2b
 3:
     LDA rand
     STO A+1 rand
+    JIU 3b
     INA
-    JAZ 3b
 
 # Erase start message
     STO 0 forg
@@ -910,7 +915,7 @@ exit_game:
 
 # System variables
 monitor: EQU $0015
-pchar: EQU $02c9
+pchar: EQU $02d3
 pchar_ret: EQU $fff4
 char: EQU $fd11
 xpos: EQU $fd10
