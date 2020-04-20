@@ -164,6 +164,13 @@ border_plot3:
     STO A+1 rand
     JIU 3b
     INA
+    LCB 'q'
+    JEQ exit_game
+
+# random piece (next)
+    LDA rand
+    LCB @7
+    STO A%B next
 
 # Erase start message
     STO 0 forg
@@ -253,19 +260,56 @@ border_plot3:
     JAZ 6f
     JMP 5b
 6:
+# Set score to 0000
+    STO 0 score0
+    STO 0 score1
+    STO 0 score2
+    STO 0 score3
+    STO 0 score4
+    STO 0 score5
+    JSR disp_score
+
 next_piece:
+# Erase last next piece
+    LDA next
+    STO A piece
+    STO 0 erase
+    LCA @12
+    LDB 0
+    STO A tile_x
+    STO B tile_y
+    STO 0 rota
+    JSR disp_piece
+# Copy next piece to piece
+    LDA next
+    STO A piece
 # Choose random next piece
-# Set rotation
-    LDA rand
-    LCB $03
-    STO A&B rota
 # set piece
     LDA rand
     LCB @2
     LDA A>>B
     LCB @7
     LDA A%B
+    STO A next
+# Show next piece
+    LCA $FF
+    STO A erase
+    LDA piece
+    STO A temp
+    LDA next
     STO A piece
+    LCA @12
+    LDB 0
+    STO A tile_x
+    STO B tile_y
+    STO 0 rota
+    JSR disp_piece
+    LDA temp
+    STO A piece
+# Set rotation
+    LDA rand
+    LCB $03
+    STO A&B rota
 # set x
     LDA rand
     LCB @5
@@ -281,7 +325,7 @@ next_piece:
 
     # gravity = 0
     STO 0 gravity+1
-    LCA @60
+    LCA @200
     STO A gravity
 
     # do loop 1:
@@ -312,7 +356,6 @@ wait_key:
     STO A keypress
     JMP 11f
 16:
-    INA
     STO 0 keypress
 11:
     LDA gravity+1
@@ -339,7 +382,7 @@ wait_key:
     STO A+1 down
     # gravity = 0
     STO 0 gravity+1
-    LCA @60
+    LCA @200
     STO A gravity
     JMP 9f
 10:
@@ -399,6 +442,16 @@ wait_key:
     # add piece to board
     JSR add_piece_to_board
 
+    # Update BCD score
+    LCA @5
+    STO A _score0
+    STO 0 _score1
+    STO 0 _score2
+    STO 0 _score3
+    JSR add_score
+    JSR disp_score
+
+    STO 0 lines
     # check lines full
     LCA @19
     STO A tile_y
@@ -411,6 +464,10 @@ wait_key:
     # Remove line and re-display board
     JSR remove_line
     JSR re_display_board
+    # Update lines erased
+    LDA lines
+    STO A+1 lines
+    # loop back to 14
     JMP 14b
 15:
     # tile_y -= 1
@@ -418,8 +475,48 @@ wait_key:
     LDA A-1
     STO A tile_y
     # loop if tile_y > 0 else get next piece
-    JAZ next_piece
+    JAZ 17f
     JMP 14b
+17:
+    # Update score
+    STO 0 _score0
+    STO 0 _score1
+    STO 0 _score2
+    STO 0 _score3
+    LDA lines
+    # 0 lines
+    JAZ 18f
+    # 1 line
+    LDA A-1
+    JAZ 20f
+    # 2 lines
+    LDA A-1
+    JAZ 21f
+    # 3 lines
+    LDA A-1
+    JAZ 22f
+    # 4 lines - Add 1200
+    LCA @1
+    STO A _score3
+    LCA @2
+    STO A _score2
+    JMP 23f
+20: # 1 line - add 40
+    LCA @4
+    STO A _score1
+    JMP 23f
+21: # 2 lines - add 100
+    LCA @1
+    STO A _score2
+    JMP 23f
+22: # 3 lines - add 300
+    LCA @3
+    STO A _score2
+23:
+    JSR add_score
+    JSR disp_score
+18:
+    JMP next_piece
 6:
     # erase piece
     STO 0 erase
@@ -909,12 +1006,120 @@ redisplay_plot:
     RTS re_display_board
 # END SUBROUTINE re_display_board
 
+# SUBROUTINE add_score
+# Add _score to score
+add_score:
+    LDA _score0
+    LDB score0
+    LDA A+B
+    STO A score0
+    LCB @10
+    JLT 1f
+    STO A-B score0
+    LDA score1
+    STO A+1 score1
+1:
+    LDA _score1
+    LDB score1
+    LDA A+B
+    STO A score1
+    LCB @10
+    JLT 2f
+    STO A-B score1
+    LDA score2
+    STO A+1 score2
+2:
+    LDA _score2
+    LDB score2
+    LDA A+B
+    STO A score2
+    LCB @10
+    JLT 3f
+    STO A-B score2
+    LDA score3
+    STO A+1 score3
+3:
+    LDA _score3
+    LDB score3
+    LDA A+B
+    STO A score3
+    LCB @10
+    JLT 6f
+    STO A-B score3
+4:
+    LDA score4
+    LDA A+1
+    STO A score4
+    LCB @10
+    JLT 6f
+    STO A-B score4
+5:
+    LDA score5
+    LDA A+1
+    STO A score5
+    LCB @10
+    JLT 6f
+    STO A-B score5
+6:
+    RTS add_score
+# END SUBROUTINE add_score
+
+# SUBROUTINE disp_score
+disp_score:
+
+    STO 0 bakg
+    LCA @5
+    STO A ypos
+    LCA @18
+    STO A xpos
+
+    LCA $2A
+    STO A forg
+
+    LCB $30
+    LDA score5
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    LCB $30
+    LDA score4
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    LCB $30
+    LDA score3
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    LCB $30
+    LDA score2
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    LCB $30
+    LDA score1
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    LCB $30
+    LDA score0
+    LDA A+B
+    STO A char
+    JSR pchar pchar_ret
+
+    RTS disp_score
+
 # Exit to monitor
 exit_game:
     JMP monitor
 
 # System variables
-monitor: EQU $0015
+monitor: EQU $0006
 pchar: EQU $02d3
 pchar_ret: EQU $fff4
 char: EQU $fd11
@@ -938,6 +1143,8 @@ next_tile_y: HEX "00"
 txc: HEX "00"
 tyc: HEX "00"
 piece: HEX "00"
+next: HEX "00"
+temp: HEX "00"
 pxc: HEX "00"
 pyc: HEX "00"
 pix: HEX "00"
@@ -949,6 +1156,17 @@ down: HEX "00"
 full: HEX "00"
 gravity: HEX "00 00"
 keypress: HEX "00"
+score0: HEX "00"
+score1: HEX "00"
+score2: HEX "00"
+score3: HEX "00"
+score4: HEX "00"
+score5: HEX "00"
+_score0: HEX "00"
+_score1: HEX "00"
+_score2: HEX "00"
+_score3: HEX "00"
+lines: HEX "00"
 
 PAG
 start_mess: STR "Press any key to Start"
