@@ -152,21 +152,20 @@ border_plot3:
     LDB B+1
     JMP 1b
 
-# Wait for key released & pressed, update random
+# Wait for Enter or Q to be pressed, update random
 2:
     LDA rand
     STO A+1 rand
-    JIU 3f
+    JIU 2b
     INA
-    JMP 2b
-3:
-    LDA rand
-    STO A+1 rand
-    JIU 3b
-    INA
+    LCB '\r'
+    JEQ 3f
+    LCB '\n'
+    JEQ 3f
     LCB 'q'
-    JEQ exit_game
-
+    JNE 2b
+    JMP exit_game
+3:
 # random piece (next)
     LDA rand
     LCB @7
@@ -281,15 +280,25 @@ next_piece:
     STO 0 rota
     JSR disp_piece
 # Copy next piece to piece
+    LDA piece
+    STO A temp
     LDA next
     STO A piece
 # Choose random next piece
 # set piece
+31:
     LDA rand
     LCB @2
     LDA A>>B
     LCB @7
     LDA A%B
+    LDB temp
+    JNE 30f
+    LDA rand
+    LCB @3
+    STO A*B rand
+    JMP 31b
+30:
     STO A next
 # Show next piece
     LCA $FF
@@ -555,19 +564,20 @@ game_over:
     LDB B+1
     JMP 1b
 
-# Wait for key released & pressed, update random
+# Wait for Enter or Q to be pressed, update random
 2:
     LDA rand
     STO A+1 rand
-    JIU 3f
+    JIU 2b
     INA
-    JMP 2b
+    LCB '\r'
+    JEQ 3f
+    LCB '\n'
+    JEQ 3f
+    LCB 'q'
+    JNE 2b
+    JMP exit_game
 3:
-    LDA rand
-    STO A+1 rand
-    JIU 3b
-    INA
-
 # Erase start message
     STO 0 forg
     STO 0 bakg
@@ -1169,7 +1179,7 @@ _score3: HEX "00"
 lines: HEX "00"
 
 PAG
-start_mess: STR "Press any key to Start"
+start_mess: STR "Press Enter to Start"
 PAG
 game_over_mess: STR "Game over, Man!"
 PAG
