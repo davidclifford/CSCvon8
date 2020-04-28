@@ -50,6 +50,7 @@ IOload	   = 00E0
 MEMresult  = 0000
 ALUresult  = 0100
 UARTresult = 0200
+VIDresult  = 0300
 
 # Jump operations
 NoJump      = 0000
@@ -381,6 +382,18 @@ START := MEMresult IRload PCincr
 68 OUT: MEMresult IOload PCincr
 	uSreset
 
+# Load A from absolute video location $HHLL
+69 LVA: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ARena VIDresult Aload
+	uSreset
+
+# Load B from absolute video location $HHLL
+6a LVB: MEMresult AHload PCincr
+	MEMresult ALload PCincr
+	ARena VIDresult Bload
+	uSreset
+
 # 70-7F: Jump instructions
 # Always jump to $XXXX
 70 JMP: MEMresult AHload PCincr
@@ -501,6 +514,16 @@ START := MEMresult IRload PCincr
 94 STO_0_,B: MEMresult AHload PCincr
 	ALUresult B ALload ARena
 	ALUresult 0 ARena MEMload
+	uSreset
+
+95 LVA_,B: MEMresult AHload PCincr
+	ALUresult B ALload ARena
+	ARena VIDresult Aload
+	uSreset
+
+96 LVB_,B: MEMresult AHload PCincr
+	ALUresult B ALload ARena
+	ARena VIDresult Bload
 	uSreset
 
 # Clutching at straws instructions
