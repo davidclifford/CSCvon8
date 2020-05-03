@@ -6,10 +6,10 @@ use Data::Dumper;
 # CSCVon8 assembler, (C) 2019 Warren Toomey, GPL3
 
 my $debug    = 0;    # Print debugging information
-my $ramimage = 0;    # Assemble to RAM instead of ROM
+my $ramimage = 1;    # Assemble to RAM instead of ROM
 my $linenum  = 0;    # Line number being parsed
 my $PC;              # Program counter
-my $StartPC = 0;     # Start PC at 0x0000, or 0x8000 for $ramimage
+my $StartPC = 0x8000;# Start PC at 0x0000, or 0x8000 for $ramimage
 my @Line;            # Array of whole lines from input file
 my @Linenum;         # Line number for each line in @Line
 my @MEM = (0) x 65536;  # Contents of memory
@@ -25,7 +25,7 @@ my %Keyword;
 # Hash of RAM return address locations for each function, and
 # next available RAM location if none yet defined for a function
 my %ReturnAddr;
-my $nextreturnaddr = 0xFFFE;
+my $nextreturnaddr = 0xFF00;
 
 # Set a memory location to a specific value. We use this so that
 # we can track the lowest and highest locations used. This is needed
@@ -70,6 +70,14 @@ sub load_opcodes {
     $Keyword{HEX} = 1;
     $Inst{PAG}    = [ 0x106, 0 ];
     $Keyword{PAG} = 1;
+    $Inst{LLB}    = [ 0x107, 2 ];
+    $Keyword{LLB} = 1;
+    $Inst{LLA}    = [ 0x108, 2 ];
+    $Keyword{LLA} = 1;
+    $Inst{BYTE}    = [ 0x109, 0 ];
+    $Keyword{BYTE} = 1;
+    $Inst{WORD}    = [ 0x10a, 0 ];
+    $Keyword{WORD} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
     while (<$IN>) {
@@ -389,6 +397,26 @@ sub parse2 {
             ( $opcode, $oplen ) = @{ $Inst{"LCA"} };
         }
 
+        # LLB instruction: load the low byte of a label in B
+        if ( !$firstpass && $inst eq "LLB" ) {
+
+            # Shift down the low byte, then change instruction to LCB
+            die("No LLB value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            $constant[0] = $constant[0] & 0xFF;
+            ( $opcode, $oplen ) = @{ $Inst{"LCB"} };
+        }
+
+        # LLA instruction: load the low byte of a label in A
+        if ( !$firstpass && $inst eq "LLA" ) {
+
+            # Shift down the low byte, then change instruction to LCA
+            die("No LLA value on line $linenum: $wholeline\n")
+              if ( !defined( $constant[0] ) );
+            $constant[0] = $constant[0] & 0xFF;
+            ( $opcode, $oplen ) = @{ $Inst{"LCA"} };
+        }
+
         # SIA/SIB instruction: also insert an incremented low pointer byte
         if ( !$firstpass && $inst =~ m{^SI[AB]$} ) {
             die("No SIA/SIB value on line $linenum: $wholeline\n")
@@ -425,6 +453,28 @@ sub parse2 {
               if ( $firstpass && ( $oldPC >> 8 ) != ( $PC >> 8 ) );
         }
 
+        # Reserve number of bytes
+        if ( $inst eq "BYTE" ) {
+            my $oldPC = $PC;
+            my $num_bytes = 1;
+            $num_bytes = $constant[0]
+              if (length $constant[0]);
+            $PC += $num_bytes;
+            warn("Warning: $num_bytes bytes straddles pages\n")
+              if ( $firstpass && ( $oldPC >> 8 ) != ( $PC >> 8 ) );
+        }
+
+        # Reserve number of words
+        if ( $inst eq "WORD" ) {
+            my $oldPC = $PC;
+            my $num_bytes = 2;
+            $num_bytes = $constant[0]*2
+              if (length $constant[0]);
+            $PC += $num_bytes;
+            warn("Warning: $num_bytes words straddles pages\n")
+              if ( $firstpass && ( $oldPC >> 8 ) != ( $PC >> 8 ) );
+        }
+
         # Increment PC to the start of the next page
         if ( $inst eq "PAG" ) {
             my $oldPC = $PC;
@@ -441,8 +491,8 @@ sub parse2 {
             die("No indexed value on line $linenum: $wholeline\n")
               if ( $isindexed && !defined( $constant[0] ) );
             printf( "\tShifting addr %04x as indexed\n", $constant[0] )
-              if ( $debug && $isindexed );
-            $constant[0] = $constant[0] >> 8 if ($isindexed);
+              if ( $debug && $isindexed && $oplen == 2 );
+            $constant[0] = $constant[0] >> 8 if ($isindexed && $oplen == 2);
 
             if ( $oplen > 0 ) {
                 setMEM( $PC, $opcode );
@@ -489,18 +539,18 @@ while ( @ARGV > 1 ) {
         shift(@ARGV);
         next;
     }
-    if ( $ARGV[0] eq "-r" ) {
-        $StartPC = 0x8000;
-        $nextreturnaddr = 0xFE00; 
-        $ramimage++;
+    if ( $ARGV[0] eq "-m" ) {
+        $StartPC = 0x0000;
+        $nextreturnaddr = 0xFFFE;
+        $ramimage = 0;
         shift(@ARGV);
         next;
     }
-    die("Usage: $0 [-d] [-r] infile\n");
+    die("Usage: $0 [-d] [-m] infile\n");
 }
 
 # Give usage
-die("Usage: $0 [-d] [-r] infile\n") if ( @ARGV != 1 );
+die("Usage: $0 [-d] [-m] infile\n") if ( @ARGV != 1 );
 
 # Load the instruction names, opcodes and lengths
 load_opcodes();

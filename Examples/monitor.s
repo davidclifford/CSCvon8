@@ -9,7 +9,12 @@
 #define JINA	     JIU .; INA
 
 main:
-    ORG $0006
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
+    NOP
 
     STO 0 bakg
 	JSR cls         # Clear video memory

@@ -1139,51 +1139,51 @@ bakg: EQU $fd12
 forg: EQU $fd13
 
 # Tetris variables
-char_indx: HEX "00"
-rand: HEX "00"
-tile: HEX "00 00"
-rota: HEX "00"
-next_rota: HEX "00"
-tx: HEX "00"
-ty: HEX "00"
-tile_x: HEX "00"
-tile_y: HEX "00"
-next_tile_x: HEX "00"
-next_tile_y: HEX "00"
-txc: HEX "00"
-tyc: HEX "00"
-piece: HEX "00"
-next: HEX "00"
-temp: HEX "00"
-pxc: HEX "00"
-pyc: HEX "00"
-pix: HEX "00"
-px: HEX "00"
-py: HEX "00"
-erase: HEX "00"
-fits: HEX "00"
-down: HEX "00"
-full: HEX "00"
-gravity: HEX "00 00"
-keypress: HEX "00"
-score0: HEX "00"
-score1: HEX "00"
-score2: HEX "00"
-score3: HEX "00"
-score4: HEX "00"
-score5: HEX "00"
-_score0: HEX "00"
-_score1: HEX "00"
-_score2: HEX "00"
-_score3: HEX "00"
-lines: HEX "00"
+char_indx: BYTE
+rand: BYTE
+tile: WORD
+rota: BYTE
+next_rota: BYTE
+tx: BYTE
+ty: BYTE
+tile_x: BYTE
+tile_y: BYTE
+next_tile_x: BYTE
+next_tile_y: BYTE
+txc: BYTE
+tyc: BYTE
+piece: BYTE
+next: BYTE
+temp: BYTE
+pxc: BYTE
+pyc: BYTE
+pix: BYTE
+px: BYTE
+py: BYTE
+erase: BYTE
+fits: BYTE
+down: BYTE
+full: BYTE
+gravity: WORD
+keypress: BYTE
+score0: BYTE
+score1: BYTE
+score2: BYTE
+score3: BYTE
+score4: BYTE
+score5: BYTE
+_score0: BYTE
+_score1: BYTE
+_score2: BYTE
+_score3: BYTE
+lines: BYTE
 
 PAG
 start_mess: STR "Press Enter to Start"
 PAG
 game_over_mess: STR "Game over, Man!"
 PAG
-board: HEX "00"
+board: BYTE
 PAG
 shapes:
 #I

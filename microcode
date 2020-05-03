@@ -526,6 +526,55 @@ START := MEMresult IRload PCincr
 	ARena VIDresult Bload
 	uSreset
 
+98 LAI_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ARena MEMresult Aload
+	uSreset
+
+99 LBI_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ARena MEMresult Bload
+	uSreset
+
+9a STI_A_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ALUresult A ARena MEMload
+	uSreset
+
+9b STI_B_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ALUresult B ARena MEMload
+	uSreset
+
+9c STI_0_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ALUresult 0 ARena MEMload
+	uSreset
+
+9d VAI_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ARena VIDresult Aload
+	uSreset
+
+9e VBI_,B: MEMresult AHload PCincr
+    MEMresult ALload PCincr
+    MEMresult ARena AHload
+	ALUresult B ALload ARena
+	ARena VIDresult Aload
+	uSreset
+
 # Clutching at straws instructions
 E0 JLT8: MEMresult AHload PCincr
 	MEMresult ALload PCincr
