@@ -488,8 +488,8 @@ sub parse2 {
         if ( !$firstpass ) {
 
             # Shift the constant if indexed
-            die("No indexed value on line $linenum: $wholeline\n")
-              if ( $isindexed && !defined( $constant[0] ) );
+#            die("No indexed value on line $linenum: $wholeline\n")
+#              if ( $isindexed && !defined( $constant[0] ) );
             printf( "\tShifting addr %04x as indexed\n", $constant[0] )
               if ( $debug && $isindexed && $oplen == 2 );
             $constant[0] = $constant[0] >> 8 if ($isindexed && $oplen == 2);

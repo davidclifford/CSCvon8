@@ -1183,7 +1183,7 @@ start_mess: STR "Press Enter to Start"
 PAG
 game_over_mess: STR "Game over, Man!"
 PAG
-board: BYTE
+board: BYTE @200
 PAG
 shapes:
 #I

@@ -516,16 +516,19 @@ START := MEMresult IRload PCincr
 	ALUresult 0 ARena MEMload
 	uSreset
 
+# Load A with Video memory indexed by B
 95 LVA_,B: MEMresult AHload PCincr
 	ALUresult B ALload ARena
 	ARena VIDresult Aload
 	uSreset
 
+# Load B with Video memory indexed by B
 96 LVB_,B: MEMresult AHload PCincr
 	ALUresult B ALload ARena
 	ARena VIDresult Bload
 	uSreset
 
+# Load A indirect, high byte from variable and indexed by B
 98 LAI_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -533,6 +536,7 @@ START := MEMresult IRload PCincr
 	ARena MEMresult Aload
 	uSreset
 
+# Load B indirect, high byte from variable and indexed by B
 99 LBI_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -540,6 +544,7 @@ START := MEMresult IRload PCincr
 	ARena MEMresult Bload
 	uSreset
 
+# Store A indirect, high byte from variable and indexed by B
 9a STI_A_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -547,6 +552,7 @@ START := MEMresult IRload PCincr
 	ALUresult A ARena MEMload
 	uSreset
 
+# Store B indirect, high byte from variable and indexed by B
 9b STI_B_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -554,6 +560,7 @@ START := MEMresult IRload PCincr
 	ALUresult B ARena MEMload
 	uSreset
 
+# Store 0 indirect, high byte from variable and indexed by B
 9c STI_0_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -561,6 +568,7 @@ START := MEMresult IRload PCincr
 	ALUresult 0 ARena MEMload
 	uSreset
 
+# Load A indirect from video mem, high byte from variable and indexed by B
 9d VAI_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
@@ -568,12 +576,34 @@ START := MEMresult IRload PCincr
 	ARena VIDresult Aload
 	uSreset
 
+# Load B indirect from video mem, high byte from variable and indexed by B
 9e VBI_,B: MEMresult AHload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
 	ALUresult B ALload ARena
 	ARena VIDresult Aload
 	uSreset
+
+# Clear 4 bytes starting at address AB, B+=4
+a0 CL4_A_,B: ALUresult A AHload
+	ALUresult B ALload
+	ALUresult 0 ARena MEMload
+	ALUresult B+1 Bload
+	ALUresult B ALload
+	ALUresult 0 ARena MEMload
+	ALUresult B+1 Bload
+	ALUresult B ALload
+	ALUresult 0 ARena MEMload
+	ALUresult B+1 Bload
+	ALUresult B ALload
+	ALUresult 0 ARena MEMload
+    uSreset
+
+# Clear byte at address AB
+a1 CLR_A_,B: ALUresult A AHload
+	ALUresult B ALload
+	ALUresult 0 ARena MEMload
+    uSreset
 
 # F0-FF: Nasty evil instructions
 
