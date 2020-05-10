@@ -1124,6 +1124,7 @@ disp_score:
 
     RTS disp_score
 
+
 # Exit to monitor
 exit_game:
     JMP monitor
