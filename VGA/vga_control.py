@@ -16,7 +16,7 @@ control: uint8 = [0 for f in range(1 << 17)]
 for y in range(0, 1024):
     for x in range(0, 128):
         addr = y << 7 | x
-        if y < 525:
+        if y < 525 or x < 100:
             control[addr] |= Yreset
         if x < 100:
             control[addr] |= Xreset
