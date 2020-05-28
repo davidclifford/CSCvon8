@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'pic'
+filename = 'gf_hi'
 
 
 def plot(x, y, r, g, b):
@@ -37,7 +37,7 @@ for y in range(128):
             red = pix[0] >> 6
             grn = pix[1] >> 6
             blu = pix[2] >> 6
-            colour = red << 4 | grn << 2 | blu << 0
+            colour = red << 4 | grn << 2 | blu << 0 | ((x + y) % 4) << 6
             pic_file.write(uint8(colour))
             hex_file.write(f'{colour:02x} ')
             plot(x, y, red, grn, blu)
