@@ -39,8 +39,8 @@ toprowcache:	EQU $9E00		# Cache of the previous top row
 #
 	STO 0 cls+1
 1:
-	LDA @160
-	LDB $00
+	LCA @160
+	LDB 0
 cls:
     STO 0 $0000,B
 	LDB B+1
