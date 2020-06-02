@@ -53,8 +53,10 @@ puts:
     # Output pixel data onto screen
 next_pix:
     LIA pix
+    JAZ 1f
     LDB colour
     LDA A|B
+1:
     SIA y
     LDA pix+1
     TST A+1 JC 2f
@@ -116,7 +118,6 @@ end:
 monitor: EQU $00bb
 
 PAG
-
 pos: BYTE
 s_ptr: WORD
 y: BYTE
@@ -127,13 +128,9 @@ xc: BYTE
 yc: BYTE
 
 PAG
-#mess: STR "v\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\nv\n123456789 123456789 123456789 123456789 123456789 123"
-#mess: STR "123456789 123456789 123456789 123456789 123456789 123\n"
-mess: STR "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~\nTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~"
-#mess: STR "!$%&'()*+,-./0123456789<=>?\n@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_\n`abcdefghijklmnopqrstuvwxyz{|}~"
+mess: STR "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~\nTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~\nTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!"
 
 PAG
-
 ascii:
 	HEX "00 00 00 00 00 00 00 00 00 00 00 00" #
 	HEX "00 0d 08 00 07 02 00 01 00 00 01 00" #  !
