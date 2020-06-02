@@ -917,7 +917,7 @@ for i in conv:
     print('{:02x}'.format(i), end='')
     count += 1
     if count % 12 == 0:
-        print('"')
+        print('" # ', chr(32+int((count-1)/12)))
     else:
         print(end=' ')
 

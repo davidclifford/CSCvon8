@@ -397,9 +397,6 @@ pchar:
     STO 0 xpos
     LDA ypos
     STO A+1 ypos
-    LDA bakg
-    LCB $07
-    STO A+B bakg
     JMP 10b
 
 # Ascii chars 32-96

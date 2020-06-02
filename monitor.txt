@@ -1,4 +1,9 @@
-PC 0006, Recognised ORG => 257 0
+PC 0000, Recognised NOP => 0 1
+PC 0001, Recognised NOP => 0 1
+PC 0002, Recognised NOP => 0 1
+PC 0003, Recognised NOP => 0 1
+PC 0004, Recognised NOP => 0 1
+PC 0005, Recognised NOP => 0 1
 PC 0006, Recognised STO_0 => 64 3
 PC 0009, Recognised JSR => 240 7
 PC 0010, Recognised LCB => 97 2
@@ -342,12 +347,9 @@ PC 0370, Recognised RTS => 241 3
 PC 0373, Recognised STO_0 => 64 3
 PC 0376, Recognised LDA => 98 3
 PC 0379, Recognised STO_A+1 => 69 3
-PC 037c, Recognised LDA => 98 3
-PC 037f, Recognised LCB => 97 2
-PC 0381, Recognised STO_A+B => 73 3
-PC 0384, Recognised JMP => 112 3
-PC 0387, Recognised PAG => 262 0
-Page aligned PC 0387 -> 0400
+PC 037c, Recognised JMP => 112 3
+PC 037f, Recognised PAG => 262 0
+Page aligned PC 037f -> 0400
 PC 0400, Recognised HEX => 261 0
 PC 0407, Recognised HEX => 261 0
 PC 040e, Recognised HEX => 261 0
@@ -535,7 +537,18 @@ Numeric labels:
 9: 872
 10: 880
 11: 883
-PC 0006, Recognised ORG => 257 0
+PC 0000, Recognised NOP => 0 1
+  00
+PC 0001, Recognised NOP => 0 1
+  00
+PC 0002, Recognised NOP => 0 1
+  00
+PC 0003, Recognised NOP => 0 1
+  00
+PC 0004, Recognised NOP => 0 1
+  00
+PC 0005, Recognised NOP => 0 1
+  00
 PC 0006, Recognised STO_0 => 64 3
   40 fd 12
 PC 0009, Recognised JSR => 240 7
@@ -1239,16 +1252,10 @@ PC 0376, Recognised LDA => 98 3
   62 fd 0f
 PC 0379, Recognised STO_A+1 => 69 3
   45 fd 0f
-PC 037c, Recognised LDA => 98 3
-  62 fd 12
-PC 037f, Recognised LCB => 97 2
-  61 07
-PC 0381, Recognised STO_A+B => 73 3
-  49 fd 12
-PC 0384, Recognised JMP => 112 3
+PC 037c, Recognised JMP => 112 3
   70 03 70
-PC 0387, Recognised PAG => 262 0
-Page aligned PC 0387 -> 0400
+PC 037f, Recognised PAG => 262 0
+Page aligned PC 037f -> 0400
 PC 0400, Recognised HEX => 261 0
 PC 0407, Recognised HEX => 261 0
 PC 040e, Recognised HEX => 261 0
