@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'alex'
+filename = 'gf4'
 
 
 def plot(x, y, r, g, b):
