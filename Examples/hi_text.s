@@ -53,7 +53,6 @@ puts:
     # Output pixel data onto screen
 next_pix:
     LIA pix
-    JAZ 1f
     LDB colour
     LDA A|B
 1:
