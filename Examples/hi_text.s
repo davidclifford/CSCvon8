@@ -25,12 +25,14 @@ puts:
     LHB ascii
     STO A+B pix
 
-# change colour
+# change colour if space
+    LDB pos
+    LDA mess,B
+    LCB ' '
+    JNE 3f
     LDA x
     LDB y
     LDA A+B
-    LCB @3
-    LDA A/B
     LCB @7
     LDA A&B
     JAZ 1f
@@ -43,7 +45,7 @@ puts:
     LCB $80
     LDA A|B
     STO A colour
-
+3:
     # Init drawing of character
     LCA @2
     STO A xc
@@ -127,7 +129,9 @@ xc: BYTE
 yc: BYTE
 
 PAG
-mess: STR "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~\nTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!\nthe quick brown fox jumps over the lazy dog?\n01234567890~\nTHE QUICK BROWN FOX JUMPS OVER THE LAZY DOG!"
+mess: STR "The Quick Brown Fox Jumps Over The Lazy Dog?\nHi-res text mode - copywrite June 2020 David Clifford\n6 x 8 Font, 53 x 30 characters on screen in 7 colours\n\nabcde fghij klmno pqrst uvwxyz\n\nABCD EFGHI JKLMN OPQRS TUVW XYZ\n\n01234 56789 !@$%^ &*()_+ {}|:<>?"
+PAG
+mes1: STR "         1111111112222222222333333333344444444445555\n123456789 123456789 123456789 123456789 123456789 123\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30"
 
 PAG
 ascii:
