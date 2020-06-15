@@ -1,27 +1,12 @@
 # To test new indirect indexed instructions
-
-    LCA $30
-    STO A forg
-    LCA $3f
+    LCA $00
     STO A bakg
-    LCA @8
-    STO A xpos
-    LCA @14
-    STO A ypos
-    STO 0 x
 1:
-    LDB x
-    LDA mess,B
-    JAZ 2f
-    STO A char
-    JSR pchar pchar_ret
-    LDB x
-    STO B+1 x
-    JMP 1b
-2:
-    JIU .
+#    JIU .
     INA
-scroll:
+    LCB 'q'
+    JEQ monitor
+2:
     LDA 0
     STO A yu
     LCB @1
@@ -42,25 +27,19 @@ scroll:
     LCA @120
     JNE 3b
 
-    JMP scroll
+    LDB 0
+5:
+    LDA bakg
+    STO A $7700,B
+    LDB B+1
+    LCA @160
+    JNE 5b
 
-    JIU .
-    INA
-    JMP monitor
+    JMP 1b
 
 yu:    BYTE
 yd:    BYTE
-x:    BYTE
-pix:  BYTE
-PAG
-mess: STR "Hello, World"
 
 # System variables
-monitor: EQU $0006
-pchar: EQU $02d3
-pchar_ret: EQU $fff4
-char: EQU $fd11
-xpos: EQU $fd10
-ypos: EQU $fd0f
+monitor: EQU $00bb
 bakg: EQU $fd12
-forg: EQU $fd13
