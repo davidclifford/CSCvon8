@@ -4,9 +4,11 @@
     STO 0 x
     STO 0 y
     STO 0 pos
-    LCA $d0 # 1 101 0000
+    LCA $90 # 1 001 0000
     STO A colour
-
+    STO 0 char
+    LDA 0
+    STO A+1 col
 puts:
     # Get Next character
     LDB pos
@@ -26,19 +28,19 @@ puts:
     STO A+B pix
 
 # change colour if space
-    LDB pos
-    LDA mess,B
+    LDA char
     LCB ' '
     JNE 3f
-    LDA x
-    LDB y
-    LDA A+B
+    LDA col
+    LDA A+1
     LCB @7
     LDA A&B
+    STO A col
     JAZ 1f
     JMP 2f
 1:
-    LCA @4
+    LDA A+1
+    STO A col
 2:
     LCB @4
     LDA A<<B
@@ -109,8 +111,10 @@ control:
     STO A+B y
 
 next_char:
-    LDA pos
-    STO A+1 pos
+    LDB pos
+    LDA mess,B
+    STO A char
+    STO B+1 pos
     JMP puts
 
 end:
@@ -127,6 +131,8 @@ pix: WORD
 colour: BYTE
 xc: BYTE
 yc: BYTE
+char: BYTE
+col: BYTE
 
 PAG
 mess: STR "The Quick Brown Fox Jumps Over The Lazy Dog?\nHi-res text mode - copywrite June 2020 David Clifford\n6 x 8 Font, 53 x 30 characters on screen in 7 colours\n\nabcde fghij klmno pqrst uvwxyz\n\nABCD EFGHI JKLMN OPQRS TUVW XYZ\n\n01234 56789 !@$%^ &*()_+ {}|:<>?"
