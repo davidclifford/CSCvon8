@@ -14,6 +14,7 @@ my @Line;            # Array of whole lines from input file
 my @Linenum;         # Line number for each line in @Line
 my @MEM = (0) x 65536;  # Contents of memory
 my %Label;              # Hash of labels
+my %Export;             # Hash of export symbols
 my @Numlabel;           # Sparse 2D array of numeric labels and at what location
                         # they were defined.
 
@@ -50,6 +51,15 @@ sub get_return_address {
     return ( $ReturnAddr{$funcaddr} );
 }
 
+# Get the return address for a function, given an int function address if it already exists
+sub get_existing_return_address {
+    my $funcaddr = shift;
+    if ( !defined( $ReturnAddr{$funcaddr} ) ) {
+        return undef;
+    }
+    return ( $ReturnAddr{$funcaddr} );
+}
+
 # Load the opcodes file to populate the %Inst hash
 sub load_opcodes {
     my $lnum = 0;
@@ -78,6 +88,8 @@ sub load_opcodes {
     $Keyword{BYTE} = 1;
     $Inst{WORD}    = [ 0x10a, 0 ];
     $Keyword{WORD} = 1;
+    $Inst{EXPORT}    = [ 0x10b, 0 ];
+    $Keyword{EXPORT} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
     while (<$IN>) {
@@ -482,6 +494,20 @@ sub parse2 {
             printf( "Page aligned PC %04x -> %04x\n", $oldPC, $PC ) if ($debug);
         }
 
+
+        if ( $inst eq "EXPORT"  && !$firstpass) {
+            my $lab = $otherlist[0];
+            my $lab_val = get_label_value($lab);
+            my $lab_ret = get_existing_return_address($lab_val);
+            $Export{$lab} = $lab_val;
+            if ( $lab_ret ) {
+                my $lab_return = "${lab}_ret";
+                $Export{$lab_return} = $lab_ret;
+            }
+            printf( "Exporting label %s: address %04x \n", $lab, $lab_val ) if ($debug && !$lab_ret);
+            printf( "Exporting subroutine %s: address %04x, return %04x\n", $lab, $lab_val, $lab_ret ) if ($debug && $lab_ret);
+        }
+
         # Back to general instruction handling
 
         # Save the instruction on pass 2 if there was an instruction.
@@ -598,6 +624,27 @@ foreach my $i ( 0 .. ( @Line - 1 ) ) {
     my $line = $Line[$i];
     $linenum = $Linenum[$i];
     parse2( $line, 0 );
+}
+
+# Show exports
+if ($debug) {
+    printf("Exports: %d\n", scalar(%Export));
+    foreach my $k ( sort( keys(%Export) ) ) {
+        printf( "%s: %04x\n", $k, $Export{$k} );
+    }
+}
+
+# Output exports as .h header file
+if (scalar(%Export)) {
+    my $exportfile = $ARGV[0];
+    $exportfile =~ s{\.s$}{};
+    $exportfile = $exportfile . ".h";
+
+    open( my $OUT, ">", $exportfile) || die("Can't write to $exportfile: $!\n");
+    foreach my $k ( sort( keys(%Export) ) ) {
+        printf( $OUT "%s: EQU \$%04x\n", $k, $Export{$k} );
+    }
+    close($OUT);
 }
 
 # Dump a RAM image ready to load into the monitor if $ramimage is set

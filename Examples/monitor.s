@@ -17,7 +17,7 @@ main:
     NOP
 
     STO 0 bakg
-	JSR cls         # Clear video memory
+    JSR cls         # Clear video memory
 
 	LCB $00			# Print out the welcome message
 1:	LDA welcome,B
@@ -535,3 +535,11 @@ bit_count: HEX "00"
 line_count: HEX "00"
 bmp: HEX "00"
 
+EXPORT newprompt
+EXPORT cls
+EXPORT pchar
+EXPORT char
+EXPORT xpos
+EXPORT ypos
+EXPORT bakg
+EXPORT forg

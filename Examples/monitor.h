@@ -1,0 +1,10 @@
+bakg: EQU $fd12
+char: EQU $fd11
+cls: EQU $02aa
+cls_ret: EQU $fffe
+forg: EQU $fd13
+newprompt: EQU $00bb
+pchar: EQU $02d3
+pchar_ret: EQU $fff4
+xpos: EQU $fd10
+ypos: EQU $fd0f
