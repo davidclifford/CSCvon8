@@ -11,7 +11,7 @@
     STO A __sxpos
     LCB $00 # y = 0
     STO B __sypos
-    LCA $06 # YELLOW
+    LCA $01 # YELLOW
     STO A __sink
     LCB message
     STO B pos
@@ -25,6 +25,20 @@
     JSR sys_spchar sys_spchar_ret
     LDB pos
     STO B+1 pos
+
+    LDA __schar
+    LCB ' '
+    JNE 1b
+    LDA __sink
+    LDA A+1
+    LCB $07
+    LDA A&B
+    JAZ 3f
+    STO A __sink
+    JMP 1b
+3:
+    LDA A+1
+    STO A __sink
     JMP 1b
 2:
 # Output ALL printable characters
@@ -54,6 +68,6 @@
 pos: BYTE
 char: BYTE
     PAG
-message: STR "CSCvon8 Monitor, Revision: 2.02 ,type ? for help\nBy Warren Toomey and David Clifford\n\n"
+message: STR "CSCvon8 Monitor, Revision: 2.02 ,type ? for help\nBy Warren Toomey and David Clifford June 2020\n\n"
 
 

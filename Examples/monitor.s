@@ -312,7 +312,7 @@ sys_cls:
     RTS sys_cls
 
 ###############
-# Print a character (__char) at position (__xpos, __ypos) in colour (__ink, __paper)
+# Print a large font character (__char) at position (__xpos, __ypos) in colour (__ink, __paper)
 ###############
 sys_pchar:
     LDA __char
@@ -443,7 +443,6 @@ sys_spchar:
 next_pix:
     LIA pix
     LDB ink
-#    LCB $F0
     LDA A|B
 1:
     SIA yscoord
@@ -697,7 +696,7 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.01, type ? for help\n\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.02, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
