@@ -1,6 +1,6 @@
 #include "monitor.h"
 
-# Print string to VGA
+# Print string in small font to VGA
 #
     LCA $01
     STO A __paper
@@ -8,11 +8,11 @@
 
 # Set up X & Y position, background and foreground colour
     LCA $00 # x = 0
-    STO A __xpos
+    STO A __sxpos
     LCB $00 # y = 0
-    STO B __ypos
-    LCA $3C # YELLOW
-    STO A __ink
+    STO B __sypos
+    LCA $06 # YELLOW
+    STO A __sink
     LCB message
     STO B pos
 
@@ -21,8 +21,8 @@
     LDB pos
     LDA message,B
     JAZ 2f
-    STO A __char
-    JSR sys_pchar sys_pchar_ret
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
     LDB pos
     STO B+1 pos
     JMP 1b
@@ -33,10 +33,10 @@
 1:
     LDA char
     STO A+1 char
-    STO A __char
-    JSR sys_pchar sys_pchar_ret
-    LDA __xpos
-    LCB @24
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
+    LDA __sxpos
+    LCB @53
     LDA A%B
     JAZ 3f
 2:
@@ -47,13 +47,13 @@
     JMP sys_cli # return to the Monitor
 3:
     LCA '\n'
-    STO A __char
-    JSR sys_pchar sys_pchar_ret
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
     JMP 2b
 
 pos: BYTE
 char: BYTE
     PAG
-message: STR "CSCvon8 Monitor\nRevision: 2.01\ntype ? for help\nBy Warren Toomey\nand David Clifford\n"
+message: STR "CSCvon8 Monitor, Revision: 2.02 ,type ? for help\nBy Warren Toomey and David Clifford\n\n"
 
 
