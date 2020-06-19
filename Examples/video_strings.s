@@ -34,5 +34,5 @@
 pos: HEX "00"
 
     PAG
-message: STR "CSCvon8 Monitor\nRevision: 2.01\ntype ? for help\nBy Warren Toomey\nand David Clifford"
+message: STR "CSCvon8 Monitor\nRevision: 2.01\ntype ? for help\nBy Warren Toomey\nand David Clifford\n{|}~"
 

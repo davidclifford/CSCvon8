@@ -1,9 +1,9 @@
 bakg: EQU $fd12
 char: EQU $fd11
 cls: EQU $02aa
-cls_ret: EQU $fffe
+cls_ret: EQU $fffc
 forg: EQU $fd13
-newprompt: EQU $00bb
+newprompt: EQU $00b1
 pchar: EQU $02d3
 pchar_ret: EQU $fff4
 xpos: EQU $fd10

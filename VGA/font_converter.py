@@ -909,7 +909,10 @@ for char in range(96):
             if b3 == 1:
                 plot(x + bit, y + lin + 1, 3, 3, 3)
             conv.append((b3 << 3) | (b2 << 2) | (b1 << 1) | b0)
+    pygame.display.update()
 
+# Convert to hi-res font
+print('Hi-res 3x4 bytes')
 count = 0
 for i in conv:
     if count % 12 == 0:
@@ -918,6 +921,19 @@ for i in conv:
     count += 1
     if count % 12 == 0:
         print('" # ', chr(32+int((count-1)/12)))
+    else:
+        print(end=' ')
+
+# Convert to lo-res font
+print('Lo-res 8 bytes')
+count = 0
+for i in font:
+    if count % 8 == 0:
+        print('\tHEX "', end='')
+    print('{:02x}'.format(i), end='')
+    count += 1
+    if count % 8 == 0:
+        print('" # ', chr(32+int((count-1)/8)))
     else:
         print(end=' ')
 

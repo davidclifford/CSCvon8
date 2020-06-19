@@ -1127,17 +1127,10 @@ disp_score:
 
 # Exit to monitor
 exit_game:
-    JMP monitor
+    JMP newprompt
 
 # System variables
-monitor: EQU $0006
-pchar: EQU $02d3
-pchar_ret: EQU $fff4
-char: EQU $fd11
-xpos: EQU $fd10
-ypos: EQU $fd0f
-bakg: EQU $fd12
-forg: EQU $fd13
+#include "../Examples/monitor.h"
 
 # Tetris variables
 char_indx: BYTE
