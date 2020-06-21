@@ -1,45 +1,40 @@
-# To test new indirect indexed instructions
-    LCA $00
-    STO A bakg
+# Scroll screen using indirect indexed instructions
 1:
-#    JIU .
     INA
     LCB 'q'
-    JEQ monitor
+    JEQ sys_cli
 2:
-    LDA 0
-    STO A yu
-    LCB @1
-    STO B yd
+    LCA @120
+    STO A to
+    LDB 0
+    STO B from
 3:
     LDB 0
 4:
-    VAI yd,B
-    STI A yu,B
+    VAI from,B
+    STI A to,B
     LDB B+1
     LCA @160
     JNE 4b
-    LDA yu
-    STO A+1 yu
-    LDA yd
-    STO A+1 yd
-    LDB yd
-    LCA @120
+    LDA to
+    LCB @120
+    JEQ 6f
+    STO A+1 to
+7:
+    LDA from
+    STO A+1 from
+    LCB @120
     JNE 3b
 
     LDB 0
-5:
-    LDA bakg
-    STO A $7700,B
-    LDB B+1
-    LCA @160
-    JNE 5b
-
     JMP 1b
+6:
+    STO 0 to
+    JMP 7b
 
-yu:    BYTE
-yd:    BYTE
+to:    BYTE
+from:  BYTE
 
 # System variables
-monitor: EQU $00bb
-bakg: EQU $fd12
+#include "monitor.h"
+

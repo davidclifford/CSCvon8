@@ -5,26 +5,26 @@
 # Move char around screen
 #
     LCA $02
-    STO A bakg
-    JSR cls cls_ret
+    STO A __paper
+    JSR sys_cls sys_cls_ret
 
 # Set up X & Y position, background and foreground colour
     LCA @10 # x = 0
-    STO A xpos
+    STO A __xpos
     LCB @10 # y = 0
-    STO B ypos
+    STO B __ypos
     LCA $30 # RED
-    STO A forg
+    STO A __ink
     LCB $0C # GREEN
-    STO B bakg
+    STO B __paper
 
 next_input:
     LCA '*'
-    STO A char
+    STO A __char
 
-    JSR pchar pchar_ret
-    LDA xpos
-    STO A-1 xpos
+    JSR sys_pchar sys_pchar_ret
+    LDA __xpos
+    STO A-1 __xpos
 
     JINA
     JOUA
@@ -38,33 +38,25 @@ next_input:
     LCB 's'
     JEQ down
     LCB @27
-    JEQ monitor # return to the Monitor
+    JEQ sys_cli # return to the Monitor
     JMP next_input
 
 left:
-    LDA xpos
-    STO A-1 xpos
+    LDA __xpos
+    STO A-1 __xpos
     JMP next_input
 right:
-    LDA xpos
-    STO A+1 xpos
+    LDA __xpos
+    STO A+1 __xpos
     JMP next_input
 up:
-    LDA ypos
-    STO A-1 ypos
+    LDA __ypos
+    STO A-1 __ypos
     JMP next_input
 down:
-    LDA ypos
-    STO A+1 ypos
+    LDA __ypos
+    STO A+1 __ypos
     JMP next_input
 
-monitor: EQU $001c
-pchar: EQU $02d3
-pchar_ret: EQU $fff4
-cls: EQU $02aa
-cls_ret: EQU $fffe
-char: EQU $fd11
-xpos: EQU $fd10
-ypos: EQU $fd0f
-bakg: EQU $fd12
-forg: EQU $fd13
+#include "monitor.h"
+

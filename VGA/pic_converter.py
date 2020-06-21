@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'dredd-badge'
+filename = 'gigatron'
 
 
 def plot(x, y, r, g, b):

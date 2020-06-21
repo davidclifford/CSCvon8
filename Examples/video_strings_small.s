@@ -1,8 +1,8 @@
-#include "monitor.h"
 
 # Print string in small font to VGA
 #
-    LCA $01
+    OUT 'X'
+    LCA $00
     STO A __paper
     JSR sys_cls sys_cls_ret
 
@@ -11,7 +11,7 @@
     STO A __sxpos
     LCB $00 # y = 0
     STO B __sypos
-    LCA $01 # YELLOW
+    LCA $04 # YELLOW
     STO A __sink
     LCB message
     STO B pos
@@ -68,6 +68,7 @@
 pos: BYTE
 char: BYTE
     PAG
-message: STR "CSCvon8 Monitor, Revision: 2.02 ,type ? for help\nBy Warren Toomey and David Clifford June 2020\n\n"
+message: STR "CSCvon8 Monitor, Revision: 2.02 ,type ? for help \nBy Warren Toomey and David Clifford June 2020 \n\n"
 
+#include "monitor.h"
 
