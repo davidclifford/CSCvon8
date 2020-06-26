@@ -18,21 +18,31 @@ main:
     NOP
     NOP
 
+    STO 0 __sxpos
+    STO 0 __sypos
 	LCB clear			# Clear screen
 1:	LDA clear,B
 	JAZ 2f
 	JOUT(A)
 	LDB B+1
 	JMP 1b
-2:	LCB welcome			# Print out the welcome message
+2:
+    LCA $04
+    STO A __sink
+    LCB welcome			# Print out the welcome message
 1:	LDA welcome,B
 	JAZ prompt
 	JOUTA
 	LDB B+1
 	JMP 1b
 
-prompt:	putc('>')		# Print out the prompt
+prompt:
+    LCA $06
+    STO A __sink
+    putc('>')		# Print out the prompt
 	putc(' ')
+    LCA $02
+    STO A __sink
 	getc(cmdchar)		# Get the command letter and
 	JOUTA			# echo it out to the user
 	LCB '\n'		# Loop when we get a newline
@@ -102,11 +112,13 @@ terminate:
     JSR sys_cls # Clear video memory
     STO 0 __sxpos
     STO 0 __sypos
-    LCA $07
+    LCA $02
     STO A __sink
 	JMP $0000
 
 printusage:
+    LCA $05
+    STO A __sink
 	printstr(usage)
 	JMP prompt
 
@@ -407,12 +419,20 @@ sys_pchar:
     LDA __char
     LCB '\n'
     JEQ 11f
+    LCB '\r'
+    JEQ 11f
 10:
     RTS sys_pchar
 11:
     STO 0 __xpos
     LDA __ypos
+    LCB @14
+    JEQ 12f
     STO A+1 __ypos
+    JMP 10b
+12:
+    JSR sys_scroll4
+    JSR sys_scroll4
     JMP 10b
 
 ###############
@@ -493,6 +513,8 @@ next_line:
 fin_char:
     LDA __sxpos
     STO A+1 __sxpos
+    LCB @52
+    JEQ 1f
     RTS sys_spchar
 control:
     # Do \n or \r (as same thing)
@@ -500,12 +522,58 @@ control:
     JEQ 1f
     LCB $0D
     JEQ 1f
+3:
     RTS sys_spchar
 1:
     STO 0 __sxpos
     LDA __sypos
+    LCB @29
+    JEQ 2f
     STO A+1 __sypos
-    RTS sys_spchar
+    JMP 3b
+2:
+    JSR sys_scroll4
+    JMP 3b
+
+###################################################
+# Scroll screen up 4 pixels and blank last 4 lines
+###################################################
+sys_scroll4:
+    LCA @0
+    STO A scroll_to
+    LCB @4
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll4
+
+
+########
+# DATA #
+########
 
 # Ascii chars 32-96
 # Large font
@@ -714,7 +782,7 @@ PAG
 # String constants
 	 PAG
 clear:   STR "[2J[H"
-welcome: STR "CSCvon8 Monitor, Revision: 2.02, type ? for help\n\n"
+welcome: STR "CSCvon8 Monitor, Revision: 2.1, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
@@ -759,6 +827,8 @@ yc: BYTE
 xc: BYTE
 ink: BYTE
 temp: BYTE
+scroll_to: BYTE
+scroll_from: BYTE
 
 EXPORT sys_cli
 EXPORT sys_cls
