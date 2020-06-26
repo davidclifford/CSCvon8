@@ -1,0 +1,16 @@
+__char: EQU $fd11
+__ink: EQU $fd13
+__paper: EQU $fd12
+__schar: EQU $fd14
+__sink: EQU $fd17
+__sxpos: EQU $fd16
+__sypos: EQU $fd15
+__xpos: EQU $fd10
+__ypos: EQU $fd0f
+sys_cli: EQU $0146
+sys_cls: EQU $0440
+sys_cls_ret: EQU $fffa
+sys_pchar: EQU $0469
+sys_pchar_ret: EQU $fff2
+sys_spchar: EQU $0515
+sys_spchar_ret: EQU $fffe
