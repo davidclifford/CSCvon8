@@ -637,8 +637,12 @@ if ($debug) {
 # Output exports as .h header file
 if (scalar(%Export)) {
     my $exportfile = $ARGV[0];
-    $exportfile =~ s{\.s$}{};
-    $exportfile = $exportfile . ".h";
+    if ($ramimage) {
+        $exportfile =~ s{\.s$}{};
+        $exportfile = $exportfile . ".h";
+    } else {
+        $exportfile = "Examples/monitor.h"
+    }
 
     open( my $OUT, ">", $exportfile) || die("Can't write to $exportfile: $!\n");
     foreach my $k ( sort( keys(%Export) ) ) {

@@ -490,6 +490,41 @@ control:
     STO A+1 __sypos
     RTS sys_spchar
 
+###################################################
+# Scroll screen up 4 pixels and blank last 4 lines
+###################################################
+sys_scroll4:
+    LCA @0
+    STO A scroll_to
+    LCB @4
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll4
+
 # Ascii chars 32-96
 # Large font
     PAG
@@ -740,6 +775,9 @@ xscoord: BYTE
 yc: BYTE
 xc: BYTE
 ink: BYTE
+temp: BYTE
+scroll_to: BYTE
+scroll_from: BYTE
 
 EXPORT sys_cli
 EXPORT sys_cls
