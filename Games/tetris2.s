@@ -136,12 +136,11 @@ border_plot3:
 # Print start message
     LCA $04
     STO A __sink
-#    STO 0 __paper
     LCA @17
     STO A __sxpos
     LCA @0
     STO A __sypos
-    LDB 0
+    LCB start_mess
 1:
     STO B char_indx
     LDA start_mess,B
@@ -178,7 +177,7 @@ border_plot3:
     STO A __sxpos
     LCA @0
     STO A __sypos
-    LDB 0
+    LCB start_mess
 1:
     STO B char_indx
     LDA start_mess,B
@@ -259,6 +258,24 @@ border_plot3:
     JAZ 6f
     JMP 5b
 6:
+# Print label "Score"
+    LCA @9
+    STO A __sypos
+    LCA @36
+    STO A __sxpos
+    LCA $03
+    STO A __sink
+    LCB label_score
+1:
+    STO B char_indx
+    LDA label_score,B
+    JAZ 2f
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+2:
 # Set score to 0000
     STO 0 score0
     STO 0 score1
@@ -429,6 +446,10 @@ wait_key:
     STO A+1 down
     JMP 9f
 5:
+    # Q quit
+    LCB 'q'
+    JEQ game_over
+
     # Nothing happened - loop back to 8
     JMP 8b
 9:
@@ -548,12 +569,11 @@ game_over:
 # Print GAME OVER message
     LCA $05
     STO A __sink
-#    STO 0 __paper
     LCA @19
     STO A __sxpos
     LCA @0
     STO A __sypos
-    LDB 0
+    LCB game_over_mess
 1:
     STO B char_indx
     LDA game_over_mess,B
@@ -585,7 +605,7 @@ game_over:
     STO A __xpos
     LCA @14
     STO A __ypos
-    LDB 0
+    LCB game_over_mess
 1:
     STO B char_indx
     LDA game_over_mess,B
@@ -1077,7 +1097,7 @@ add_score:
 # SUBROUTINE disp_score
 disp_score:
 
-    LCA @10
+    LCA @11
     STO A __sypos
     LCA @36
     STO A __sxpos
@@ -1128,6 +1148,7 @@ disp_score:
 exit_game:
     JMP sys_cli
 
+PAG
 # System variables
 #include "../Examples/monitor.h"
 
@@ -1173,8 +1194,8 @@ lines: BYTE
 
 PAG
 start_mess: STR "Press Enter to Start"
-PAG
 game_over_mess: STR "Game over, Man!"
+label_score: STR "Score"
 PAG
 board: BYTE @200
 PAG
