@@ -1,7 +1,9 @@
 # Tetris 2 for the CSCvon8
 # By David Clifford June 2020
 #
-
+start:
+    LCA @1
+    STO A restart
 tetris:
 # Clear screen
     STO 0 cls_plot+1
@@ -133,6 +135,66 @@ border_plot3:
     LCB @104
     JNE 2b
 
+# Print label "Next Piece"
+    LCA @4
+    STO A __sypos
+    LCA @36
+    STO A __sxpos
+    LCA $04
+    STO A __sink
+    LCB label_next_piece
+1:
+    STO B char_indx
+    LDA label_next_piece,B
+    JAZ 2f
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+2:
+
+# Print label "Score"
+    LCA @9
+    STO A __sypos
+    LCA @36
+    STO A __sxpos
+    LCA $03
+    STO A __sink
+    LCB label_score
+1:
+    STO B char_indx
+    LDA label_score,B
+    JAZ 2f
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+2:
+
+# Print Instructions
+    LCA @4
+    STO A __sypos
+    LCA @1
+    STO A __sxpos
+    LCA $06
+    STO A __sink
+    LCB label_instr1
+1:
+    STO B char_indx
+    LDA label_instr1,B
+    JAZ 2f
+    STO A __schar
+    JSR sys_spchar sys_spchar_ret
+    LDB char_indx
+    LDB B+1
+    JMP 1b
+2:
+# Skip message if restarting
+    LDA restart
+    JAZ skip
+
 # Print start message
     LCA $04
     STO A __sink
@@ -165,14 +227,8 @@ border_plot3:
     JNE 2b
     JMP exit_game
 3:
-# random piece (next)
-    LDA rand
-    LCB @7
-    STO A%B next
-
 # Erase start message
     STO 0 __sink
-#    STO 0 __paper
     LCA @17
     STO A __sxpos
     LCA @0
@@ -181,13 +237,18 @@ border_plot3:
 1:
     STO B char_indx
     LDA start_mess,B
-    JAZ 2f
+    JAZ skip
     STO A __schar
     JSR sys_spchar sys_spchar_ret
     LDB char_indx
     LDB B+1
     JMP 1b
-2:
+skip:
+    STO 0 restart
+# random piece (next)
+    LDA rand
+    LCB @7
+    STO A%B next
 
 # Initialise board with 52 FFs and 200 zeros (ie 252 initialised bytes)
     # pyc = 20
@@ -255,26 +316,8 @@ border_plot3:
     STO A pxc
     ## Loop until 12 FFs in last line
     # when pxc>0 loop 5:
-    JAZ 6f
-    JMP 5b
-6:
-# Print label "Score"
-    LCA @9
-    STO A __sypos
-    LCA @36
-    STO A __sxpos
-    LCA $03
-    STO A __sink
-    LCB label_score
-1:
-    STO B char_indx
-    LDA label_score,B
     JAZ 2f
-    STO A __schar
-    JSR sys_spchar sys_spchar_ret
-    LDB char_indx
-    LDB B+1
-    JMP 1b
+    JMP 5b
 2:
 # Set score to 0000
     STO 0 score0
@@ -616,6 +659,7 @@ game_over:
     LDB B+1
     JMP 1b
 2:
+# Clear play area
     JMP tetris
 
     # Exit game
@@ -1191,11 +1235,14 @@ _score1: BYTE
 _score2: BYTE
 _score3: BYTE
 lines: BYTE
+restart: BYTE
 
 PAG
 start_mess: STR "Press Enter to Start"
 game_over_mess: STR "Game over, Man!"
 label_score: STR "Score"
+label_instr1: STR "A Left, D Right\n W Turn, S Down\n Q Quit\n Enter Start"
+label_next_piece: STR "Next Piece"
 PAG
 board: BYTE @200
 PAG
