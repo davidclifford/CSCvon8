@@ -451,7 +451,7 @@ sub parse2 {
                 setMEM( $PC++, ord($ch) );
             }
             setMEM( $PC++, 0 );
-            die("String $string straddles pages\n")
+            warn("String $string straddles pages\n")
               if ( ( $oldPC >> 8 ) != ( $PC >> 8 ) );
         }
 
