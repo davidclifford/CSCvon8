@@ -896,18 +896,18 @@ for char in range(96):
         line1 = font[char * 8 + lin]
         line2 = font[char * 8 + lin + 1]
         for bit in range(0, 6, 2):
-            b0 = ((line1 >> (6 - bit)) & 1)
-            b1 = ((line1 >> (6 - bit + 1)) & 1)
-            b2 = ((line2 >> (6 - bit)) & 1)
-            b3 = ((line2 >> (6 - bit + 1)) & 1)
+            b0 = ((line1 >> (6 - bit + 1)) & 1)
+            b1 = ((line1 >> (6 - bit)) & 1)
+            b2 = ((line2 >> (6 - bit + 1)) & 1)
+            b3 = ((line2 >> (6 - bit)) & 1)
             if b0 == 1:
-                plot(x + bit + 1, y + lin, 3, 3, 3)
-            if b1 == 1:
                 plot(x + bit, y + lin, 3, 3, 3)
+            if b1 == 1:
+                plot(x + bit + 1, y + lin, 3, 3, 3)
             if b2 == 1:
-                plot(x + bit + 1, y + lin + 1, 3, 3, 3)
-            if b3 == 1:
                 plot(x + bit, y + lin + 1, 3, 3, 3)
+            if b3 == 1:
+                plot(x + bit + 1, y + lin + 1, 3, 3, 3)
             conv.append((b3 << 3) | (b2 << 2) | (b1 << 1) | b0)
     pygame.display.update()
 

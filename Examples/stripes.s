@@ -1,4 +1,6 @@
 start:
+    JIU .
+    INA
     STO 0 plot+1
 1:
     LCB $00
@@ -14,7 +16,8 @@ plot:
     STO A+1 plot+1
     LCB @120
     JNE 1b
-
+    JIU .
+    INA
     STO 0 plot1+1
 1:
     LCB $00
@@ -31,6 +34,8 @@ plot1:
     LCB @120
     JNE 1b
 
+    JIU .
+    INA
     STO 0 plot2+1
 1:
     LCB $00
@@ -46,6 +51,8 @@ plot2:
     LCB @120
     JNE 1b
 
+    JIU .
+    INA
     STO 0 plot3+1
 1:
     LCB $00

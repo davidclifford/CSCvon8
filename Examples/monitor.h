@@ -7,10 +7,10 @@ __sxpos: EQU $fd16
 __sypos: EQU $fd15
 __xpos: EQU $fd10
 __ypos: EQU $fd0f
-sys_cli: EQU $00b1
-sys_cls: EQU $02aa
-sys_cls_ret: EQU $fffc
-sys_pchar: EQU $02d3
-sys_pchar_ret: EQU $fff4
-sys_spchar: EQU $037f
-sys_spchar_ret: EQU $fff2
+sys_cli: EQU $80b1
+sys_cls: EQU $82aa
+sys_cls_ret: EQU $fefe
+sys_pchar: EQU $82d3
+sys_pchar_ret: EQU $fef6
+sys_spchar: EQU $837f
+sys_spchar_ret: EQU $fef4

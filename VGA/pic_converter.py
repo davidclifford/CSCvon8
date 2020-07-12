@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'gigatron'
+filename = 'random'
 
 
 def plot(x, y, r, g, b):
