@@ -24,13 +24,13 @@ for y in range(0, 2048):
         if x < 50:
             control[addr] |= Xreset
         if x == 49:
-            control[addr] |= Ynext
+            control[addr] |= Ynextq
 
         if x < 41 or x > 46:
             control[addr] |= Hsync
         if y < 490 or y > 491:
                 control[addr] |= Vsync
-        if x >= 40 or y >= 480:
+        if x > 39 or y > 480:
             control[addr] |= PICout
         if x < 40 and y < 480:
             control[addr] |= TESTout

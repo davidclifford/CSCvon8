@@ -1,5 +1,12 @@
 #
-# Output
+# Pixel Control ROM for transforming pixel byte to VGA pixels
+#
+#   When MSB is 0 pixel is 4x4 with 64 colours
+#       00rrggbb
+#   When MSB is 1 pixel is 4 sub-pixels in square in 8 colours
+#       1rgbABCD
+#   CD
+#   AB
 #
 from numpy import uint8
 
@@ -19,9 +26,15 @@ for x in range(2):
                     for place in range(16):
                         address = (1<<7) | (r<<6) | (g<<5) | (b<<4) | (place) | (y<<9) | (x<<8)
                         if place & (1<< (y<<1 | x)):
-                            control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
+                            if r+g+b == 0:
+                                control[address] = 0x34  # Orange not Black
+                            else:
+                                control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
                         else:
-                            control[address] = 0
+                            # if r+g+b == 0:
+                            #     control[address] = 0x3f  # Black on white background
+                            # else:
+                            control[address] = 0x0   # Black background
 
 control_bytes = bytearray(control)
 control_bin = open("pixel_control.bin", "wb")

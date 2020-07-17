@@ -36,7 +36,7 @@ start:
     STO A __sink
     JMP 5b
 6:
-    LCA @1
+    LCA @0
     STO A __sink
     JMP 5b
 

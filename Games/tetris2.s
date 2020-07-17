@@ -56,7 +56,7 @@ cls_plot:
 
     LCA $0F
     STO A __ink
-    LCA 'I'
+    LCA 'E'
     STO A __char
     JSR sys_pchar sys_pchar_ret
 
@@ -196,8 +196,8 @@ border_plot3:
     JAZ skip
 
 # Print start message
-    LCA $04
-    STO A __sink
+#    LCA $04
+    STO 0 __sink # 0 = Orange
     LCA @17
     STO A __sxpos
     LCA @0
@@ -238,6 +238,7 @@ border_plot3:
     STO B char_indx
     LDA start_mess,B
     JAZ skip
+    LCA ' '
     STO A __schar
     JSR sys_spchar sys_spchar_ret
     LDB char_indx
