@@ -605,6 +605,114 @@ a1 CLR_A_,B: ALUresult A AHload
 	ALUresult 0 ARena MEMload
     uSreset
 
+# Stack based instructions
+# Increment stack pointer by 2	(8 steps)
+E0 IS2: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B+1 Bload
+    ALUresult B+1 ARena MEMload
+    uSreset
+
+# Decrement stack pointer by 2 (8 steps)
+E1 DS2: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B-1 Bload
+    ALUresult B-1 ARena MEMload
+    uSreset
+
+# Store address pointed to by stack pointer (12 steps)
+E2 SAS: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B ALload
+    MEMresult Aload PCincr
+    ALUresult A ARena MEMload
+    ALUresult B-1 ALload
+    MEMresult Aload PCincr
+    ALUresult A ARena MEMload
+    uSreset
+
+# Jump to address on stack (13 steps)
+# B = (SP)
+# A = (SP-1)
+# JMP A:B
+E3 JSP: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload    # AR = $FFFF
+    ARena MEMresult Bload   # B = ($FFFF)
+    ALUresult B ALload      # AR = $FF:B
+    ARena MEMresult Aload   # A = (AR)
+    ALUresult B-1 ALload    # AR = $FF:(B-1)
+    ARena MEMresult Bload   # B = (AR)
+    ALUresult A AHload
+    ALUresult B ALload      # AR = A:B
+	ALUresult 0 ARena JumpZero # JMP AR
+	uSreset
+
+# Push A on stack (destroys B)
+E4 PUA: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload    # AR = $FFFF
+    ARena MEMresult Bload   # B = ($FFFF)
+    ALUresult B ALload      # AR = $FF:B
+    ALUresult A ARena MEMload # (AR) = A
+    uSreset
+
+# Pulls A from stack (destroys B)
+E5 PLA: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload    # AR = $FFFF
+    ARena MEMresult Bload   # B = ($FFFF)
+    ALUresult B ALload      # AR = $FF:B
+    ARena MEMresult Aload   # A = (AR)
+    uSreset
+
+# Increment stack pointer by 1
+E6 IS1: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B+1 ARena MEMload
+    uSreset
+
+# Decrement stack pointer by 1
+E7 DS1: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B-1 ARena MEMload
+    uSreset
+
+# Get SP+x into A (9 steps)
+E8 GSA: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    MEMresult Aload PCincr
+    ALUresult A+B ALload
+    ARena MEMresult Aload
+    uSreset
+
+# Put A into SP+x (13 steps)
+E9 PSA: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B ALload
+    ALUresult A ARena MEMload
+    MEMresult Aload PCincr
+    ALUresult A+B Bload
+    ARena MEMresult Aload
+    ALUresult B ALload
+    ALUresult A ARena MEMload
+    uSreset
+
+
 # F0-FF: Nasty evil instructions
 
 # JSR (7 bytes long!): Store at $XXXX the return address $CCCC.
@@ -714,53 +822,4 @@ F6 PPR: MEMresult AHload PCincr
 	ALUresult B ALload
 	ALUresult A ARena MEMload
 	uSreset
-
-# Increment stack pointer by 2	(8 steps)
-F7 ISP: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
-    ARena MEMresult Bload
-    ALUresult B+1 Bload
-    ALUresult B+1 ARena MEMload
-    uSreset
-
-# Decrement stack pointer by 2 (8 steps)
-F8 DSP: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
-    ARena MEMresult Bload
-    ALUresult B-1 Bload
-    ALUresult B-1 ARena MEMload
-    uSreset
-
-# Store address pointed to by stack pointer (12 steps)
-F9 SAS: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
-    ARena MEMresult Bload
-    ALUresult B ALload
-    MEMresult Aload PCincr
-    ALUresult A ARena MEMload
-    ALUresult B-1 ALload
-    MEMresult Aload PCincr
-    ALUresult A ARena MEMload
-    uSreset
-
-# Jump to address on stack (13 steps)
-FA JSP: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
-    ARena MEMresult Bload
-    ALUresult B ALload
-    ARena MEMresult Aload
-    ALUresult B-1 ALload
-    ARena MEMresult Bload
-    ALUresult A AHload
-    ALUresult B ALload
-	ALUresult 0 ARena JumpZero
-	uSreset
-
-
-
-
 

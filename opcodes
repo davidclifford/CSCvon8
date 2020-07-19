@@ -135,6 +135,16 @@
 9e 3 VBI_,B
 a0 1 CL4_A_,B
 a1 1 CLR_A_,B
+e0 1 IS2
+e1 1 DS2
+e2 3 SAS
+e3 1 JSP
+e4 1 PUA
+e5 1 PLA
+e6 1 IS1
+e7 1 DS1
+e8 2 GSA
+e9 2 PSA
 f0 7 JSR
 f1 3 RTS
 f2 3 LIA
@@ -142,7 +152,3 @@ f3 3 LIB
 f4 4 SIA
 f5 4 SIB
 f6 5 PPR
-f7 1 ISP
-f8 1 DSP
-f9 3 SAS
-fa 1 JSP

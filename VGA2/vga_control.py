@@ -24,7 +24,7 @@ for y in range(0, 2048):
         if x < 50:
             control[addr] |= Xreset
         if x == 49:
-            control[addr] |= Ynextq
+            control[addr] |= Ynext
 
         if x < 41 or x > 46:
             control[addr] |= Hsync
