@@ -714,3 +714,53 @@ F6 PPR: MEMresult AHload PCincr
 	ALUresult B ALload
 	ALUresult A ARena MEMload
 	uSreset
+
+# Increment stack pointer by 2	(8 steps)
+F7 ISP: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B+1 Bload
+    ALUresult B+1 ARena MEMload
+    uSreset
+
+# Decrement stack pointer by 2 (8 steps)
+F8 DSP: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B-1 Bload
+    ALUresult B-1 ARena MEMload
+    uSreset
+
+# Store address pointed to by stack pointer (12 steps)
+F9 SAS: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B ALload
+    MEMresult Aload PCincr
+    ALUresult A ARena MEMload
+    ALUresult B-1 ALload
+    MEMresult Aload PCincr
+    ALUresult A ARena MEMload
+    uSreset
+
+# Jump to address on stack (13 steps)
+FA JSP: ALUresult 0 Bload
+    ALUresult B-1 AHload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult B ALload
+    ARena MEMresult Aload
+    ALUresult B-1 ALload
+    ARena MEMresult Bload
+    ALUresult A AHload
+    ALUresult B ALload
+	ALUresult 0 ARena JumpZero
+	uSreset
+
+
+
+
+

@@ -142,3 +142,7 @@ f3 3 LIB
 f4 4 SIA
 f5 4 SIB
 f6 5 PPR
+f7 1 ISP
+f8 1 DSP
+f9 3 SAS
+fa 1 JSP
