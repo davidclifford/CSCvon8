@@ -20,7 +20,7 @@ start:
     POPA
     OUT A
 
-    JMP $FFFF
+    JMP sys_cli
 
 print:
     OUT 'X'

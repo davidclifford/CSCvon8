@@ -18,23 +18,25 @@ for back in range(64):
             # 'Normal' pixels
             for p in range(64):
                 address = p | (y << 9) | (x << 8) | (back<<10)
+                # Normal
                 control[address] = p
-                control[address+64] = p | (1<<6)
+                # Background, same as normal + control line for background colour register
+                if x&1:  # x = 1, set control line low
+                    control[address+64] = p
+                else:    # x = 0, set control line high
+                    control[address+64] = p | (1<<6)
             # 'Highres' pixels
             for r in range(2):
                 for g in range(2):
                     for b in range(2):
                         for place in range(16):
                             address = (1<<7) | (r<<6) | (g<<5) | (b<<4) | (place) | (y<<9) | (x<<8) | (back<<10)
-                            if place & (1<< (y<<1 | x)):
+                            if place & (1<< ((y<<1) | x)):
                                 if r+g+b == 0:
                                     control[address] = 0x34  # Orange not Black
                                 else:
                                     control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
                             else:
-                                # if r+g+b == 0:
-                                #     control[address] = 0x3f  # Black on white background
-                                # else:
                                 control[address] = back   # Background colour
 
 control_bytes = bytearray(control)
