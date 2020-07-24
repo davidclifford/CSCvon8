@@ -10,31 +10,32 @@
 #
 from numpy import uint8
 
-control: uint8 = [0 for f in range(1 << 15)]
+control: uint8 = [0 for f in range(1 << 17)]
 
-for x in range(2):
-    for y in range(2):
-        # 'Normal' pixels
-        for p in range(64):
-            address = p | (y << 9) | (x << 8)
-            control[address] = p
-            control[address+64] = 64 - p
-        # 'Highres' pixels
-        for r in range(2):
-            for g in range(2):
-                for b in range(2):
-                    for place in range(16):
-                        address = (1<<7) | (r<<6) | (g<<5) | (b<<4) | (place) | (y<<9) | (x<<8)
-                        if place & (1<< (y<<1 | x)):
-                            if r+g+b == 0:
-                                control[address] = 0x34  # Orange not Black
+for back in range(64):
+    for x in range(2):
+        for y in range(2):
+            # 'Normal' pixels
+            for p in range(64):
+                address = p | (y << 9) | (x << 8) | (back<<10)
+                control[address] = p
+                control[address+64] = p | (1<<6)
+            # 'Highres' pixels
+            for r in range(2):
+                for g in range(2):
+                    for b in range(2):
+                        for place in range(16):
+                            address = (1<<7) | (r<<6) | (g<<5) | (b<<4) | (place) | (y<<9) | (x<<8) | (back<<10)
+                            if place & (1<< (y<<1 | x)):
+                                if r+g+b == 0:
+                                    control[address] = 0x34  # Orange not Black
+                                else:
+                                    control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
                             else:
-                                control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
-                        else:
-                            # if r+g+b == 0:
-                            #     control[address] = 0x3f  # Black on white background
-                            # else:
-                            control[address] = 0x0   # Black background
+                                # if r+g+b == 0:
+                                #     control[address] = 0x3f  # Black on white background
+                                # else:
+                                control[address] = back   # Background colour
 
 control_bytes = bytearray(control)
 control_bin = open("pixel_control.bin", "wb")

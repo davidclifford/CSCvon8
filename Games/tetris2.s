@@ -176,7 +176,7 @@ border_plot3:
 # Print Instructions
     LCA @4
     STO A __sypos
-    LCA @1
+    LCA @0
     STO A __sxpos
     LCA $06
     STO A __sink
@@ -1242,7 +1242,7 @@ PAG
 start_mess: STR "Press Enter to Start"
 game_over_mess: STR "Game over, Man!"
 label_score: STR "Score"
-label_instr1: STR "A Left, D Right\n W Turn, S Down\n Q Quit\n Enter Start"
+label_instr1: STR " A Left, D Right\n W Turn, S Down\n Q Quit\n Enter Start"
 label_next_piece: STR "Next Piece"
 PAG
 board: BYTE @200

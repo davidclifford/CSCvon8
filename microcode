@@ -638,8 +638,8 @@ E2 SAS: ALUresult 0 Bload
     uSreset
 
 # Jump to address on stack (13 steps)
-# B = (SP)
-# A = (SP-1)
+# A = (SP)
+# B = (SP-1)
 # JMP A:B
 E3 JSP: ALUresult 0 Bload
     ALUresult B-1 AHload
