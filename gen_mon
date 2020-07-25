@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# Compiles monitor with -m option
+# and then re-compiles dependant programs that include  monitor.h
+
+./cas -m Examples/monitor.s
+fl=`grep -l monitor.h Examples/*.s`
+for f in $fl; do
+  echo $f;
+  ./cas $f;
+done
+fl=`grep -l monitor.h Games/*.s`
+for f in $fl; do
+  echo $f;
+  ./cas $f;
+done

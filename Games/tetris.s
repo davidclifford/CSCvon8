@@ -22,47 +22,47 @@ cls_plot:
 # Initialise screen
 # Print TETRIS at the top of the screen
 
-    STO 0 bakg
+    STO 0 __paper
     LCA @1
-    STO A ypos
+    STO A __ypos
     LCA @10
-    STO A xpos
+    STO A __xpos
 
     LCA $30
-    STO A forg
+    STO A __ink
     LCA 'T'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCA $3C
-    STO A forg
+    STO A __ink
     LCA 'E'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCA $0C
-    STO A forg
+    STO A __ink
     LCA 'T'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCA $33
-    STO A forg
+    STO A __ink
     LCA 'R'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCA $0F
-    STO A forg
+    STO A __ink
     LCA 'I'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCA $34
-    STO A forg
+    STO A __ink
     LCA 'S'
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
 # Draw border
 # Left side
@@ -135,19 +135,19 @@ border_plot3:
 
 # Print start message
     LCA $30
-    STO A forg
-    STO 0 bakg
+    STO A __ink
+    STO 0 __paper
     LCA @2
-    STO A xpos
+    STO A __xpos
     LCA @14
-    STO A ypos
+    STO A __ypos
     LDB 0
 1:
     STO B char_indx
     LDA start_mess,B
     JAZ 2f
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
     LDB char_indx
     LDB B+1
     JMP 1b
@@ -172,19 +172,19 @@ border_plot3:
     STO A%B next
 
 # Erase start message
-    STO 0 forg
-    STO 0 bakg
+    STO 0 __ink
+    STO 0 __paper
     LCA @2
-    STO A xpos
+    STO A __xpos
     LCA @14
-    STO A ypos
+    STO A __ypos
     LDB 0
 1:
     STO B char_indx
     LDA start_mess,B
     JAZ 2f
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
     LDB char_indx
     LDB B+1
     JMP 1b
@@ -547,19 +547,19 @@ wait_key:
 game_over:
 # Print GAME OVER message
     LCA $33
-    STO A forg
-    STO 0 bakg
+    STO A __ink
+    STO 0 __paper
     LCA @4
-    STO A xpos
+    STO A __xpos
     LCA @14
-    STO A ypos
+    STO A __ypos
     LDB 0
 1:
     STO B char_indx
     LDA game_over_mess,B
     JAZ 2f
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
     LDB char_indx
     LDB B+1
     JMP 1b
@@ -579,19 +579,19 @@ game_over:
     JMP exit_game
 3:
 # Erase start message
-    STO 0 forg
-    STO 0 bakg
+    STO 0 __ink
+    STO 0 __paper
     LCA @4
-    STO A xpos
+    STO A __xpos
     LCA @14
-    STO A ypos
+    STO A __ypos
     LDB 0
 1:
     STO B char_indx
     LDA game_over_mess,B
     JAZ 2f
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
     LDB char_indx
     LDB B+1
     JMP 1b
@@ -1077,57 +1077,57 @@ add_score:
 # SUBROUTINE disp_score
 disp_score:
 
-    STO 0 bakg
+    STO 0 __paper
     LCA @5
-    STO A ypos
+    STO A __ypos
     LCA @18
-    STO A xpos
+    STO A __xpos
 
     LCA $2A
-    STO A forg
+    STO A __ink
 
     LCB $30
     LDA score5
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCB $30
     LDA score4
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCB $30
     LDA score3
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCB $30
     LDA score2
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCB $30
     LDA score1
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     LCB $30
     LDA score0
     LDA A+B
-    STO A char
-    JSR pchar pchar_ret
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
 
     RTS disp_score
 
 
 # Exit to monitor
 exit_game:
-    JMP newprompt
+    JMP sys_cli
 
 # System variables
 #include "../Examples/monitor.h"

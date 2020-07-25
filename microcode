@@ -606,55 +606,59 @@ a1 CLR_A_,B: ALUresult A AHload
     uSreset
 
 # Stack based instructions
-# Increment stack pointer by 2	(8 steps)
+# Stack pointer is fixed at address $FFFF
+# Stack grow upwards from $FF00 to $FFFE - This is to preserve the big-endian address order on the stack
+# i.e the high byte first and the low byte after in the address space.
+
+# Increment stack pointer by 2	(8 steps) - Destroys B
 E0 IS2: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
+    ALUresult !B AHload
+    ALUresult !B ALload
     ARena MEMresult Bload
     ALUresult B+1 Bload
     ALUresult B+1 ARena MEMload
     uSreset
 
-# Decrement stack pointer by 2 (8 steps)
+# Decrement stack pointer by 2 (8 steps) - Destroys B
 E1 DS2: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
+    ALUresult !B AHload
+    ALUresult !B ALload
     ARena MEMresult Bload
     ALUresult B-1 Bload
     ALUresult B-1 ARena MEMload
     uSreset
 
-# Store address pointed to by stack pointer (12 steps)
+# Store address pointed to by stack pointer (12 steps) - Destroys A & B
 E2 SAS: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload
+    ALUresult !B AHload
+    ALUresult !B ALload
     ARena MEMresult Bload
     ALUresult B ALload
     MEMresult Aload PCincr
     ALUresult A ARena MEMload
-    ALUresult B-1 ALload
+    ALUresult B+1 ALload
     MEMresult Aload PCincr
     ALUresult A ARena MEMload
     uSreset
 
-# Jump to address on stack (13 steps)
+# Jump to address on stack (13 steps) - Destroys A & B
 # A = (SP)
 # B = (SP-1)
 # JMP A:B
 E3 JSP: ALUresult 0 Bload
-    ALUresult B-1 AHload
-    ALUresult B-1 ALload    # AR = $FFFF
+    ALUresult !B AHload
+    ALUresult !B ALload    # AR = $FFFF
     ARena MEMresult Bload   # B = ($FFFF)
     ALUresult B ALload      # AR = $FF:B
     ARena MEMresult Aload   # A = (AR)
-    ALUresult B-1 ALload    # AR = $FF:(B-1)
+    ALUresult B+1 ALload    # AR = $FF:(B+1)
     ARena MEMresult Bload   # B = (AR)
     ALUresult A AHload
     ALUresult B ALload      # AR = A:B
 	ALUresult 0 ARena JumpZero # JMP AR
 	uSreset
 
-# Push A on stack (destroys B)
+# Push A on stack  - Destroys B
 E4 PUA: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload    # AR = $FFFF
@@ -663,7 +667,7 @@ E4 PUA: ALUresult 0 Bload
     ALUresult A ARena MEMload # (AR) = A
     uSreset
 
-# Pulls A from stack (destroys B)
+# Pulls A from stack - Destroys B
 E5 PLA: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload    # AR = $FFFF
@@ -672,7 +676,7 @@ E5 PLA: ALUresult 0 Bload
     ARena MEMresult Aload   # A = (AR)
     uSreset
 
-# Increment stack pointer by 1
+# Increment stack pointer by 1 - Destroys B
 E6 IS1: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload
@@ -680,7 +684,7 @@ E6 IS1: ALUresult 0 Bload
     ALUresult B+1 ARena MEMload
     uSreset
 
-# Decrement stack pointer by 1
+# Decrement stack pointer by 1 - Destroys B
 E7 DS1: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload
@@ -688,17 +692,17 @@ E7 DS1: ALUresult 0 Bload
     ALUresult B-1 ARena MEMload
     uSreset
 
-# Get SP+x into A (9 steps)
+# Get SP+x into A (9 steps) - Destroys B
 E8 GSA: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload
     ARena MEMresult Bload
     MEMresult Aload PCincr
-    ALUresult A+B ALload
+    ALUresult A-B ALload
     ARena MEMresult Aload
     uSreset
 
-# Put A into SP+x (13 steps)
+# Put A into SP+x (13 steps) - Destroys B
 E9 PSA: ALUresult 0 Bload
     ALUresult B-1 AHload
     ALUresult B-1 ALload
@@ -706,7 +710,7 @@ E9 PSA: ALUresult 0 Bload
     ALUresult B ALload
     ALUresult A ARena MEMload
     MEMresult Aload PCincr
-    ALUresult A+B Bload
+    ALUresult A-B Bload
     ARena MEMresult Aload
     ALUresult B ALload
     ALUresult A ARena MEMload

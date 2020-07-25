@@ -25,8 +25,9 @@ my %Keyword;
 
 # Hash of RAM return address locations for each function, and
 # next available RAM location if none yet defined for a function
+# For programs in the RAM start the return addresses from $FF00 and grow downwards
 my %ReturnAddr;
-my $nextreturnaddr = 0xFF00;
+my $nextreturnaddr = 0xFE00;
 
 # Set a memory location to a specific value. We use this so that
 # we can track the lowest and highest locations used. This is needed
@@ -565,9 +566,11 @@ while ( @ARGV > 1 ) {
         shift(@ARGV);
         next;
     }
+    # If we are writing code for the monitor then start code at $0000
+    # Return addresses start at $FEFE and grow downwards
     if ( $ARGV[0] eq "-m" ) {
         $StartPC = 0x0000;
-        $nextreturnaddr = 0xFFFE;
+        $nextreturnaddr = 0xFEFE;
         $ramimage = 0;
         shift(@ARGV);
         next;

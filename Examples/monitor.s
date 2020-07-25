@@ -309,6 +309,10 @@ sys_cls:
     STO A+1 vidaddr
     LCB @120
     JNE 1b
+    LDA __paper
+    LCB $40
+    LDA A|B
+    STO A $789f
     RTS sys_cls
 
 ###############
@@ -731,11 +735,11 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.02, type ? for help\n\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.03, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
-	  ORG $FD00
+	  ORG $FC00
 hexchar:  HEX "00"		# Place to store four hex chars, page aligned
 hexchar2: HEX "00"
 hexchar3: HEX "00"
