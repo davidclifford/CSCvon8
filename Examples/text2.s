@@ -46,6 +46,9 @@ start:
     LCB @119
     JNE 7b
 8:
+    LDA colour
+    LCB @9
+    STO A+B colour
     LDA 0
     LDB 0
 10:

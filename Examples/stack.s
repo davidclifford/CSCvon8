@@ -11,28 +11,28 @@
 start:
     INIT_SP
 
-    LCA '1'
-    PUSHA
-    OUT A
-    LCA '2'
-    PUSHA
-    OUT A
+    STO 0 count
     CALL(print)
-    POPA
-    OUT A
-    POPA
-    OUT A
-
     JMP sys_cli
 
 print:
-    OUT '<'
-    GSA @4
-    OUT A
-    LCB @2
-    LDA A+B
-    PSA @4
-    OUT '>'
+    LDA count
+    LCB '@'
+    LDB A+B
+    OUT B
+    STO A+1 count
+    LCB @26
+    JEQ 1f
+    CALL(print)
+    LDA count
+    LDA A-1
+    STO A count
+    LCB '`'
+    LDB A+B
+    OUT B
+1:
     RET
+
+count: BYTE
 
 #include "monitor.h"

@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'random'
+filename = 'rl2'
 
 
 def plot(x, y, r, g, b):
