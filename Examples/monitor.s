@@ -798,3 +798,6 @@ EXPORT __schar
 EXPORT __sypos
 EXPORT __sxpos
 EXPORT __sink
+
+EXPORT prhex
+EXPORT hexchar

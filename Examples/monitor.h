@@ -7,6 +7,9 @@ __sxpos: EQU $fc16
 __sypos: EQU $fc15
 __xpos: EQU $fc10
 __ypos: EQU $fc0f
+hexchar: EQU $fc00
+prhex: EQU $0279
+prhex_ret: EQU $fef8
 sys_cli: EQU $00b1
 sys_cls: EQU $02aa
 sys_cls_ret: EQU $fefc

@@ -4,8 +4,8 @@
 
 #define OUT(x)	     JOU .; OUT x
 
-    LCA     $02
-    LCB     $01
+    LCA     $19
+    LCB     $99
     STO     A num1 # MSD
     STO     B num0 # LSD
 
@@ -37,16 +37,13 @@ divide:
 
 # Back to command prompt
 
-    JMP     prompt
+    JMP     sys_cli
 
-num0:   HEX "FF"
-num1:   HEX "FF"
-rem:    HEX "00"
-cnt:    HEX "05"
+num0:   BYTE
+num1:   BYTE
+rem:    BYTE
+cnt:    BYTE
 PAG
-out:    STR "65536\n"
+out:    BYTE @6
 
-hexchar: EQU $FD00
-prhex:   EQU $0279
-prhex_ret:EQU $FFF8
-prompt:  EQU $001f
+#include "monitor.h"

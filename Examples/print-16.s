@@ -120,17 +120,14 @@ carry:
     JMP loop
 
 # Back to command prompt
-    JMP     prompt
+    JMP     sys_cli
 
-number: HEX "00 00"
-num0:   HEX "FF"
-num1:   HEX "FF"
-rem:    HEX "00"
-cnt:    HEX "05"
+number: BYTE @2
+num0:   BYTE
+num1:   BYTE
+rem:    BYTE
+cnt:    BYTE
 PAG
-out:    STR "65536\n"
+out:    BYTE @6
 
-hexchar: EQU $FD00
-prhex:   EQU $026F
-prhex_ret:EQU $FFFA
-prompt:  EQU $0015
+#include "monitor.h"
