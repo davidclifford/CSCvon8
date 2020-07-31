@@ -787,6 +787,7 @@ EXPORT sys_cli
 EXPORT sys_cls
 EXPORT sys_pchar
 EXPORT sys_spchar
+EXPORT sys_scroll4
 
 EXPORT __char
 EXPORT __xpos

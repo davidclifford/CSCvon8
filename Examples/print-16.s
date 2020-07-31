@@ -2,8 +2,19 @@
 # Print a 16-bit unsigned number in base 10
 #
 
-#define OUT(x)	     JOU .; OUT x
+#define OUT(x)	     # JOU .; OUT x;
+#define PRT(x)       STO x __schar; JSR sys_spchar sys_spchar_ret;
+#define PRI(x)       LCA x ; STO A __schar; JSR sys_spchar sys_spchar_ret;
 
+    STO     0 number
+    STO     0 number+1
+restart:
+# Clear screen, set ink RED
+    STO     0 __sxpos
+    STO     0 __sypos
+    LCA     $04
+    STO     A __sink
+    JSR     sys_cls sys_cls_ret
 loop:
     LDA     number
     LDB     number+1
@@ -95,19 +106,45 @@ divide:
 1:
     LDA     out
     OUT     (A)
+    PRT     (A)
 2:
     LDA     out+1
     OUT     (A)
+    PRT     (A)
 3:
     LDA     out+2
     OUT     (A)
+    PRT     (A)
 4:
     LDA     out+3
     OUT     (A)
+    PRT     (A)
 5:
     LDA     out+4
     OUT     (A)
+    PRT     (A)
+    OUT     (' ')
+    PRI     (' ')
+
+    LDA     __sxpos
+    LCB     @48
+    JLT     1f
     OUT     ('\n')
+    PRI     ('\n')
+1:
+    LDA     __sypos
+    LCB     @30
+    JNE     1f
+    STO     A-1 __sypos
+    JSR sys_scroll4 sys_scroll4_ret
+#    JSR     sys_cls sys_cls_ret
+#    STO     0 __sxpos
+#    STO     0 __sypos
+1:
+    LDA     __sink
+    LDA     A+1
+    LCB     $07
+    STO     A&B __sink
 
     LDA     number
     LDB     number+1
@@ -117,10 +154,13 @@ divide:
 carry:
     STO     0 number+1
     STO     A+1 number
-    JMP loop
+    JMP     loop
 
 # Back to command prompt
     JMP     sys_cli
+
+
+PAG
 
 number: BYTE @2
 num0:   BYTE

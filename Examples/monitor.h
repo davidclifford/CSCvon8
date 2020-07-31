@@ -15,5 +15,7 @@ sys_cls: EQU $02aa
 sys_cls_ret: EQU $fefc
 sys_pchar: EQU $02dc
 sys_pchar_ret: EQU $fef4
+sys_scroll4: EQU $0437
+sys_scroll4_ret: EQU $fef0
 sys_spchar: EQU $0388
 sys_spchar_ret: EQU $fef2
