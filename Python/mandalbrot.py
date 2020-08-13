@@ -16,7 +16,7 @@ yoff = 0
 
 
 # max iterations allowed
-maxIt = 256
+maxIt = 64
 
 # image size
 imgx = 160
@@ -41,7 +41,7 @@ while True:
                 z = zx + zy * 1j
                 c = z
                 for i in range(maxIt):
-                    print(abs(z))
+                    print(i, x, y, zx, zy, abs(z))
                     if abs(z) > 2.0:
                         break
                     z = z * z + c
@@ -49,7 +49,7 @@ while True:
                 for xx in range(scale):
                     for yy in range(scale):
 #                        gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, (i % 4 * 64, i % 8 * 32, i % 16 * 16))
-                        gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, (i % 4 * 64, (i>>2) % 4 * 64, (i>>4) % 4 * 64))
+                        gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, ((i % 4) * 64, ((i>>2) % 4) * 64, ((i>>4) % 4) * 64))
 
             pygame.display.update()
 
