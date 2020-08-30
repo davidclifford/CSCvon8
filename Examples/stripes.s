@@ -1,6 +1,5 @@
+
 start:
-    JIU .
-    INA
     STO 0 plot+1
 1:
     LCB $00
@@ -18,6 +17,8 @@ plot:
     JNE 1b
     JIU .
     INA
+    LCB 'q'
+    JEQ sys_cli
     STO 0 plot1+1
 1:
     LCB $00
@@ -36,6 +37,8 @@ plot1:
 
     JIU .
     INA
+    LCB 'q'
+    JEQ sys_cli
     STO 0 plot2+1
 1:
     LCB $00
@@ -53,6 +56,8 @@ plot2:
 
     JIU .
     INA
+    LCB 'q'
+    JEQ sys_cli
     STO 0 plot3+1
 1:
     LCB $00
@@ -68,4 +73,10 @@ plot3:
     LCB @120
     JNE 1b
 
+    JIU .
+    INA
+    LCB 'q'
+    JEQ sys_cli
     JMP start
+
+#include "monitor.h"

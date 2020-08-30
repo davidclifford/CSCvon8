@@ -2,7 +2,7 @@
 # Print out fibonacci sequence using 16-bits
 #
 
-#define OUT(x)	     # JOU .; OUT x;
+#define OUT(x)	     #JOU .; OUT x;
 #define PRT(x)       STO x __schar; JSR sys_spchar sys_spchar_ret;
 #define PRI(x)       LCA x ; STO A __schar; JSR sys_spchar sys_spchar_ret;
 
@@ -19,8 +19,9 @@ restart:
     STO     A curr+1
     STO     0 count
     STO     A count+1
+    LCA     @1
     STO     0 prev
-    STO     0 prev+1
+    STO     A prev+1
 
 loop:
     LDA     count
