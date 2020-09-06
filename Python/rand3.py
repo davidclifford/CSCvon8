@@ -1,3 +1,4 @@
+# https://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
 # uint16_t rnd_xorshift_32() {
 #   static uint16_t x=1,y=1;
 #   uint16_t t=(x^(x<<5));
@@ -13,34 +14,29 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 960))
 
 global a, b
-a = 4122
-b = 94
+a = 0x0000
+b = 0x0001
 
 
 def rand(fac):
     global a, b
     t = (a^(a<<5))
+    t = t & 0xFFFF
     a = b
     b = (b^(b>>1))^(t^(t>>3))
     b = b & 0xFFFF
+    # print(hex(b))
     return (b % fac)
-
-# def rand(x, y):
-#     t = (x^(x<<5))
-#     x = y
-#     y=(y^(y>>1))^(t^(t>>3))
-#     y = y & 0xFFFF
-#     return x, y
 
 
 def plot(x, y, r, g, b):
-    pz = 4
+    pz = 8
     for j in range(pz):
         for i in range(pz):
             gfxdraw.pixel(screen, x*pz+i, y*pz+j, (r, g, b))
 
 
-for i in range(10000):
+for i in range(100000):
     x = rand(160)
     y = rand(120)
     r = rand(256)
@@ -48,7 +44,7 @@ for i in range(10000):
     b = rand(256)
     # print(i, x, y, r, g, b)
     plot(x, y, r, g, b)
-    if i % 100 == 0:
+    if i % 1000 == 0:
         pygame.display.update()
 
 while True:
