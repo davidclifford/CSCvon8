@@ -4,99 +4,125 @@
 
 # Init seeds
 # X
-    LCA $FF
-    STO A x
-    LCA $FF
-    STO A x+1
+    LCA $45
+    STO A rand_seed0
+    LCA $32
+    STO A rand_seed0+1
 # Y
-    LCA $FF
-    STO A y
-    LCA $FF
-    STO A y+1
+    LCA $A5
+    STO A rand_seed
+    LCA $BC
+    STO A rand_seed+1
 
 loop:
+# plot
+    JSR rand
+    LDA rand_seed
+    LCB @120
+    STO A%B yc
 
+#    JSR rand
+    LDA rand_seed+1
+    LCB @160
+    STO A%B xc
+
+#    JSR rand
+    LDA rand_seed0+1
+    LCB @2
+    LDA A>>B
+    LDB xc
+
+# plot pixel
+    STI A yc,B
+
+    JMP loop
+
+###########################
+rand:
 # T = x^(x<<5)
-    LDA x+1
+    LDA rand_seed0+1
     LCB @5
     LDA AROLB
     LCB $E0
-    STO A&B t+1
+    STO A&B rand_temp+1
     LCB $1F
-    STO A&B t
+    STO A&B rand_temp
 
-    LDA x
+    LDA rand_seed0
     LCB @5
     LDA A<<B
     LCB $E0
     LDA A&B
-    LDB t
-    STO A|B t
+    LDB rand_temp
+    STO A|B rand_temp
 
-    LDA x
-    LDB t
-    STO A^B t
-    LDA x+1
-    LDB t+1
-    STO A^B t+1
+    LDA rand_seed0
+    LDB rand_temp
+    STO A^B rand_temp
+    LDA rand_seed0+1
+    LDB rand_temp+1
+    STO A^B rand_temp+1
 
 # X = Y
-    LDA y
-    STO A x
-    LDA y+1
-    STO A x+1
+    LDA rand_seed
+    STO A rand_seed0
+    LDA rand_seed+1
+    STO A rand_seed0+1
 
 # Z = T>>3
-    LDA t
+    LDA rand_temp
     LCB @3
     LDA ARORB
     LCB $E0
-    STO A&B z+1
+    STO A&B rand_z+1
     LCB $1F
-    STO A&B z
-    LDA t+1
+    STO A&B rand_z
+    LDA rand_temp+1
     LCB @3
     LDA A>>B
-    LDB z+1
-    STO A|B z+1
+    LDB rand_z+1
+    STO A|B rand_z+1
 
 # T = T^Z
-    LDA z
-    LDB t
-    STO A^B t
-    LDA z+1
-    LDB t+1
-    STO A^B t+1
+    LDA rand_z
+    LDB rand_temp
+    STO A^B rand_temp
+    LDA rand_z+1
+    LDB rand_temp+1
+    STO A^B rand_temp+1
 
 # Z = Y>>1
-    LDA y
+    LDA rand_seed
     LCB @1
     LDA ARORB
     LCB $80
-    STO A&B z+1
+    STO A&B rand_z+1
     LCB $7F
-    STO A&B z
-    LDA y+1
+    STO A&B rand_z
+    LDA rand_seed+1
     LCB @1
     LDA A>>B
-    LDB z+1
-    STO A|B z+1
+    LDB rand_z+1
+    STO A|B rand_z+1
 
 # Y = Y^Z
-    LDA y
-    LDB z
-    STO A^B y
-    LDA y+1
-    LDB z+1
-    STO A^B y+1
+    LDA rand_seed
+    LDB rand_z
+    STO A^B rand_seed
+    LDA rand_seed+1
+    LDB rand_z+1
+    STO A^B rand_seed+1
 
 # Y = Y^T
-    LDA y
-    LDB t
-    STO A^B y
-    LDA y+1
-    LDB t+1
-    STO A^B y+1
+    LDA rand_seed
+    LDB rand_temp
+    STO A^B rand_seed
+    LDA rand_seed+1
+    LDB rand_temp+1
+    STO A^B rand_seed+1
+
+    RTS rand
+############################
 
 # Output Y
 #    LDA y
@@ -107,29 +133,12 @@ loop:
 #    JSR prhex prhex_ret
 #    OUT '\n'
 
-# plot
-    LDA y+1
-    LCB @120
-    STO A%B yc
-
-    LDA y
-    LCB @160
-    LDB A%B
-
-    LDA x
-
-# plot pixel
-    STI A yc,B
-
-    JMP loop
-    JMP sys_cli
-
 PAG
 
-x:  WORD
-y:  WORD
-z:  WORD
-t:  WORD
+rand_seed0:  WORD
+rand_seed:  WORD
+rand_z:  WORD
+rand_temp:  WORD
 
 yc: BYTE
 xc: BYTE

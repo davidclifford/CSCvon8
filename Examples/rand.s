@@ -7,15 +7,31 @@
 start:
     STO 0 seed
 loop:
+#    JSR random
+#    LDA seed
+#    STO A num
+#    JSR print_num
+#    OUT('\n')
+
+    LDA seed
+    LCB @120
+    STO A%B y
     JSR random
     LDA seed
-    STO A num
-    JSR print_num
-    OUT('\n')
+    LDB seed+1
+    LDA A-B
+    LCB @160
+    STO A%B x
+    JSR random
+    LDA seed
+    LCB $3F
+    LDA A&B
+    SIA y
+
 1:
-    JIU .
-    INA
-    JAZ 1b
+#    JIU .
+#    INA
+#    JAZ 1b
     JMP loop
 
 #############################
@@ -79,3 +95,6 @@ str:    EQU $F000
 count:  EQU $F006
 num:    EQU $F008
 i:      EQU $F00A
+
+y:  BYTE
+x:  BYTE
