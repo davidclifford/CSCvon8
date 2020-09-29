@@ -36,7 +36,8 @@ def plot(x, y, r, g, b):
             gfxdraw.pixel(screen, x*pz+i, y*pz+j, (r, g, b))
 
 
-for i in range(100000):
+k = 0
+while True:
     x = rand(160)
     y = rand(120)
     r = rand(256)
@@ -44,10 +45,11 @@ for i in range(100000):
     b = rand(256)
     # print(i, x, y, r, g, b)
     plot(x, y, r, g, b)
-    if i % 1000 == 0:
+    k += 1
+    if k > 1000:
         pygame.display.update()
+        k = 0
 
-while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
