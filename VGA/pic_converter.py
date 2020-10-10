@@ -8,8 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'gf5'
-
+filename = 'gf4'
 
 def plot(x, y, r, g, b):
     psize = 8
@@ -27,29 +26,22 @@ pixels = image.load()
 
 pic_file = open(filename+'.bin', 'wb')
 hex_file = open(filename+'.hex', 'w')
-hex_file.write('C0000')
 
-for y in range(128):
-    hex_file.write('\n')
-    for x in range(256):
-        if x < 160 and y < 120:
-            pix = pixels[x, y]
-            red = pix[0] >> 6
-            grn = pix[1] >> 6
-            blu = pix[2] >> 6
-            colour = red << 4 | grn << 2 | blu << 0
-            pic_file.write(uint8(colour))
-            hex_file.write(f'{colour:02x} ')
-            plot(x, y, red, grn, blu)
-
-        else:
-            pic_file.write(uint8(0))
-            hex_file.write('00 ')
-
+for y in range(120):
+    hex_file.write(f'C{y:02x}00\n')
+    for x in range(160):
+        pix = pixels[x, y]
+        red = pix[0] >> 6
+        grn = pix[1] >> 6
+        blu = pix[2] >> 6
+        colour = red << 4 | grn << 2 | blu << 0
+        pic_file.write(uint8(colour))
+        hex_file.write(f'{colour:02x}')
+        plot(x, y, red, grn, blu)
+    hex_file.write('Z')
     pygame.display.update()
 
 pic_file.close()
-hex_file.write(' Z')
 hex_file.close()
 
 while True:

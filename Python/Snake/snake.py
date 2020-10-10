@@ -151,5 +151,13 @@ while not quited:
         display()
 
     # Game over
-    print('GAME OVER')
+    stop = False
+    while not stop:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYUP:
+                key = event.key
+                if key == pygame.K_RETURN:
+                    stop = True
 
+pygame.quit()
+sys.exit()
