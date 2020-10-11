@@ -89,10 +89,10 @@ start:
     STO A __char
     JSR sys_pchar sys_pchar_ret
 
-# Display 'Score'
+# Display text 'Score'
     STO 0 __sink
-    STO 0 __sxpos
     LCA @1
+    STO A __sxpos
     STO A __sypos
     LHA score_text
     LCB score_text
@@ -102,7 +102,6 @@ start:
     STO 0 score0
     STO 0 score1
     STO 0 score2
-    STO 0 score3
 
 # Init snake
     LCA @42
@@ -366,19 +365,12 @@ display_score:
     STO A+1 score2
     JNE 1f
     STO 0 score2
-    LDA score3
-    STO A+1 score3
-    JNE 1f
 1:
     STO 0 __ink
     LCB @1
     STO B __sypos
-    LCB @6
+    LCB @7
     STO B __sxpos
-    LDA score3
-    LCB '0'
-    STO A+B __schar
-    JSR sys_spchar sys_spchar_ret
     LDA score2
     LCB '0'
     STO A+B __schar
@@ -398,7 +390,7 @@ exit_game:
     JMP sys_cli
 
 # PAG
-score_text: STR "Score 0000"
+score_text: STR "Score 000"
 start_text: STR "Press Enter to Start"
 game_over_text: STR "Game Over!"
 line:   BYTE
@@ -418,7 +410,6 @@ count:  BYTE
 score0:  BYTE
 score1:  BYTE
 score2:  BYTE
-score3:  BYTE
 delay:  WORD
 food_flag:  BYTE
 
