@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'gf4'
+filename = 'test'
 
 def plot(x, y, r, g, b):
     psize = 8

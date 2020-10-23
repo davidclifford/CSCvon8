@@ -1,0 +1,28 @@
+# Pixel modes
+
+1. 64 colour mode
+	00rrggbb
+
+2. 64 colour background	
+	01rrggbb
+	
+3. Text mode
+	1rgbABCD
+	
+CD
+AB
+
+ .#
+ #.
+
+1100 1001 = C9
+
+ #.
+ .#
+ 
+1110 0110 = E6
+
+00110000 = red square
+01110000 = red square (background)
+11001111 = red square
+1100???? = red square (if background = red)

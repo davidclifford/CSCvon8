@@ -65,7 +65,7 @@ preslt: LDA reshi	# Print result out
 	OUT A
 L3:	JOU L3
 
-end:	JMP $FFFF
+end:	JMP end
 
 # prhex function: Print the value in A
 # out as two hex digits

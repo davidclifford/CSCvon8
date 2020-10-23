@@ -4,23 +4,28 @@
 
 #define OUT(x)	     JOU .; OUT x
 
+    LCA     $00
+    STO     A number
+    LCA     $00
+    STO     A number+1
+
 loop:
     LDA     number
     LDB     number+1
-    STO     A num1 # MSD
-    STO     B num0 # LSD
+    STO     A num # MSD
+    STO     B num+1 # LSD
 
 # Divide 16 bit number by 10 (33 clock cycles)
     STO     0 cnt
     STO     0 out
 1:  LDB     0
-    LDA     num1
+    LDA     num
     # high byte
-    STO     ADIVB num1
+    STO     ADIVB num
     LDB     AREMB
     # low byte
-    LDA     num0
-    STO     ADIVB num0
+    LDA     num+1
+    STO     ADIVB num+1
     STO     AREMB rem
     LDA     rem
     LCB     '0'
@@ -28,10 +33,10 @@ loop:
     LDB     cnt
     STO     A out,B
     STO     B+1 cnt
-    LDA     num0
+    LDA     num+1
     JAZ     2f
     JMP     1b
-2:  LDA     num1
+2:  LDA     num
     JAZ     out_number
     JMP     1b
 
@@ -47,29 +52,28 @@ out_number:
 
 # Increment number
 next_number:
-    OUT('\n')
-    LDA     number
+    OUT(' ')
     LDB     number+1
-    TST     B+1 JC carry
-    STO     B+1 number+1
+    LDB     B+1
+    STO     B number+1
+    JBZ     carry
     JMP     loop
 carry:
-    STO     0 number+1
-    STO     A+1 number
-    JMP loop
+    LDB     number
+    LDB     B+1
+    STO     B number
+    JBZ     exit
+    JMP     loop
 
 # Back to command prompt
-    JMP     prompt
+exit:
+    JMP     sys_cli
 
-number: HEX "00 00"
-num0:   HEX "FF"
-num1:   HEX "FF"
-rem:    HEX "00"
-cnt:    HEX "05"
+number: WORD
+num:    WORD
+rem:    BYTE
+cnt:    BYTE
 PAG
-out:    STR "12345"
+out:    STR ""
 
-hexchar: EQU $FD00
-prhex:   EQU $026F
-prhex_ret:EQU $FFFA
-prompt:  EQU $0015
+#include "monitor.h"

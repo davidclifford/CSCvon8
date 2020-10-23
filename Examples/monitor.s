@@ -322,8 +322,8 @@ sys_cls:
 ###############
 sys_pchar:
     LDA __char
-    LCB $20   # space ' '
-    JLT 9f # is control character
+    LCB ' ' # space
+    JLT 9f  # is control character
     LDA A-B
 
 # Calculate start of character bitmap
@@ -386,7 +386,9 @@ sys_pchar:
 6:
     LDA __xpos
     STO A+1 __xpos
-    RTS sys_pchar
+    LCB @25
+    JEQ 11f
+    JMP 10f
 7:
     LDA indx
     STO A+1 indx
@@ -401,7 +403,12 @@ sys_pchar:
 11:
     STO 0 __xpos
     LDA __ypos
+    LCB @14
+    JEQ 12f
     STO A+1 __ypos
+    JMP 10b
+12:
+    JSR sys_scroll8
     JMP 10b
 
 ###############
@@ -482,26 +489,66 @@ next_line:
 fin_char:
     LDA __sxpos
     STO A+1 __sxpos
+    LCB @52
+    JEQ 1f
     RTS sys_spchar
 control:
     # Do \n or \r (as same thing)
-    LCB $0A
+    LCB '\n'
     JEQ 1f
-    LCB $0D
-    JEQ 1f
-    RTS sys_spchar
+    LCB '\r'
+    JNE 2f
 1:
     STO 0 __sxpos
     LDA __sypos
+    LCB @29
+    JEQ 1f
     STO A+1 __sypos
+2:
     RTS sys_spchar
+1:
+    JSR sys_scroll4
+    JMP 2b
+
+###################################################
+# Scroll screen up 1 pixels and blank last line
+###################################################
+sys_scroll:
+    STO 0 scroll_to
+    LCB @1
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll
 
 ###################################################
 # Scroll screen up 4 pixels and blank last 4 lines
 ###################################################
 sys_scroll4:
-    LCA @0
-    STO A scroll_to
+    STO 0 scroll_to
     LCB @4
     STO B scroll_from
 3:
@@ -530,6 +577,40 @@ sys_scroll4:
     LCB @120
     JNE 5b
     RTS sys_scroll4
+
+###################################################
+# Scroll screen up 8 pixels and blank last 8 lines
+###################################################
+sys_scroll8:
+    STO 0 scroll_to
+    LCB @8
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll8
 
 ##################################
 # Print string in large characters
@@ -654,6 +735,123 @@ sys_rand:
     STO A^B __rand_seed+1
 
     RTS sys_rand
+
+###############################################
+# Convert 32-bit number to string
+# Copy 32-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_32:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDB     AREMB
+
+    LDA     __number+1
+    STO     ADIVB __number+1
+    LDB     AREMB
+
+    LDA     __number+2
+    STO     ADIVB __number+2
+    LDB     AREMB
+
+    LDA     __number+3
+    STO     ADIVB __number+3
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    LDB     __number+1
+    LDA     A|B
+    LDB     __number+2
+    LDA     A|B
+    LDB     __number+3
+    LDA     A|B
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_32
+
+###############################################
+# Convert 16-bit number to string
+# Copy 16-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_16:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDB     AREMB
+
+    LDA     __number+1
+    STO     ADIVB __number+1
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    LDB     __number+1
+    LDA     A|B
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_16
+
+###############################################
+# Convert 8-bit number to string
+# Copy 8-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_8:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_8
 
 # Ascii chars 32-96
 # Large font
@@ -916,11 +1114,19 @@ temp: BYTE
 scroll_to: BYTE
 scroll_from: BYTE
 
+__number: BYTE @4 # 32-bit number
+__num_str: BYTE @12 # String containing number in decimal
+__num_ptr: BYTE # offset into __num_str that is start of string
+
 EXPORT sys_cli
 EXPORT sys_cls
+
 EXPORT sys_pchar
 EXPORT sys_spchar
+
+EXPORT sys_scroll
 EXPORT sys_scroll4
+EXPORT sys_scroll8
 
 EXPORT __char
 EXPORT __xpos
@@ -943,3 +1149,10 @@ EXPORT sys_spstring
 EXPORT __rand_seed
 EXPORT __rand_seed0
 EXPORT sys_rand
+
+EXPORT __number
+EXPORT __num_str
+EXPORT __num_ptr
+EXPORT sys_num_str_32
+EXPORT sys_num_str_16
+EXPORT sys_num_str_8

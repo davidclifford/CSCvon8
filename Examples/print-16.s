@@ -148,8 +148,9 @@ divide:
 
     LDA     number
     LDB     number+1
-    TST     B+1 JC carry
-    STO     B+1 number+1
+    LDB     B+1
+    STO     B number+1
+    JBZ     carry
     JMP     loop
 carry:
     STO     0 number+1
@@ -162,7 +163,7 @@ carry:
 
 PAG
 
-number: BYTE @2
+number: WORD
 num0:   BYTE
 num1:   BYTE
 rem:    BYTE

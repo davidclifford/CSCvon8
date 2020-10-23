@@ -9,4 +9,4 @@ L1:	JOU L1
 	LCA $0A
 	OUT A
 L2:	JOU L2
-end:	JMP $FFFF
+end:	JMP end
