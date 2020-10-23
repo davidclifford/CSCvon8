@@ -2,7 +2,6 @@
 # Print out fibonacci sequence using 32-bits
 #
 
-#define OUT(x)	     #JOU .; OUT x;
 #define PRT(x)       STO x __schar; JSR sys_spchar sys_spchar_ret;
 #define PRI(x)       LCA x ; STO A __schar; JSR sys_spchar sys_spchar_ret;
 
@@ -20,7 +19,7 @@ restart:
     STO     0 curr+2
     STO     A curr+3
     STO     A count
-    LCA     @1
+    LCA     @0
     STO     0 prev
     STO     0 prev+1
     STO     0 prev+2
@@ -57,8 +56,6 @@ loop:
     STO     B __string+1
     JSR     sys_spstring sys_spstring_ret
 
-    OUT     ('\n')
-    PRI     ('\n')
 
 # Change to next colour
 1:
@@ -124,6 +121,13 @@ loop:
 
     LDA     count
     STO     A+1 count
+    LCB     @1
+    LDA     A&B
+    JAZ     1f
+    PRI     (' ')
+    JMP     loop
+1:
+    PRI     ('\n')
     JMP     loop
 
 # Back to command prompt
@@ -134,10 +138,7 @@ count:  BYTE
 curr:   BYTE @4
 prev:   BYTE @4
 temp:   BYTE @4
-mess:   STR " fibonacci number = "
+mess:   STR " fibonacci = "
 pos:    BYTE
-
-PAG
-out:    BYTE @6
 
 #include "monitor.h"
