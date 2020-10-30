@@ -41,7 +41,7 @@ while True:
                 z = zx + zy * 1j
                 c = z
                 for i in range(maxIt):
-                    print(i, x, y, zx, zy, abs(z))
+                    # print(i, x, y, zx, zy, abs(z))
                     if abs(z) > 2.0:
                         break
                     z = z * z + c

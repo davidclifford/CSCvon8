@@ -216,8 +216,9 @@ border_plot3:
 # Wait for Enter or Q to be pressed, update random
 2:
     LDA rand+1
+    LDA A+1
+    STO A rand+1
     JAZ 4f
-    STO A+1 rand+1
     JMP 5f
 4:
     LDA rand

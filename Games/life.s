@@ -1,25 +1,6 @@
 # Life for the CSCvon8
 # By David Clifford Oct 2020
 #
-begin:
-1:
-    LDA __rand_seed
-    STO A+1 __rand_seed
-    JAZ 2f
-    JIU 1b
-    INA
-    LCB '\n'
-    JEQ start
-    LCB '\r'
-    JEQ start
-    LCB 'q'
-    JEQ exit_game
-    JMP 1b
-2:
-    LDA __rand_seed+1
-    STO A+1 __rand_seed+1
-    JMP 1b
-
 start:
     STO 0 __paper
     JSR sys_cls sys_cls_ret

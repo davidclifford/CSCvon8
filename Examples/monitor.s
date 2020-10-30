@@ -25,15 +25,29 @@ main:
 
 prompt:	putc('>')		# Print out the prompt
 	putc(' ')
-	getc(cmdchar)		# Get the command letter and
-	JOUT(A)			# echo it out to the user
+#	getc(cmdchar)		# Get the command letter and
+1:
+    LDA __rand_seed+1
+    LDA A+1
+    STO A __rand_seed+1
+    JAZ 2f
+    JMP 3f
+2:
+    LDA __rand_seed
+    STO A+1 __rand_seed
+3:
+    JIU 1b
+    INA
+    STO A cmdchar
+    JOUT(A)			# echo it out to the user
 	LCB '\n'		# Loop when we get a newline
 	JEQ prompt
 	LCB '\r'		# Loop when we get a carriage return
 	JEQ prompt
 
 	STO 0 hexcnt		# Set count of hex chars to zero
-sploop: JINA			# Get further characters and echo them
+sploop:
+    JINA			# Get further characters and echo them
 	JOUT(A)
 	LCB ' '			# Skip spaces
 	JEQ sploop
@@ -1059,7 +1073,7 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.03, type ? for help\n\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.05, type ? for help\n\n"
 usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 

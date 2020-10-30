@@ -2,34 +2,6 @@
 # By David Clifford Oct 2020
 #
 # Start
-# Display
-    LCA $04
-    STO A __sink
-    LCA @3
-    STO A __sxpos
-    LCA @10
-    STO A __sypos
-    LHA start_text
-    LCB start_text
-    STO A __string
-    STO B __string+1
-    JSR sys_spstring sys_spstring_ret
-1:
-    LDA __rand_seed
-    STO A+1 __rand_seed
-    JIU 1b
-    INA
-    LCB '\n'
-    JEQ 2f
-    LCB '\r'
-    JEQ 2f
-    LCB 'q'
-    JEQ exit_game
-    JMP 1b
-# Randomise
-2:
-    STO A __rand_seed+1
-
 start:
     STO 0 __paper
     JSR sys_cls sys_cls_ret
@@ -391,7 +363,6 @@ exit_game:
 
 # PAG
 score_text: STR "Score 000"
-start_text: STR "Press Enter to Start"
 game_over_text: STR "Game Over!"
 line:   BYTE
 length: BYTE
