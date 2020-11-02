@@ -12,4 +12,6 @@ plot:
     LCB @120
     JNE 1b
 
-    JMP $001f # return to the Monitor
+    JMP sys_cli
+
+#include "monitor.h"
