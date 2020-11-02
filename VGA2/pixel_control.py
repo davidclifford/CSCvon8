@@ -32,8 +32,9 @@ for back in range(64):
                         for place in range(16):
                             address = (1<<7) | (r<<6) | (g<<5) | (b<<4) | (place) | (y<<9) | (x<<8) | (back<<10)
                             if place & (1<< ((y<<1) | x)):
+#                            if place & (1 << ((y << 1) + x + 1)):
                                 if r+g+b == 0:
-                                    control[address] = 0x34  # Orange not Black
+                                    control[address] = 0x34  # Orange is the new Black
                                 else:
                                     control[address] = ((r*3)<<4) | ((g*3)<<2) | (b*3)
                             else:
