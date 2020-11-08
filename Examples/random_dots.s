@@ -1,5 +1,5 @@
 # Plot random dots in 'high' resolution'
-
+# David Clifford Nov 2020
     STO 0 x
     STO 0 x+1
     STO 0 y
@@ -26,15 +26,15 @@
     LCB @240
     STO A%B y
 
-#    JSR sys_rand sys_rand_ret
-#    LDA __rand_seed
-#    LCB @4
-#    LDA A>>B
-#    LDA A<<B
-#    LCB $80
-#    STO A|B col
-    LCA $C0
-    STO A col
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @4
+    LDA A>>B
+    LDA A<<B
+    LCB $80
+    STO A|B col
+#    LCA $C0
+#    STO A col
 
     JSR plot
 
@@ -61,15 +61,15 @@
     LCB @240
     STO A%B y
 
-#    JSR sys_rand sys_rand_ret
-#    LDA __rand_seed
-#    LCB @4
-#    LDA A>>B
-#    LDA A<<B
-#    LCB $80
-#    STO A|B col
-    LCA $C0
-    STO A col
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @4
+    LDA A>>B
+    LDA A<<B
+    LCB $80
+    STO A|B col
+#    LCA $C0
+#    STO A col
 
     JSR unplot
 

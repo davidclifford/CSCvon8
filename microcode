@@ -470,12 +470,14 @@ START := MEMresult IRload PCincr
 		ALUresult A+B ARena JumpCarry
 		uSreset
 
-81 TST_A-B_JC:	MEMresult AHload PCincr
+#81 TST_A-B_JC:	MEMresult AHload PCincr
+81 JLO:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
 		ALUresult A-B ARena JumpCarry
 		uSreset
 
-82 TST_B-A_JC:	MEMresult AHload PCincr
+#82 TST_B-A_JC:	MEMresult AHload PCincr
+82 JHI:	MEMresult AHload PCincr
 		MEMresult ALload PCincr
 		ALUresult B-A ARena JumpCarry
 		uSreset
