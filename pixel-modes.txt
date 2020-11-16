@@ -1,26 +1,57 @@
+# Memory Map
+
+0000-7FFF - ROM / Video
+8000-FFFF - RAM
+
+# Video Memory
+0000-779F - Video memory
+??A0 - ??FF not visible on screen
+
+0-159 (00-9F) x-coord
+0-119 (00-77) y coord
+
 # Pixel modes
+8 bits per pixel
 
 1. 64 colour mode
-	00rrggbb
+Sets a pixel to one of 64 colours
+	00 rr gg bb
+e.g. 00 11 11 00 = 3C - Yellow
 
 2. 64 colour background	
-	01rrggbb
+Sets a background colour register on the VGA board to
+one of 64 colours, as above
+	01 rr gg bb
+	
+e.g. 01 00 11 11 = 4F - Cyan
 	
 3. Text mode
-	1rgbABCD
+Sets a patern of 4 sub-pixels to either the forground colour
+or the background colour set by the background colour register.
+The forground colour is one of 8 colours and set in the 
+pixel data.
+
+	1 rgb ABCD
 	
 CD
 AB
 
- .#
- #.
+e.g Red diagonal: 
+O is set, . is unset
 
-1100 1001 = C9
+ .O
+ O.
 
- #.
- .#
+1 100 1001 = C9
+100 = Red (r=1, g=0, b=0)
+
+e.g Yellow diagonal: (other way)
+
+ O.
+ .O
  
-1110 0110 = E6
+1 110 0110 = E6
+110 = Yellow (r=1, g=1, b=0)
 
 00110000 = red square
 01110000 = red square (background)

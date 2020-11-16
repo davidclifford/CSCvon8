@@ -2,7 +2,7 @@ start:
     STO 0 __sypos
     STO 0 __sxpos
 
-    LCA $04
+    LCA $02
     STO A __sink
     LHA mess
     LCB mess
