@@ -22,7 +22,6 @@
     LDA __rand_seed+1
     STO A%B y1
 
-
     JSR draw_line
 
     JMP 1b
@@ -46,16 +45,18 @@ draw_line:
 1:
     STO B-A dy
 2:
-# is dx < dy ?
+# are both dx and dy 0?
     LDA dx
     LDB dy
     LDA A|B
     JAZ 1f
+# is dx < dy ?
     LDA dx
     JLO go_hi
     JMP go_low
 1:
     RTS draw_line
+
 go_hi:
     # dx = x1 - x0
     # dy = y1 - y0
@@ -77,9 +78,8 @@ go_hi:
     # is y0 > y1
     LDA y0
     LDB y1
-    JHI 1f
-    JMP 2f
-1:
+    JLO 2f
+
     # swap x0,x1 and y0,y1
     LDB x0
     LDA x1
@@ -162,9 +162,8 @@ go_low:
     # is x0 > x1
     LDA x0
     LDB x1
-    JHI 1f
-    JMP 2f
-1:
+    JLO 2f
+
     # swap x0,x1 and y0,y1
     LDB x0
     LDA x1
