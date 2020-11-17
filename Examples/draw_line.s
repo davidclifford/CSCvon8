@@ -1,6 +1,7 @@
 # Draw lines using Bresenham's algorithm
 # David Clifford Nov 2020
-
+    STO 0 __paper
+    JSR sys_cls sys_cls_ret
 1:
     JSR sys_rand sys_rand_ret
 # ink
@@ -10,7 +11,7 @@
 
     JSR sys_rand sys_rand_ret
     LDA __rand_seed
-    LCB @160
+    LCB @120
     STO A%B x0
     LDA __rand_seed+1
     STO A%B x1
@@ -21,6 +22,8 @@
     STO A%B y0
     LDA __rand_seed+1
     STO A%B y1
+
+#    JSR sys_cls sys_cls_ret
 
     JSR draw_line
 
@@ -45,13 +48,9 @@ draw_line:
 1:
     STO B-A dy
 2:
-# are both dx and dy 0?
-    LDA dx
-    LDB dy
-    LDA A|B
-    JAZ 1f
 # is dx < dy ?
     LDA dx
+    LDB dy
     JLO go_hi
     JMP go_low
 1:
@@ -99,7 +98,7 @@ go_hi:
     LCA $FF
     STO A sx
 1:
-    # d = d/2
+    # d = dy/2
     LCB @1
     LDA dy
     STO A>>B d
@@ -183,9 +182,9 @@ go_low:
     LCA $FF
     STO A sy
 1:
-    # d = d/2
+    # d = dx/2
     LCB @1
-    LDA dy
+    LDA dx
     STO A>>B d
 3:
     # While x0 <= x1

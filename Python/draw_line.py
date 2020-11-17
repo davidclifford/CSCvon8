@@ -60,9 +60,10 @@ def draw_line_x(x0, y0, x1, y1, c):
     while x <= x1:
         plot(x, y, c)
         x += 1
-        d -= dy
-        if d < 0:
-            d += dx
+        d += dy
+        print(x, y, d, dx, dy)
+        if d > dx:
+            d -= dx
             y = y + sy
 
 
@@ -79,9 +80,9 @@ def draw_line_y(x0, y0, x1, y1, c):
     while y <= y1:
         plot(x, y, c)
         y += 1
-        d -= dx
-        if d < 0:
-            d += dy
+        d += dx
+        if d > dy:
+            d -= dy
             x = x + sx
 
 
@@ -111,17 +112,18 @@ while True:
     #     pygame.display.update()
     #     screen.fill((0,0,0))
     x0 = int(random.randrange(160))
-    y0 = int(random.randrange(120))
+    y0 = int(random.randrange(10))
     x1 = int(random.randrange(160))
-    y1 = int(random.randrange(120))
+    y1 = int(random.randrange(10))
     r = int(random.randrange(4))*64
     g = int(random.randrange(4))*64
     b = int(random.randrange(4))*64
 
-    draw_line(x0, y0, x1, y1, (r, g, b))
+    #draw_line(x0, y0, x1, y1, (r, g, b))
+    draw_line(0, 0, 159, 119, (r,g,b))
 
     pygame.display.update()
-    time.sleep(0.01)
+    time.sleep(1)
     # draw_line(x0, y0, x1, y1, (0, 0, 0))
 
     for event in pygame.event.get():
