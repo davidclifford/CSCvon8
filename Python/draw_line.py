@@ -20,24 +20,31 @@ def plot(x, y, c):
 
 # 500 REM 'DRAW A LINE' from last position to X,Y
 # 510 LET PLOTx=PEEK 23677: LET PLOTy=PEEK 23678
-# 520 LET dx=SGN X: LET dy=SGN Y
+# 520 LET sx=SGN X: LET sy=SGN Y
 # 530 LET X=ABS X: LET Y=ABS Y
 # 540 IF X>=Y THEN GO TO 580
+
 # 550 LET L=X: LET B=Y
-# 560 LET ddx=0: LET ddy=dy
+# 560 LET ddx=0: LET ddy=sy
 # 570 GO TO 610
+
 # 580 IF X+Y=0 THEN STOP
 # 590 LET L=Y: LET B=X
-# 600 LET ddx=dx: LET ddy=0
+# 600 LET ddx=sx: LET ddy=0
+
 # 610 LET H=B
 # 620 LET i=INT (B/2)
+
 # 630 FOR N=B TO 1 STEP -1
 # 640 LET i=i+L
 # 650 IF i < H THEN GO TO 690
+
 # 660 LET i=i-H
-# 670 LET ix=dx: LET iy=dy
+# 670 LET ix=sx: LET iy=sy
 # 680 GO TO 700
+
 # 690 LET ix=ddx: LET iy=ddy
+
 # 700 LET PLOTy=PLOTy+iy
 # 710 IF PLOTy <0 OR PLOTy > 175 THEN STOP
 # 720 LET PLOTx=PLOTx+ix
@@ -45,6 +52,37 @@ def plot(x, y, c):
 # 740 PLOT PLOTx,PLOTy
 # 750 NEXT N
 # 760 RETURN
+
+
+def draw_zx(x0, y0, x1, y1, c):
+    dx = x1 - x0
+    dy = y1 - y0
+    sx = 1 if dx > 0 else -1
+    sy = 1 if dy > 0 else -1
+    dx = abs(dx)
+    dy = abs(dy)
+    if dx >= dy:
+        l = dy
+        h = dx
+        tx = sx
+        ty = 0
+    else:
+        l = dx
+        h = dy
+        tx = 0
+        ty = sy
+    i = int(h/2)
+    for n in range(h+1):
+        plot(x0, y0, c)
+        j = i + l
+        i = (i + l) % 256
+        if j > 255 or i > h:
+            i = (i - h) % 256
+            x0 += sx
+            y0 += sy
+        else:
+            x0 += tx
+            y0 += ty
 
 
 def draw_line_x(x0, y0, x1, y1, c):
@@ -112,19 +150,19 @@ while True:
     #     pygame.display.update()
     #     screen.fill((0,0,0))
     x0 = int(random.randrange(160))
-    y0 = int(random.randrange(10))
+    y0 = int(random.randrange(120))
     x1 = int(random.randrange(160))
-    y1 = int(random.randrange(10))
+    y1 = int(random.randrange(120))
     r = int(random.randrange(4))*64
     g = int(random.randrange(4))*64
     b = int(random.randrange(4))*64
 
-    #draw_line(x0, y0, x1, y1, (r, g, b))
-    draw_line(0, 0, 159, 119, (r,g,b))
+    draw_zx(x0, y0, x1, y1, (r, g, b))
+    #draw_zx(0, 0, 159, 119, (r,g,b))
 
     pygame.display.update()
-    time.sleep(1)
-    # draw_line(x0, y0, x1, y1, (0, 0, 0))
+    # time.sleep(0.1)
+    draw_zx(x0, y0, x1, y1, (0, 0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
