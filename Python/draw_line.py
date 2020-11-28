@@ -153,16 +153,16 @@ while True:
     y0 = int(random.randrange(120))
     x1 = int(random.randrange(160))
     y1 = int(random.randrange(120))
-    r = int(random.randrange(4))*64
-    g = int(random.randrange(4))*64
-    b = int(random.randrange(4))*64
+    r = int(random.randrange(4))*85
+    g = int(random.randrange(4))*85
+    b = int(random.randrange(4))*85
 
     draw_zx(x0, y0, x1, y1, (r, g, b))
     #draw_zx(0, 0, 159, 119, (r,g,b))
 
     pygame.display.update()
     # time.sleep(0.1)
-    draw_zx(x0, y0, x1, y1, (0, 0, 0))
+    #draw_zx(x0, y0, x1, y1, (0, 0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

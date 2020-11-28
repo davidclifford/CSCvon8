@@ -1,17 +1,19 @@
 # Clear screen as quickly as possible
-    STO 0 plot+1
+    STO 0 plot
 1:
-    LCB $00
-plot:
-    STO 0 $0000,B
-    LDB B+1
+    LDB 0
     LCA @160
-    JNE plot
-    LDA plot+1
-    STO A+1 plot+1
-    LCB @120
+2:
+    STI 0 plot,B
+    LDB B+1
+    JNE 2b
+    LDB plot
+    STO B+1 plot
+    LCA @119
     JNE 1b
 
     JMP sys_cli
+
+plot:   BYTE
 
 #include "monitor.h"

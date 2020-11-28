@@ -5,7 +5,9 @@
 
 # Video Memory
 0000-779F - Video memory
+
 ??A0 - ??FF not visible on screen
+7800 - 7FFF not visible on screen
 
 0-159 (00-9F) x-coord
 0-119 (00-77) y coord

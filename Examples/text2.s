@@ -49,6 +49,7 @@ start:
     LDA colour
     LCB @9
     STO A+B colour
+    JMP 9b
     LDA 0
     LDB 0
 10:

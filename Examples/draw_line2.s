@@ -2,6 +2,14 @@
 # David Clifford Nov 2020
     STO 0 __paper
     JSR sys_cls sys_cls_ret
+
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @160
+    STO A%B x0
+    LDA __rand_seed+1
+    LCB @120
+    STO A%B y0
 1:
     JSR sys_rand sys_rand_ret
 # ink
@@ -12,21 +20,13 @@
     JSR sys_rand sys_rand_ret
     LDA __rand_seed
     LCB @160
-    STO A%B x0
-    LDA __rand_seed+1
     STO A%B x1
-
-    JSR sys_rand sys_rand_ret
-    LDA __rand_seed
-    LCB @120
-    STO A%B y0
     LDA __rand_seed+1
+    LCB @120
     STO A%B y1
-
-    JSR sys_cls sys_cls_ret
+#    JSR sys_cls sys_cls_ret
 
     JSR draw_line
-
     JMP 1b
 
     # dx = x1 - x0
@@ -118,29 +118,34 @@ draw_line:
     LDA h
     LCB @1
     STO A>>B i
-    # n = h+1
-    LDA A+1
+    # n = h
     STO A n
+
 draw_loop:
-    # n -= 1 : is n==0 then stop
-    LDA n
-    STO A-1 n
-    JAZ draw_fin
     # plot(x0, y0, c)
     LDB x0
     LDA ink
     STI A y0,B
+
+    # n -= 1 : is n==0 then stop
+    LDA n
+    STO A-1 n
+    JAZ draw_fin
+
     #     i += l (el)
     LDA i
     LDB l
     TST A+B JC 2f
     LDA A+B
     STO A i
+
     #     is i >= h
     LDB h
     JLO 1f
+
     #         i = (i - h)
     STO A-B i
+
     #         x0 += sx
     #         y0 += sy
 3:
@@ -150,11 +155,11 @@ draw_loop:
     LDA y0
     LDB sy
     STO A+B y0
+
     JMP draw_loop
 2:
-    # i += h
-    # i -= l
-    LDB l
+    # i += l
+    # i -= h
     LDA A+B
     LDB h
     STO A-B i
@@ -175,7 +180,7 @@ draw_loop:
 draw_fin:
     RTS draw_line
 
-PAG
+#PAG
 
 x0: BYTE
 y0: BYTE
