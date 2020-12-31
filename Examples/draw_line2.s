@@ -1,5 +1,6 @@
 # Draw lines using Bresenham's algorithm
 # David Clifford Nov 2020
+start:
     STO 0 __paper
     JSR sys_cls sys_cls_ret
 
@@ -27,6 +28,12 @@
 #    JSR sys_cls sys_cls_ret
 
     JSR draw_line
+    JIU 1b
+    INA
+    LCB 'q'
+    JEQ sys_cli
+    LCB ' '
+    JEQ start
     JMP 1b
 
     # dx = x1 - x0

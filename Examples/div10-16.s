@@ -23,16 +23,16 @@ divide:
 
 # Print out num1 num0 rem
     LDA     num1
-    STO     A hexchar
-    JSR     prhex prhex_ret
+    STO     A __hex
+    JSR     sys_phex sys_phex_ret
     OUT     (' ')
     LDA     num0
-    STO     A hexchar
-    JSR     prhex prhex_ret
+    STO     A __hex
+    JSR     sys_phex sys_phex_ret
     OUT     (' ')
     LDA     rem
-    STO     A hexchar
-    JSR     prhex prhex_ret
+    STO     A __hex
+    JSR     sys_phex sys_phex_ret
     OUT     ('\n')
 
 # Back to command prompt

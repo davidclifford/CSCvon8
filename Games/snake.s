@@ -169,7 +169,7 @@ wait:
     STO 0 dir
     JMP wait
 5:
-    JMP start
+    JMP dead
 
 # Move snake
 move_snake:

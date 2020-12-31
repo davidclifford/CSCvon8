@@ -21,6 +21,7 @@ Sets a pixel to one of 64 colours
 e.g. 00 11 11 00 = 3C - Yellow
 
 2. 64 colour background	
+
 Sets a background colour register on the VGA board to
 one of 64 colours, as above
 	01 rr gg bb

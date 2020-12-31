@@ -16,17 +16,18 @@
 
 loop:
 # plot
+1:
     JSR rand
     LDA rand_seed
-    LCB @120
-    STO A%B yc
+    LCB @119
+    JHI 1b
+    STO A yc
 
-#    JSR rand
     LDA rand_seed+1
-    LCB @160
-    STO A%B xc
+    LCB @159
+    JHI 1b
+    STO A xc
 
-#    JSR rand
     LDA rand_seed0+1
     LCB @2
     LDA A>>B
