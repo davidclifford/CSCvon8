@@ -82,6 +82,10 @@ docmd:	JOUT('\n')
 	JEQ dump
 	LCB 'd'
 	JEQ dump
+	LCB 'V'			# V and v, dump video memory
+	JEQ vdump
+	LCB 'v'
+	JEQ vdump
 	LCB 'R'			# R and r, run code at addr
 	JEQ run
 	LCB 'r'
@@ -114,7 +118,9 @@ run:	LCB $70			# Set a JMP instruction
 	JMP prompt
 
 dump:
-    LCB $0F			# Set a count of 15, which will be 16
+    LCB $0F         # Set a count of 15, which will be 16
+    STO B count+1
+4:  LCB $0F			# Set a count of 15, which will be 16
 	STO B count
 	LDB addr		# Print out the address in hex
 	STO B __hex
@@ -124,7 +130,8 @@ dump:
 	JSR sys_phex
 	JOUT(':')
 	JOUT(' ')
-1:	LIA addr		# Get a byte through the pointer
+1:	LDB addr+1
+    LAI addr,B		# Get a byte through the pointer
 	STO A __hex
 	JSR sys_phex		# Print it in hex
 	JOUT(' ')		# followed by a space
@@ -141,10 +148,54 @@ dump:
 	LDB addr+1		# Also bump up the address for the next dump
 	STO B+1 addr+1
 	TST B+1 JC 3f
-	JMP prompt
+5:	LDB count+1
+	LDB B-1
+	JBN prompt
+	STO B count+1
+	JMP 4b
 3:	LDB addr
 	STO B+1 addr
-	JMP prompt
+	JMP 5b
+
+vdump:
+    LCB $0F         # Set a count of 15, which will be 16
+    STO B count+1
+4:  LCB $0F			# Set a count of 15, which will be 16
+	STO B count
+	LDB addr		# Print out the address in hex
+	STO B __hex
+	JSR sys_phex
+	LDB addr+1
+	STO B __hex
+	JSR sys_phex
+	JOUT(':')
+	JOUT(' ')
+1:  LDB addr+1
+ 	VAI addr,B		# Get a byte through the pointer
+	STO A __hex
+	JSR sys_phex		# Print it in hex
+	JOUT(' ')		# followed by a space
+	LDB count		# Decrement the count
+	LDB B-1
+	JBN 2f			# Exit when we get to $FF
+	STO B count
+	LDB addr+1		# Keep going, so move the pointer up
+	STO B+1 addr+1
+	JMP 1b			# and loop back
+
+2:	JOUT('\r')
+	JOUT('\n')		# End of loop, print a newline
+	LDB addr+1		# Also bump up the address for the next dump
+	STO B+1 addr+1
+	TST B+1 JC 3f
+5:	LDB count+1
+	LDB B-1
+	JBN prompt
+	STO B count+1
+	JMP 4b
+3:	LDB addr
+	STO B+1 addr
+	JMP 5b
 
 change:
 	printstr(setstr)
@@ -1073,8 +1124,8 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.05, type ? for help\n\n"
-usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.06, 01/01/2021\nType ? for help\n\n"
+usage:	 STR "Usage: D dump, V video dump, C change, R run, ? help, X clear/reset\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
 	  ORG $FC00
