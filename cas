@@ -6,6 +6,7 @@ use Data::Dumper;
 # CSCVon8 assembler, (C) 2019 Warren Toomey, GPL3
 
 my $debug    = 0;    # Print debugging information
+my $listing  = 0;    # List program with line numbers
 my $ramimage = 1;    # Assemble to RAM instead of ROM
 my $linenum  = 0;    # Line number being parsed
 my $PC;              # Program counter
@@ -566,6 +567,11 @@ while ( @ARGV > 1 ) {
         shift(@ARGV);
         next;
     }
+    if ( $ARGV[0] eq "-l" ) {
+        $listing++;
+        shift(@ARGV);
+        next;
+    }
     # If we are writing code for the monitor then start code at $0000
     # Return addresses start at $FEFE and grow downwards
     if ( $ARGV[0] eq "-m" ) {
@@ -605,6 +611,8 @@ $PC = $StartPC;
 foreach my $i ( 0 .. ( @Line - 1 ) ) {
     my $line = $Line[$i];
     $linenum = $Linenum[$i];
+    printf("[%d] %s\n", $linenum, $line)
+        if ($listing);
     parse2( $line, 1 );
 }
 
