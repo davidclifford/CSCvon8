@@ -6,22 +6,18 @@
 start:
     JSR init_board
     JSR disp_board
+    OUT '\n'
 
-    LCB @5
-    STO B pos
-    LCA @7
-    STO A n
-    JSR valid_move
+    JSR solve
+    OUT '\n'
     JSR disp_board
-    LDA result
-    LCB '0'
-    LDA A+B
-    OUT A
+
     JMP sys_cli
 
 # Initialise the board from the init string
 init_board:
     STO 0 count
+    STO 0 sp
 1:
     LDB count
     LDA init,B
@@ -156,14 +152,81 @@ valid_move:
     STO A+1 result
     RTS valid_move
 
+# Solve the puzzle - using stack
+solve:
+    STO 0 pos
+    LCA @1
+    STO A try
+1:
+    LDB pos
+    LDA board,B
+    JAZ 2f
+    JMP 4f
+# Empty place
+2:
+    LDA try
+    LCB @9
+    JGT 5f
+
+    STO A n
+    LDB pos
+    STO B p
+    JSR valid_move
+    LDA result
+    JAZ 3f
+
+# Found posible
+    OUT '.'
+    LDB pos
+    LDA try
+    STO A board,B
+
+# Put position and guess on stack
+    LDB sp
+    LDA try
+    STO A ns,B
+    LDA pos
+    STO A ps,B
+    STO B+1 sp
+
+    JMP 4f
+3:
+# Doesnt fit
+    LDA try
+    STO A+1 try
+    JMP 1b
+
+# Backtrack
+5:
+    OUT '<'
+    LDB sp
+    LDB B-1
+    STO B sp
+    LDA ns,B
+    STO A+1 try
+    LDB ps,B
+    STO 0 board,B
+    STO B pos
+    JMP 1b
+4:
+# Next pos
+    LCA @1
+    STO A try
+    LDA pos
+    LDA A+1
+    STO A pos
+    LCB @81
+    JLT 1b
+
+    RTS solve
+
 PAG
 init: STR "210390405090007002003280010001002004040830027820040103000010738080063200304900050"
+#init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030"
 PAG
 board:  BYTE
 PAG
-xs:     BYTE
-PAG
-ys:     BYTE
+ps:     BYTE
 PAG
 ns:     BYTE
 PAG
@@ -173,6 +236,7 @@ pos:    BYTE
 p:      BYTE
 n:      BYTE
 result: BYTE
+try:    BYTE
 debug:  BYTE
 
 #include "../Examples/monitor.h"
