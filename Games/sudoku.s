@@ -1,15 +1,19 @@
 # Sudoku solver
-# David Clifford 03/01/2021
+# David Clifford 05/01/2021
 #
-    LCA @17
-    STO A debug
+    STO 0 __paper
+    LCA $3c
+    STO A __ink
+    JSR sys_cls sys_cls_ret
+
 start:
     JSR init_board
     JSR disp_board
-    OUT '\n'
-
+    LCA $30
+    STO A __ink
     JSR solve
-    OUT '\n'
+    LCA $0c
+    STO A __ink
     JSR disp_board
 
     JMP sys_cli
@@ -31,8 +35,8 @@ init_board:
     JLO 1b
     RTS init_board
 
-# Display the board on the screen
-disp_board:
+# Display the board on the terminal
+disp_board_term:
     STO 0 count
 3:
     LDA count
@@ -59,8 +63,70 @@ disp_board:
     JLO 3b
     RTS disp_board
 
+# Display the board on the screen
+disp_board:
+    STO 0 __xpos
+    STO 0 __ypos
+    STO 0 count
+4:
+    LDB count
+    LDA board,B
+    JAZ 1f
+    LCB '0'
+    LDA A+B
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+    JMP 2f
+1:
+    LCA ' '
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+2:
+    LDA count
+    STO count A+1
+    LCB @81
+    JLO 3f
+    RTS disp_board
+3:
+    LDA count
+    LCB @9
+    LDA A%B
+    JAZ 1f
+    JMP 4b
+1:
+    LCA '\n'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+    JMP 4b
+
+# Display backtrack
+# pos is the position
+disp_backtrack:
+    LDA pos
+    LCB @9
+    STO A%B __xpos
+    STO A/B __ypos
+    LCA ' '
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+    RTS disp_backtrack
+
+# Display guess
+# pos is the position
+# try is the guess
+disp_guess:
+    LDA pos
+    LCB @9
+    STO A%B __xpos
+    STO A/B __ypos
+    LDA try
+    LCB '0'
+    STO A+B __char
+    JSR sys_pchar sys_pchar_ret
+    RTS disp_guess
+
 # Verify valid move
-# input x, y, n
+# input pos, n
 # result 0 no, 1 yes
 valid_move:
     STO 0 result # 0 = false
@@ -152,7 +218,7 @@ valid_move:
     STO A+1 result
     RTS valid_move
 
-# Solve the puzzle - using stack
+# Solve the puzzle - using a stack
 solve:
     STO 0 pos
     LCA @1
@@ -176,7 +242,7 @@ solve:
     JAZ 3f
 
 # Found posible
-    OUT '.'
+    #OUT '.'
     LDB pos
     LDA try
     STO A board,B
@@ -189,6 +255,8 @@ solve:
     STO A ps,B
     STO B+1 sp
 
+    JSR disp_guess
+
     JMP 4f
 3:
 # Doesnt fit
@@ -198,7 +266,7 @@ solve:
 
 # Backtrack
 5:
-    OUT '<'
+    #OUT '<'
     LDB sp
     LDB B-1
     STO B sp
@@ -207,6 +275,7 @@ solve:
     LDB ps,B
     STO 0 board,B
     STO B pos
+    JSR disp_backtrack
     JMP 1b
 4:
 # Next pos
@@ -221,8 +290,12 @@ solve:
     RTS solve
 
 PAG
-init: STR "210390405090007002003280010001002004040830027820040103000010738080063200304900050"
-#init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030"
+#init: STR "210390405090007002003280010001002004040830027820040103000010738080063200304900050" # <1 sec
+#init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030" # ~80 secs
+#init: STR "513400026004752010070316095069038001201500063735091000006070000000004000300000209" # Easy
+#init: STR "840060501000003040006900007020710006000630000900000050000040060200000180005000300" # Easy
+init: STR "085319000000052600403000900009000800000027000034108000806004030000200008090835700" # Medium
+#init: STR "002090600000040003100008000730000002080000400000000008900000005050034020000620001" # Expert
 PAG
 board:  BYTE
 PAG
@@ -237,6 +310,5 @@ p:      BYTE
 n:      BYTE
 result: BYTE
 try:    BYTE
-debug:  BYTE
 
 #include "../Examples/monitor.h"
