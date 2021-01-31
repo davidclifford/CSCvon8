@@ -150,7 +150,7 @@ wait:
     JAZ 7f
     JMP loop
 7:
-    LCA @60
+    LCA @40
     STO A delay+1
     JMP move_snake
 1:

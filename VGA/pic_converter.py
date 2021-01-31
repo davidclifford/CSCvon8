@@ -8,7 +8,8 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = '8bit-testcard'
+filename = 'finch'
+
 
 def plot(x, y, r, g, b):
     psize = 8

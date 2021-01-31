@@ -75,6 +75,7 @@ def solve2(depth):
     backtrack = 0
     max_depth = 0
     while True:
+        next_space = False
         if depth > max_depth:
             max_depth = depth
         if board[x][y] == 0:
@@ -93,18 +94,13 @@ def solve2(depth):
                     ys.append(y)
                     ns.append(n)
                     depth += 1
-
-                    x += 1
-                    if x > 8:
-                        x = 0
-                        y += 1
-                        if y > 8:
-                            disp()
-                            return
-                    n = 1
+                    next_space = True
                 else:
                     n += 1
         else:
+            next_space = True
+
+        if next_space:
             x += 1
             if x > 8:
                 x = 0
@@ -118,8 +114,8 @@ def solve2(depth):
 
 
 #givens = '210390405090007002003280010001002004040830027820040103000010738080063200304900050'
-givens = '070250400800000903000003070700004020100000007040500008090600000401000005007082030'
-
+#givens = '070250400800000903000003070700004020100000007040500008090600000401000005007082030'
+givens = '002090600000040003100008000730000002080000400000000008900000005050034020000620001'
 init_board(givens)
 t = time.time()
 solve2(0)

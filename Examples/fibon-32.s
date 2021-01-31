@@ -10,6 +10,7 @@
     STO     0 __sypos
     LCA     $04
     STO     A __sink
+    STO     0 __paper
     JSR     sys_cls sys_cls_ret
 
 restart:
