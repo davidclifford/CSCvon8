@@ -4,36 +4,34 @@
 start:
     STO 0 __paper
     JSR sys_cls sys_cls_ret
-    LCA @7
-    STO A count
-    LCA @128
-    STO A count+1
+    LDA 0
+    STO A+1 x
+    STO A+1 y
 1:
     JSR sys_rand sys_rand_ret
 # y
-    LDA __rand_seed+1
-    LCB @118
-    LDA A%B
-    STO A+1 y
-# x
     LDA __rand_seed
-    LCB @158
-    LDB A%B
-    LDB B+1
-
-    LCA $3F
-    STI A y,B
-
-    LDA count+1
-    STO A-1 count+1
+    LCB @8
+    LDA A%B
     JAZ 3f
-    JMP 1b
-3:
-    LDA count
-    STO A-1 count
-    JAZ 2f
-    JMP 1b
 2:
+    LDA x
+    STO A+1 x
+    LCB @158
+    JLO 1b
+    LDA 0
+    STO A+1 x
+    LDA y
+    STO A+1 y
+    LCB @118
+    JLO 1b
+    JMP 4f
+3:
+    LCA $3F
+    LDB x
+    STI A y,B
+    JMP 2b
+4:
 # Do life
 next_gen:
     LCB @1
@@ -161,7 +159,7 @@ born:
 next:
     LDA x
     STO A+1 x
-    LCB @159
+    LCB @158
     JNE next_cell
 1:
 #    OUT '\n'
@@ -169,7 +167,7 @@ next:
     STO A x
     LDA y
     STO A+1 y
-    LCB @119
+    LCB @118
     JNE next_cell
 #    OUT '\n'
 
@@ -196,12 +194,12 @@ next:
 3:
     LDA x
     STO A+1 x
-    LCB @159
+    LCB @158
     JNE 1b
 
     LDA y
     STO A+1 y
-    LCB @119
+    LCB @118
     JNE 4b
 
     JMP next_gen

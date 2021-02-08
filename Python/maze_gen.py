@@ -9,10 +9,10 @@ import time
 imgx = 160
 imgy = 120
 pygame.init()
-scale = 4
+scale = 10
 
-wid = 180
-height = 100
+wid = 72
+height = 48
 x_max = wid * 2 + 1
 y_max = height * 2 + 1
 screen = pygame.display.set_mode((x_max*scale, y_max*scale))
@@ -49,16 +49,11 @@ def disp_grid():
 
 while True:
     maze = [[0]*wid for i in range(height)]
-    sx = []
-    sy = []
+    stack = []
 
-    start_x = 0*random.randint(0, wid-1)
-    start_y = 0*random.randint(0, height-1)
-    visited = 0
-
-    x = start_x
-    y = start_y
-    maze[y][x] = 1
+    x = random.randint(0, wid-1)
+    y = random.randint(0, height-1)
+    visited = 1
 
     screen.fill((0, 0, 0))
     plot(x * 2 + 1, y * 2 + 1, (128, 128, 128))
@@ -67,10 +62,9 @@ while True:
     # disp_grid()
 
     col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
-    go = True
     max_sp = 0
 
-    while go:
+    while True:
 
         choices = []
         for d in dir:
@@ -83,22 +77,20 @@ while True:
 
         if len(choices) == 0:
             col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
-            x = sx.pop()
-            y = sy.pop()
-            if len(sx) == 0:
-                go = False
+            x, y = stack.pop()
+            if len(stack) == 0:
+                break
 
         else:
-            sx.append(x)
-            sy.append(y)
-            if len(sx) > max_sp:
-                max_sp = len(sx)
+            stack.append((x, y))
+            if len(stack) > max_sp:
+                max_sp = len(stack)
 
             visited += 1
 
             ix, iy = random.choice(choices)
 
-            plot(x * 2 + +1 + ix, y * 2 + 1 + iy, col)
+            plot(x * 2 + 1 + ix, y * 2 + 1 + iy, col)
 
             d = NORTH if iy == -1 else SOUTH if iy == 1 else EAST if ix == 1 else WEST
             e = NORTH if iy == 1 else SOUTH if iy == -1 else EAST if ix == -1 else WEST
@@ -110,11 +102,11 @@ while True:
             maze[y][x] |= e
             plot(x * 2 + 1, y * 2 + 1, col)
 
-            pygame.display.update()
+    pygame.display.update()
 
     max_ever = max(max_sp, max_ever)
     min_ever = min(max_sp, min_ever)
-    print('MAX', max_sp, min_ever, max_ever)
+    print('MAX', visited, max_sp, min_ever, max_ever)
 
     x = 0
     y = 0
