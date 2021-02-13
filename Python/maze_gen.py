@@ -11,8 +11,8 @@ imgy = 120
 pygame.init()
 scale = 10
 
-wid = 72
-height = 48
+wid = 16
+height = 16
 x_max = wid * 2 + 1
 y_max = height * 2 + 1
 screen = pygame.display.set_mode((x_max*scale, y_max*scale))
@@ -79,6 +79,7 @@ while True:
             col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
             x, y = stack.pop()
             if len(stack) == 0:
+                print(x, y)
                 break
 
         else:
