@@ -2,10 +2,9 @@
 # David Clifford Feb 2021
 #
 
-#define GRID_SIZE @7
+#define GRID_SIZE @6
+#define GRID_SIZE2 @3
 #define GRID_COLOUR $30
-#define GRID_COLOUR1 $30
-#define GRID_COLOUR2 $30
 #define GRID_X @4
 #define GRID_Y @4
 
@@ -14,7 +13,7 @@
 #define SOUTH @4
 #define WEST @8
 
-#define WAIT #JIU .; INA
+#define INPUT JIU .; INA
 
 start:
 # Clear screen
@@ -276,9 +275,8 @@ start:
     #          plot xx,yy+i
 5:
     LDB xx
-    LCA GRID_COLOUR1
+    LCA GRID_COLOUR
     STI A yy,B
-    WAIT ##################
     LDA yy
     STO A-1 yy
     LDA i
@@ -298,9 +296,8 @@ start:
     #          plot xx+i, yy
 5:
     LDB xx
-    LCA GRID_COLOUR2
+    LCA GRID_COLOUR
     STI A yy,B
-    WAIT ###################
     STO B-1 xx
     LDA i
     STO A-1 i
@@ -333,12 +330,99 @@ start:
     LCB @15
     JLO 1b
 
+    STO 0 x
+    STO 0 y
+move:
+    LDA x
+    LCB GRID_SIZE
+    LDA A*B
+    LCB GRID_SIZE2
+    LDA A+B
+    LCB GRID_X
+    LDA A+B
+    STO A xx
+
+    LDA y
+    LCB GRID_SIZE
+    LDA A*B
+    LCB GRID_SIZE2
+    LDA A+B
+    LCB GRID_Y
+    LDA A+B
+    STO A yy
+
+    LCA $3C
+    LDB xx
+    STI A yy,B
+
 # Wait for keypress
+5:
+# c = maze[y*16+x]
+    LDA y
+    LCB @16
+    LDA A*B
+    LDB x
+    LDB A+B
+    LDA maze,B
+    STO A c
+# Input
     JIU .
     INA
     LCB 'q'
     JEQ sys_cli
-    JMP start
+# WASD
+    LCB 'a'
+    JEQ 1f
+    LCB 'd'
+    JEQ 2f
+    LCB 'w'
+    JEQ 3f
+    LCB 's'
+    JEQ 4f
+# Restart
+    LCB ' '
+    JEQ start
+    JMP 5b
+1:
+    # WEST
+    LDA c
+    LCB WEST
+    LDA A&B
+    JAZ 5b
+    LDA x
+    STO A-1 x
+    JMP 6f
+2:
+    # EAST
+    LDA c
+    LCB EAST
+    LDA A&B
+    JAZ 5b
+    LDA x
+    STO A+1 x
+    JMP 6f
+3:
+    # NORTH
+    LDA c
+    LCB NORTH
+    LDA A&B
+    JAZ 5b
+    LDA y
+    STO A-1 y
+    JMP 6f
+4:
+    # SOUTH
+    LDA c
+    LCB SOUTH
+    LDA A&B
+    JAZ 5b
+    LDA y
+    STO A+1 y
+    JMP 6f
+6:
+    LDB xx
+    STI 0 yy,B
+    JMP move
 
 PAG
 choice: BYTE @4
