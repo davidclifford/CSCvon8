@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'gf5_dith'
+filename = 'finch'
 
 
 def plot(x, y, r, g, b):
@@ -43,7 +43,7 @@ for y in range(120):
         else:
             pic_file.write(uint8(0))
 
-    hex_file.write('Z')
+    hex_file.write('Z\n')
     pygame.display.update()
 
 pic_file.close()

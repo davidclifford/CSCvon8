@@ -330,8 +330,15 @@ start:
     LCB @15
     JLO 1b
 
+#############
+# Game Loop #
+#############
     STO 0 x
     STO 0 y
+    STO 0 i
+###############
+# MOVE PLAYER #
+###############
 move:
     LDA x
     LCB GRID_SIZE
@@ -350,8 +357,8 @@ move:
     LCB GRID_Y
     LDA A+B
     STO A yy
-
-    LCA $3C
+1:
+    LCA $0C
     LDB xx
     STI A yy,B
 
@@ -422,6 +429,7 @@ move:
 6:
     LDB xx
     STI 0 yy,B
+
     JMP move
 
 PAG

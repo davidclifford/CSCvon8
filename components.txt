@@ -1,0 +1,92 @@
+In-draws chips
+
+Oscilators
+LM555	3mhz	4
+LM555			4
+XTAL 2Mhz		1
+
+
+Counters
+74ls161			3
+74ls169			6
+74ls469			2
+74hc590			5
+74ls593			2 (defective?)
+74hct4040		8
+
+Shift
+74hc595			2
+
+Registers / Latches
+74hct377		20
+74hct574		5
+74ls173			8
+74ls273			1
+
+Logic
+74ls00			4
+74ls02			1
+74ls04			5
+74hct04			2
+74hct14			2
+74ls08			3
+74hct08			2
+74ls32			1
+74ls86			2
+
+Mux / Demux
+74hct138		6
+74hct139		4
+74ls139			1
+74hct151		2
+74ls151			1
+74hct157		4
+74ls157			4
+
+Bus Transceivers
+74ls245			6
+74hct245		38
+
+ALU
+74ls181			6
+74ls283			2
+74ls382			2
+
+EEProm
+39sf010	70ns	6
+28c64	150ns	8
+28c256	150ns	1
+
+UV ROM
+27c322	50ns	3
+27c322	100ns	3
+27c1024	55ns	1
+
+RAM
+62256	25ns	1
+62256	55ns	1
+
+Switches
+8 DIL			2
+4 DIL			1
+2 DIL			1
+BB SPDT			1
+micro SPDT		1
+Big tact		1
+
+Sockets
+28 ZIP			2
+28 600 leaf		2
+28 600 mach		1
+24 600 leaf		2
+24 600 mach		1
+
+
+Arduino
+Nano			1
+Mega			1
+Diecimila		1
+MicroView		1
+
+Raspberry Pi 1	1
+Raspberry Pi 3	1
