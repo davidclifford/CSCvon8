@@ -2,8 +2,8 @@
 // (c) 2018 Warren Toomey, GPL3
 
 module uart (
-        input [7:0] data,	// Input data
-	input TX		// Transmit control line, active low
+    input [7:0] data,	// Input data
+	input TX	    	// Transmit control line, active low
   );
 
   // UART output

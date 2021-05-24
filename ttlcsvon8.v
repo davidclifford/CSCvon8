@@ -182,7 +182,8 @@ module ttlcsvon8 (i_clk, reset, PCval);
   // don't know how to read a keypress with no delay in Icarus under Linux.
   assign databus= (DbusOp == 2'b00) ? MEMresult :
 		  (DbusOp == 2'b01) ? ALUresult[7:0] :
-		  (DbusOp == 2'b10) ? 8'h3f : {WordSize{1'bz}};
+		  //(DbusOp == 2'b10) ? 8'h2a :
+		  {WordSize{1'bz}};
 
   // UART. Output the data bus value when IOload goes low
   uart UART(databus, IOload);

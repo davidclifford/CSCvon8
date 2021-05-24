@@ -24,6 +24,8 @@ Check the timings:
 * Screen refresh: 56Hz
 * Vertical refresh: 35.15625 khz
 
+Positive sync
+
 Horizontal 400, 12, 36, 64, 512
 
 Vertical 600, 1, 2, 22, 625

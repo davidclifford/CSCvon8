@@ -48,7 +48,7 @@ for y in range(625):
             data = data | HS
         if 601 <= y < 603:
             data = data | VS
-        if y >= 624 and x >= 511:
+        if y < 624 or x < 511:
             data = data | RESET
 
         rom_file.write(uint16(data))
