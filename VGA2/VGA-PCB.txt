@@ -1,0 +1,15 @@
+Problems with VGS PCB v1.0 1/6/2021
+
+1. Missing things
+
+Should have thicker tracks for VCC
+Big capacitor by power input for DC smoothing
+Switch to turn on/off
+LEDs to show power on, and maybe read/write?
+
+2. Mistakes
+
+Pixel ROM - VCC -> VSS, GND -> VDD i.e. the wrong way around
+Counters - RCO -> CEP, should have been CET
+Control signal buffer (74x173) - Reset set to VCC should have been GND
+Control ROM - VSync and HSync wrong way around, updated ROM rather than fix hardware

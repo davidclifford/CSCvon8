@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'finch'
+filename = 'forest-glade'
 
 RESET = 0b0000000000000001
 HS = 0b0000000000000010
@@ -18,7 +18,8 @@ VS = 0b0000000000000100
 def plot(x, y, r, g, b):
     xsize = 2
     ysize = 1
-    col = (r << 4, g << 4, b << 4)
+    #col = (r << 4, g << 4, b << 4)
+    col = (r, g, b)
     for yy in range(ysize):
         for xx in range(xsize):
             gfxdraw.pixel(screen, x*xsize+xx, y*ysize+yy, col)
@@ -42,13 +43,14 @@ for y in range(625):
             blu = pix[2] >> 4
             colour = red << 8 | grn << 4 | blu << 0
             data = data | uint16(colour << 3)
-            plot(x, y, red, grn, blu)
+            # plot(x, y, red, grn, blu)
+            plot(x, y, pix[0], pix[1], pix[2])
 
         if 412 <= x < 448:
             data = data | HS
         if 601 <= y < 603:
             data = data | VS
-        if y < 624 or x < 511:
+        if y < 624 or x < 510:
             data = data | RESET
 
         rom_file.write(uint16(data))

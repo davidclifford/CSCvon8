@@ -9,10 +9,10 @@ import time
 imgx = 160
 imgy = 120
 pygame.init()
-scale = 10
+scale = 1
 
-wid = 16
-height = 16
+wid = 900
+height = 500
 x_max = wid * 2 + 1
 y_max = height * 2 + 1
 screen = pygame.display.set_mode((x_max*scale, y_max*scale))

@@ -8,8 +8,12 @@ from numpy import uint8
 Yreset = uint8(1) << 0
 Xreset = uint8(1) << 1
 Ynext = uint8(1) << 2
-Hsync  = uint8(1) << 3
-Vsync  = uint8(1) << 4
+######################
+# Swapped HSync and VSync for v1.0 VGA card
+# Put this back for v1.1 of VGA graphics card
+Vsync  = uint8(1) << 3
+Hsync  = uint8(1) << 4
+######################
 PICout = uint8(1) << 5
 TESTout = uint8(1) << 6
 PIXout = uint8(1) << 7

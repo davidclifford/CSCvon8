@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'finch'
+filename = 'forest-glade'
 
 
 def plot(x, y, r, g, b):

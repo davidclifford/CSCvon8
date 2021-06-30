@@ -14,17 +14,11 @@ def valid(x, y, n):
     global board
 
     for i in range(9):
-        if board[x][i] == n:
+        if board[x][i] == n or board[i][y] == n:
             return False
     for i in range(9):
-        if board[i][y] == n:
+        if board[((x // 3) * 3) + (i % 3)][((y // 3) * 3) + (i // 3)] == n:
             return False
-    x0 = (x//3) * 3
-    y0 = (y//3) * 3
-    for i in range(3):
-        for j in range(3):
-            if board[x0+j][y0+i] == n:
-                return False
     return True
 
 
@@ -115,7 +109,8 @@ def solve2(depth):
 
 #givens = '210390405090007002003280010001002004040830027820040103000010738080063200304900050'
 #givens = '070250400800000903000003070700004020100000007040500008090600000401000005007082030'
-givens = '002090600000040003100008000730000002080000400000000008900000005050034020000620001'
+givens = '002090600000040003100008000730000002080000400000000008900000005050034020000620001' # Hard
+#givens='085319000000052600403000900009000800000027000034108000806004030000200008090835700' # Medium
 init_board(givens)
 t = time.time()
 solve2(0)
