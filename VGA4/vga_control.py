@@ -21,7 +21,9 @@ for a in range(0, 80000):
     x = a % 128
     y = a // 128
 
-    if 100 + 3 <= x < 100 + 3 + 9:
+    if 100 + 3 <= x < 100 + 3 + 9 and y < 625:
+        control[a] |= Hsync
+    if 96 + 3 <= x < 96 + 3 + 9 and y >= 624:
         control[a] |= Hsync
     if 600 + 1 <= y < 600 + 1 + 2:
         control[a] |= Vsync
