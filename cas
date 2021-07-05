@@ -18,6 +18,7 @@ my %Label;              # Hash of labels
 my %Export;             # Hash of export symbols
 my @Numlabel;           # Sparse 2D array of numeric labels and at what location
                         # they were defined.
+my $RUN;             # Run program from
 
 # Hash of instruction names, their opcode values and length in bytes.
 # Also, hash of known keywords that occur in instructions.
@@ -92,6 +93,8 @@ sub load_opcodes {
     $Keyword{WORD} = 1;
     $Inst{EXPORT}    = [ 0x10b, 0 ];
     $Keyword{EXPORT} = 1;
+    $Inst{RUN }    = [ 0x10c, 0 ];
+    $Keyword{RUN} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
     while (<$IN>) {
@@ -489,6 +492,11 @@ sub parse2 {
               if ( $firstpass && ( $oldPC >> 8 ) != ( $PC >> 8 ) );
         }
 
+        # Run
+        if ( $inst eq "RUN" ) {
+            $RUN = $PC;
+        }
+
         # Increment PC to the start of the next page
         if ( $inst eq "PAG" ) {
             my $oldPC = $PC;
@@ -678,6 +686,7 @@ if ($ramimage) {
         print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
     }
     print( $OUT "Z\n" );
+    printf( $OUT "R%04x\n", $RUN ) if ($RUN);
     close($OUT);
     exit(0);
 }

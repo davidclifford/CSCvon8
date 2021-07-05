@@ -1,7 +1,7 @@
 # Tetris for the CSCvon8
 # By David Clifford April 2020
 #
-
+    RUN
 tetris:
 # Clear screen
     STO 0 cls_plot+1

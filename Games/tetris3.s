@@ -1,6 +1,7 @@
 # Tetris 3 for the CSCvon8
 # By David Clifford Sept 2020
 #
+    RUN
 start:
     LCA @1
     STO A restart
