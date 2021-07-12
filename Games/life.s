@@ -1,6 +1,7 @@
 # Life for the CSCvon8
 # By David Clifford Oct 2020
 #
+    RUN
 start:
     STO 0 __paper
     JSR sys_cls sys_cls_ret

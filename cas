@@ -600,7 +600,7 @@ load_opcodes();
 
 # Read in the instructions and store in the @Line array. Use the
 # C preprocessor as well.
-open( my $IN, "-|", "cpp -nostdinc $ARGV[0]" )
+open( my $IN, "-|", "cpp -nostdinc $ARGV[0] | grep -v  '^# 1 '" )
   || die("Cannot open $ARGV[0]: $!");
 while (<$IN>) {
     chomp;
