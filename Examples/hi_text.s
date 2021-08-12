@@ -30,18 +30,12 @@ puts:
 # change colour if space
     LDA char
     LCB ' '
-#    JNE 3f
+    JNE 3f
     LDA col
     LDA A+1
     LCB @7
     LDA A&B
     STO A col
-    JAZ 1f
-    JMP 2f
-1:
-    LDA A+1
-    STO A col
-2:
     LCB @4
     LDA A<<B
     LCB $80
@@ -135,9 +129,9 @@ char: BYTE
 col: BYTE
 
 PAG
-mess: STR "The Quick Brown Fox Jumps Over The Lazy Dog?\nHi-res text mode - copyright David Clifford June 2020 \n6 x 8 Font, 53 x 30 characters on screen in 7 colours\n\nabcde fghij klmno pqrst uvwxyz\n\nABCD EFGHI JKLMN OPQRS TUVW XYZ\n\n01234 56789 !@$%^ &*()_+ {}|:<>?"
+mess: STR "The Quick Brown Fox Jumps Over The Lazy Dog?\nHi-res text mode - copyright David Clifford June 2020 \n6 x 8 Font, 53 x 30 characters on screen in 8 colours\n\nabcde fghij klmno pqrst uvwxyz\n\nABCD EFGHI JKLMN OPQRS TUVW XYZ\n\n01234 56789 !@$%^ &*()_+ {}|:<>?"
 PAG
-mes1: STR "         1111111112222222222333333333344444444445555\n123456789 123456789 123456789 123456789 123456789 123\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30"
+mes1: STR "         11111111122222222223333333333444444444455555\n12345678901234567890123456789012345678901234567890123\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30"
 
 PAG
 ascii:
