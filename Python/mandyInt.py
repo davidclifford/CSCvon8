@@ -20,6 +20,26 @@
 import pygame
 from pygame import gfxdraw
 
+BITS = 8
+SCALE = 1 << BITS
+
+
+def mult(a, b):
+    sign = 0
+    if a < 0:
+        a = -a
+        sign = 1
+    if b < 0:
+        b = -b
+        sign = sign ^ 1
+
+    r = int(a*b*SCALE)/SCALE
+    #r = a*b
+    if sign == 1:
+        r = -r
+    return r
+
+
 scale = 8
 imgx = 160
 imgy = 120
@@ -27,8 +47,15 @@ pygame.init()
 screen = pygame.display.set_mode((imgx*scale, imgy*scale))
 refresh = True
 
-while True:
 
+def h(n):
+    n *= 256
+    if n < 0:
+        n += 65536
+    return hex(int(n+0.5))
+
+
+while True:
     if refresh:
         refresh = False
         for py in range(imgy):
@@ -37,21 +64,31 @@ while True:
                 yz = py / 64 - 1
                 x = 0
                 y = 0
+                # print('xz, yz', xz, yz)
 
                 for j in range(64):
-                    if x*x + y*y > 4:
+                    x2 = mult(x, x)
+                    y2 = mult(y, y)
+                    print('xz={} yz={} x={} x2={} y={} y2={} t={} '.format(h(xz), h(yz), h(x), h(x2), h(y), h(y2), h(x2+y2)), end='')
+                    if y2 + x2 >= 4.0:
+                        print()
                         break
-                    xt = x*x - y*y + xz
-                    y = 2*x*y + yz
+                    xt = x2 - y2 + xz
+                    print('xt={}'.format(h(xt)))
+                    y = mult(2, mult(x, y)) + yz
                     x = xt
-                    print(x, y)
+                    # print('x, y', x, y)
+                    # print('sx, sy', x*SCALE, y*SCALE)
 
-                i = 63-j
+                print('-----------')
+                i = j
+                if i == 63:
+                    i = 0
                 for xx in range(scale):
                     for yy in range(scale):
-                        c1 = (i % 4) * 64
+                        c3 = (i % 4) * 64
                         c2 = ((i >> 2) % 4) * 64
-                        c3 = ((i >> 4) % 4) * 64
+                        c1 = ((i >> 4) % 4) * 64
                         gfxdraw.pixel(screen, px*scale + xx, py*scale + yy, (c1, c2, c3))
 
             pygame.display.update()
@@ -60,4 +97,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             k = chr(event.key)
             if k == 'q':
+                pygame.quit()
                 exit(0)
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit(0)

@@ -22,7 +22,7 @@ maxIt = 64
 imgx = 160
 imgy = 120
 pygame.init()
-scale = 4
+scale = 6
 screen = pygame.display.set_mode((imgx*scale, imgy*scale))
 redraw = True
 
@@ -40,12 +40,15 @@ while True:
                 zx = x * (xb - xa) / (imgx - 1) + xa
                 z = zx + zy * 1j
                 c = z
-                for i in range(maxIt):
+                for j in range(maxIt):
                     # print(i, x, y, zx, zy, abs(z))
                     if abs(z) > 2.0:
                         break
                     z = z * z + c
 
+                i = j
+                if i == maxIt-1:
+                    i = 0
                 for xx in range(scale):
                     for yy in range(scale):
 #                        gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, (i % 4 * 64, i % 8 * 32, i % 16 * 16))
@@ -54,6 +57,9 @@ while True:
             pygame.display.update()
 
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit(0)
         if event.type == pygame.KEYDOWN:
             k = chr(event.key)
             if k == '=':
@@ -75,4 +81,7 @@ while True:
             if k == 's':
                 yoff = yoff+1/zoom
                 redraw = True
+            if k == 'q':
+                pygame.quit()
+                exit(0)
 
