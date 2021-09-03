@@ -2,7 +2,7 @@
 # Multiply 2 signed 16 bit numbers normalised to fixed point numbers (1.0 = 256)
 # 22/08/2021
 #
-# i.e. 1 is represented as 256, 0.5 as 2048, 2 as 512 etc...
+# i.e. 1.0 is represented as 256, 0.5 as 128, 2 as 512 etc...
 #
 # Input: num1, num2 (16 bit each)
 # Output: answ+1,+2 (16 bit)

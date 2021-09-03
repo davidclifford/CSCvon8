@@ -18,7 +18,7 @@ next_py:
     STO 0 px
     LCA $FE
     STO A xz
-    LCA $10
+    LCA $34
     STO A xz+1
 next_px:
 # plot white pixel
@@ -162,7 +162,7 @@ next_i:
     LDA i
     LDA A+1
     STO A i
-    LCB @63
+    LCB @15
     JHI break_out
 # next i
     JMP next_i
@@ -174,7 +174,7 @@ break_out:
 
 # xz += 4
     LDA xz+1
-    LCB @4
+    LCB @20
     STO A+B xz+1
     TST A+B JC 1f
     JMP 2f
@@ -186,13 +186,13 @@ break_out:
 2:
     LDA px
     STO A+1 px
-    LCB @159
+    LCB @31
     JEQ 1f
     JMP next_px
 # yz += 4
 1:
     LDA yz+1
-    LCB @4
+    LCB @20
     STO A+B yz+1
     TST A+B JC 1f
     JMP 2f
@@ -204,7 +204,7 @@ break_out:
 2:
     LDA py
     STO A+1 py
-    LCB @119
+    LCB @23
     JEQ 1f
     JMP next_py
 # Stop
