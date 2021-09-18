@@ -1,6 +1,7 @@
 #
 # 11/08/2021
-# Multiply 2 32-bit numbers together
+# Multiply 2 16-bit numbers together
+# Giving a 32-bit number
 #
 
 #define PRI(x)       LCA x ; STO A __schar; JSR sys_spchar sys_spchar_ret;

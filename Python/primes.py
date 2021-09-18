@@ -1,4 +1,4 @@
-primes = [i for i in range(0,256)]
+primes = [i for i in range(0, 256)]
 primes[0] = primes[1] = 0
 
 for i in range(2, 14):
@@ -21,6 +21,7 @@ for i in range(256, 65536, 256):
         j = p*p
         if j < a:
             j = int((a+p-1)/p)*p
+            print('Calculate J =', j, p)
 
         while j < b:
             primes[j-a] = 1

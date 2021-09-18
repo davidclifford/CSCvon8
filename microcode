@@ -630,7 +630,7 @@ E1 DS2: ALUresult 0 Bload
     ALUresult B-1 ARena MEMload
     uSreset
 
-# Store address pointed to by stack pointer (12 steps) - Destroys A & B
+# Store immediate address to memory pointed to by stack pointer (12 steps) - Destroys A & B
 E2 SAS: ALUresult 0 Bload
     ALUresult !B AHload
     ALUresult !B ALload
