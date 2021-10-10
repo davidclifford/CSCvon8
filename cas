@@ -101,6 +101,7 @@ sub load_opcodes {
         chomp;
         $lnum++;
         s{#.*}{};     # Lose comments
+        s{//.*}{};    # Lose comments
         s{^\s+}{};    # Lose leading whitespace
         s{\s+$}{};    # Lose trailing whitespace
         next if (m{^$});    # Ignore empty lines
@@ -600,15 +601,17 @@ load_opcodes();
 
 # Read in the instructions and store in the @Line array. Use the
 # C preprocessor as well.
-open( my $IN, "-|", "cpp -nostdinc $ARGV[0] | grep -v  '^# 1 '" )
+open( my $IN, "-|", "cpp -nostdinc $ARGV[0] | grep -v '^# [0-9]+ \"(.+)\"'" )
   || die("Cannot open $ARGV[0]: $!");
 while (<$IN>) {
     chomp;
     $linenum++;
-    s{#.*}{};     # Lose comments
-    s{^\s+}{};    # Lose leading whitespace
-    s{\s+$}{};    # Lose trailing whitespace
-    next if (m{^$});    # Ignore empty lines
+    if (!m{'(.*)#(.*)'}) {
+        s{#.*}{};     # Lose comments
+    }
+    s{^\s+}{};        # Lose leading whitespace
+    s{\s+$}{};        # Lose trailing whitespace
+    next if (m{^$});  # Ignore empty lines
     push( @Line,    $_ );         # Save the completed line and its line number
     push( @Linenum, $linenum );
 }

@@ -1,3 +1,4 @@
+#
 # Plot Mandelbrot set
 # 22/08/2021
 #
@@ -211,6 +212,8 @@ break_out:
 1:
     JMP sys_cli
 
+#include "mult.h"
+
 PAG
 px: BYTE
 py: BYTE
@@ -225,5 +228,5 @@ xt: WORD
 t:  WORD
 plot_y: BYTE
 
-#include "mult.h"
+
 #include "monitor.h"
