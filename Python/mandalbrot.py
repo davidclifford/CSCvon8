@@ -18,7 +18,7 @@ yoff = 0
 # max iterations allowed
 maxIt = 64
 
-# image size
+# image sized
 imgx = 160
 imgy = 120
 pygame.init()

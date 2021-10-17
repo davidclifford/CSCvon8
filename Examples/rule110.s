@@ -22,9 +22,6 @@
 #define BOARD_CAP1 @121
 #define BOARD_CAP2 @120
 
-# Clear screen
-    STO 0 __paper
-//    JSR sys_cls sys_cls_ret
 # Initilise board to all zeros
     LDB 0
     LCA BOARD_CAP
@@ -48,12 +45,10 @@ next_j:
     LDB j
     LDA board,B
     JAZ 1f
-    //OUT '*'
     LCA $3C
     STI A i,B
     JMP 2f
 1:
-    //OUT ' '
     LCA $03
     STI A i,B
 2:
@@ -64,8 +59,6 @@ next_j:
     JEQ 1f
     JMP next_j
 1:
-#     print()
-    OUT '\n'
 #     pattern = (board[0] << 1) | board[1]
     LDA board
     LDB A
