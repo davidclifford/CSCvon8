@@ -17,7 +17,7 @@ VS = 0b0000000000000100
 
 def plot(x, y, r, g, b):
     xsize = 2
-    ysize = 1
+    ysize = 2
     #col = (r << 4, g << 4, b << 4)
     col = (r, g, b)
     for yy in range(ysize):
@@ -26,7 +26,7 @@ def plot(x, y, r, g, b):
 
 
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((1600, 1200))
 
 image = Image.open(filename+'.png')
 pixels = image.load()
@@ -34,9 +34,9 @@ pixels = image.load()
 rom_file = open(filename + '.bin', 'wb')
 
 for y in range(625):
-    for x in range(512):
+    for x in range(1024):
         data = 0
-        if x < 400 and y < 600:
+        if x < 800 and y < 600:
             pix = pixels[x, y]
             red = pix[0] >> 4
             grn = pix[1] >> 4
@@ -46,12 +46,14 @@ for y in range(625):
             # plot(x, y, red, grn, blu)
             plot(x, y, pix[0], pix[1], pix[2])
 
-        if 412 <= x < 448:
+        if 824 <= x < 896:
             data = data | HS
         if 601 <= y < 603:
             data = data | VS
-        if y < 624 or x < 510:
+        if y < 624 or x < 1023:
             data = data | RESET
+        else:
+            print('RESET')
 
         rom_file.write(uint16(data))
 

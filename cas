@@ -93,7 +93,7 @@ sub load_opcodes {
     $Keyword{WORD} = 1;
     $Inst{EXPORT}    = [ 0x10b, 0 ];
     $Keyword{EXPORT} = 1;
-    $Inst{RUN }    = [ 0x10c, 0 ];
+    $Inst{RUN}    = [ 0x10c, 0 ];
     $Keyword{RUN} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");

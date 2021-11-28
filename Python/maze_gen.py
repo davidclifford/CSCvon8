@@ -6,13 +6,13 @@ import random
 import time
 
 # drawing area
-imgx = 160
-imgy = 120
+imgx = 640
+imgy = 480
 pygame.init()
-scale = 1
+scale = 4
 
-wid = 900
-height = 500
+wid = 160
+height = 120
 x_max = wid * 2 + 1
 y_max = height * 2 + 1
 screen = pygame.display.set_mode((x_max*scale, y_max*scale))
@@ -64,9 +64,9 @@ while True:
     col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
     max_sp = 0
 
+    choices = []
     while True:
-
-        choices = []
+        choices.clear()
         for d in dir:
             ix, iy = d
             nx = x + ix
@@ -76,7 +76,10 @@ while True:
                     choices.append((ix, iy))
 
         if len(choices) == 0:
-            col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
+            col2 = col
+            while col == col2:
+                col2 = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
+            col = col2
             x, y = stack.pop()
             if len(stack) == 0:
                 print(x, y)
@@ -97,13 +100,14 @@ while True:
             e = NORTH if iy == 1 else SOUTH if iy == -1 else EAST if ix == -1 else WEST
             maze[y][x] |= d
 
-            x = x + ix
-            y = y + iy
+            x += ix
+            y += iy
 
             maze[y][x] |= e
             plot(x * 2 + 1, y * 2 + 1, col)
+    pygame.display.flip()
 
-    pygame.display.update()
+
 
     max_ever = max(max_sp, max_ever)
     min_ever = min(max_sp, min_ever)

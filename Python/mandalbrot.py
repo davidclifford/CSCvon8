@@ -16,7 +16,7 @@ yoff = 0
 
 
 # max iterations allowed
-maxIt = 64
+maxIt = 640
 
 # image sized
 imgx = 160

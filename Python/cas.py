@@ -10,8 +10,6 @@ linenum = 0
 start_pc = 0x8000
 show_listing = False
 next_return_addr = 0xFE00
-line = []
-line_num = []
 MEM = [i for i in range(65536)]
 label = {}
 export = {}
@@ -23,6 +21,8 @@ return_addr = {}
 
 low_mem_used = 0x10000
 hi_mem_used = -1
+
+opcode = {}
 
 
 def get_command_arguments():
@@ -43,16 +43,26 @@ def get_command_arguments():
 def load_source_code(args):
     command = """cpp -nostdinc {} | grep -v -E '^# [0-9]+ "(.+)"'"""
     output = os.popen(command.format(args.filename))
-    _lines = output.read().split('\n')
+    _lines = output.read()
     output.close()
+    _lines = re.split(r'\n', _lines)
+    lines = []
+    for line in _lines:
+        # Split lines by ; unless it is in a string
+        if re.match(r'(?=(.*)("|\')(.*)("|\')(.*))', line):
+            lines.append(line)
+        else:
+            lines.extend(line.split(';'))
 
     processed_lines = []
     line_numbers = []
     count = 1
-    for line in _lines:
+    for line in lines:
         line = re.sub(r'^\s+', '', line)
         line = re.sub(r'\s+$', '', line)
-        line = re.sub(r'#.*', '', line)
+        if re.match(r'(?!(.*)("|\')(.*)("|\')(.*))', line):
+            line = re.sub(r'#.*', '', line)
+            line = re.sub(r'//.*', '', line)
         if len(line) == 0:
             continue
         if show_listing:
@@ -63,6 +73,29 @@ def load_source_code(args):
     return processed_lines, line_numbers
 
 
+def load_opcodes():
+    global opcode, op_len, op_name
+    # Read all lines in opcode file
+    with open('opcodes', 'r') as f:
+        lines = f.readlines()
+    # Go through all lines
+    line_num = 0
+    for line in lines:
+        line_num += 1
+        line = re.sub(r'^\s+', '', line)
+        line = re.sub(r'\s+$', '', line)
+        line = re.sub(r'#.*', '', line)
+        line = re.sub(r'//.*', '', line)
+        # Skip if line empty
+        if len(line) == 0:
+            continue
+        op_code, op_len, op_name = line.split(' ')
+        opcode[op_name] = {'code': op_code, 'len': op_len}
+    print(opcode)
+
 args = get_command_arguments()
+load_opcodes()
 lines, line_numbers = load_source_code(args)
 
+for pas in range(1):
+    print(pas)

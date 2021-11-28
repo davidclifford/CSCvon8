@@ -2,8 +2,16 @@
 // A comment
 
     LCA '#' // in line
+    LCA ':'
+    LCA ';'
     OUT A   # after
-    JMP sys_cli
+    LCB $34; STO B $8100
+loop: LDB B-1
+    JBZ loop
 
-#include "monitor.h"
+string: STR "Hello; World # : // fred "
+
+
+
+
 
