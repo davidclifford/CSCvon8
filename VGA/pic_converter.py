@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'gf5_dith'
+filename = 'finch_dith'
 
 
 def plot(x, y, r, g, b):
