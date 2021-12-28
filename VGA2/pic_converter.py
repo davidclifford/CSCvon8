@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'forest-glade'
+filename = 'parrot-test'
 
 
 def plot(x, y, r, g, b):
