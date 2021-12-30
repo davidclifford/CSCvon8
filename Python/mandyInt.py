@@ -19,6 +19,7 @@
 
 import pygame
 from pygame import gfxdraw
+import time
 
 BITS = 8
 SCALE = 1 << BITS
@@ -55,6 +56,8 @@ def h(n):
     return hex(int(n+0.5))
 
 
+tim = time.time()
+
 while True:
     if refresh:
         refresh = False
@@ -69,18 +72,18 @@ while True:
                 for j in range(64):
                     x2 = mult(x, x)
                     y2 = mult(y, y)
-                    print('xz={} yz={} x={} x2={} y={} y2={} t={} '.format(h(xz), h(yz), h(x), h(x2), h(y), h(y2), h(x2+y2)), end='')
+                    # print('xz={} yz={} x={} x2={} y={} y2={} t={} '.format(h(xz), h(yz), h(x), h(x2), h(y), h(y2), h(x2+y2)), end='')
                     if y2 + x2 >= 4.0:
                         print()
                         break
                     xt = x2 - y2 + xz
-                    print('xt={}'.format(h(xt)))
+                    # print('xt={}'.format(h(xt)))
                     y = mult(2, mult(x, y)) + yz
                     x = xt
                     # print('x, y', x, y)
                     # print('sx, sy', x*SCALE, y*SCALE)
 
-                print('-----------')
+                # print('-----------')
                 i = j
                 if i == 63:
                     i = 0
@@ -91,7 +94,11 @@ while True:
                         c1 = ((i >> 4) % 4) * 64
                         gfxdraw.pixel(screen, px*scale + xx, py*scale + yy, (c1, c2, c3))
 
-            pygame.display.update()
+                if time.time() - tim > 1.0/60.0:
+                    pygame.display.update()
+                    tim = time.time()
+
+    pygame.display.update()
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:

@@ -92,7 +92,7 @@ while not quited:
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYDOWN:
                 key = event.key
 
                 if key == pygame.K_a:
@@ -148,7 +148,7 @@ while not quited:
 
         if into != _empty and into != _food:
             play = False
-        display()
+        # display()
 
     # Game over
     stop = False

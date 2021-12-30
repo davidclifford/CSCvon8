@@ -1,6 +1,8 @@
 #
 # Plot Mandelbrot set
 # 22/08/2021
+# Updated 30/12/2021 - Use mult 2 direcly on shift left 1 place
+# Timing - 2:05 @ 6.3Mhz
 #
 
 #   Init
@@ -130,17 +132,16 @@ next_i:
     STO B num2+1
 # x*y
     JSR mult16f
-    LDA answ+1
-    LDB answ+2
-    STO A num1
-    STO B num1+1
-    LCA $02
-    STO A num2
-    STO 0 num2+1
 # 2*(x*y)
-    JSR mult16f
-# y = (2*x*y)
+    LDA answ+2
+    LCB @2
+    STO A*B answ+2
+    STO A*BHI t
     LDA answ+1
+    LDA A*B answ+1
+    LDB t
+    LDA A|B
+# y = (2*x*y)
     STO A y
     LDA answ+2
     LDB yz+1
