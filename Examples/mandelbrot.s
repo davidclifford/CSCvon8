@@ -1,7 +1,7 @@
 #
 # Plot Mandelbrot set
 # 22/08/2021
-# Updated 30/12/2021 - Use mult 2 direcly on shift left 1 place
+# Updated 30/12/2021 - Use mult 2 direcly by shift left 1 place
 # Timing - 2:05 @ 6.3Mhz
 #
 
