@@ -8,7 +8,7 @@ import sys
 import pygame
 from pygame import gfxdraw
 
-filename = 'vga_self'
+filename = 'finch'
 
 
 def plot(x, y, r, g, b):
