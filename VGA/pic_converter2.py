@@ -9,7 +9,7 @@ import pygame
 from pygame import gfxdraw
 
 filename = 'finch'
-dither = True
+dither = False
 
 
 def plot(x, y, r, g, b):

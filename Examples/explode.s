@@ -74,8 +74,8 @@ init:
     STO 0 ioy,B
 
     LDA index
-    LCB @2
-    LDA A+B
+    LDA A+1
+    LDA A+1
     STO A index
     JAZ next_frame
     JMP init
@@ -140,15 +140,16 @@ next_ball:
 
     # unplot(ox, oy)
     LDB ox
-    STI 0 oy,B
+    LCA $00
+    STI A oy,B
 
     # Check x and y
     LDA x
-    LCB @159
-    JHI 1f
+#    LCB @160
+    JAZ 1f
     LDA y
-    LCB @119
-    JHI 1f
+#    LCB @120
+    JAZ 1f
     JMP 2f
 1:
 mid:
@@ -157,6 +158,23 @@ mid:
     STO A x
     LCA @60
     STO A y
+
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB $01
+    LDA A&B
+    LDA A-1
+    STO A vx
+    LDA __rand_seed+1
+    STO A vx+1
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB $01
+    LDA A&B
+    LDA A-1
+    STO A vy
+    LDA __rand_seed+1
+    STO A vy+1
 #    JMP restart
 2:
     # plot(x, y, ink)
@@ -201,15 +219,15 @@ mid:
     JMP 3b
 2:
     LDA x
-    LCB @158
+    LCB @160
     JHI mid
-    LCB @2
-    JLO mid
+#    LCB @2
+#    JLO mid
     LDA y
-    LCB @118
+    LCB @120
     JHI mid
-    LCB @2
-    JLO mid
+#    LCB @2
+#    JLO mid
     JMP 3f
 1:
     # vx = -vx
