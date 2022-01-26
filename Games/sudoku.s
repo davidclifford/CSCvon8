@@ -1,5 +1,6 @@
 # Sudoku solver
 # David Clifford 05/01/2021
+# Update to interactive 26/01/2022
 #
     STO 0 __paper
     LCA $3c
@@ -7,22 +8,147 @@
     JSR sys_cls sys_cls_ret
 
 start:
+    STO 0 __paper
+    LCA $3c
+    STO A __ink
     JSR init_board
     JSR disp_board
+    STO 0 pos
+    STO 0 fwd
+1:
+# Display cursor
+    LCA $28
+    STO A __paper
+    LDA pos
+    LCB @9
+    STO A%B __xpos
+    STO A/B __ypos
+    LDB pos
+    LDA board,B
+    JAZ 2f
+    LCB '0'
+    LDA A+B
+    JMP 3f
+2:
+    LCA ' '
+3:
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+# Wait for key press
+    LDA fwd
+    JAZ 4f
+    JMP 5f
+4:
+    JIU .
+5:
+# Remove cursor
+    LDB pos
+    LDA back,B
+    STO A __paper
+    LDA pos
+    LCB @9
+    STO A%B __xpos
+    STO A/B __ypos
+    LDB pos
+    LDA board,B
+    JAZ 2f
+    LCB '0'
+    LDA A+B
+    JMP 3f
+2:
+    LCA ' '
+3:
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LDA fwd
+    JAZ 6f
+    STO 0 fwd
+    JMP right_cur
+6:
+    INA
+    LCB 'g'
+    JEQ go
+    LCB 'x'
+    JEQ exit
+    LCB 'a'
+    JEQ left_cur
+    LCB 'd'
+    JEQ right_cur
+    LCB 'w'
+    JEQ up_cur
+    LCB 's'
+    JEQ down_cur
+    LCB '0'
+    JLO 1b
+    LCB '9'
+    JHI 1b
+# place number
+    LCB '0'
+    LDA A-B
+    STO A n
+    JAZ 7f
+    JSR valid_move
+    LDA result
+# Not valid
+    JAZ 1b
+# Valid number (so far) or zero
+7:
+    LDA n
+    LDB pos
+    STO A board,B
+    LCA @1
+    STO A fwd
+    JMP 1b
+left_cur:
+    LDA pos
+    JAZ 1b
+    STO A-1 pos
+    JMP 1b
+right_cur:
+    LDA pos
+    LCB @80
+    JEQ 1b
+    STO A+1 pos
+    JMP 1b
+up_cur:
+    LDA pos
+    LCB @9
+    JLT 1b
+    STO A-B pos
+    JMP 1b
+down_cur:
+    LDA pos
+    LCB @71
+    JGT 1b
+    LCB @9
+    STO A+B pos
+    JMP 1b
+go:
     LCA $30
     STO A __ink
     JSR solve
     LCA $0c
     STO A __ink
     JSR disp_board
-
+end:
+    JIU .
+    JMP start
+exit:
     JMP sys_cli
+failed:
+    LCA $30
+    STO A __ink
+    JSR disp_board
+    JMP end
 
 # Initialise the board from the init string
 init_board:
     STO 0 count
     STO 0 sp
 1:
+    JSR set_background
     LDB count
     LDA init,B
     LCB '0'
@@ -33,6 +159,7 @@ init_board:
     LCB @81
     STO A+1 count
     JLO 1b
+
     RTS init_board
 
 # Display the board on the terminal
@@ -63,6 +190,33 @@ disp_board_term:
     JLO 3b
     RTS disp_board
 
+set_background:
+# Set background colour in 'back' array
+    LDA count
+    LCB @3
+    LDA A/B
+    LDA A%B
+    LCB @2
+    STO A%B backgr
+    LDA count
+    LCB @27
+    LDA A/B
+    LDB backgr
+    LDA A+B
+    LCB @2
+    LDA A%B
+    LCB @4
+    STO A*B backgr
+    LDA count
+    LCB @2
+    LDA A%B
+    LDA A+1
+    LDB backgr
+    LDA A+B
+    LDB count
+    STO A back,B
+    RTS set_background
+
 # Display the board on the screen
 disp_board:
     STO 0 __xpos
@@ -70,6 +224,8 @@ disp_board:
     STO 0 count
 4:
     LDB count
+    LDA back,B
+    STO A __paper
     LDA board,B
     JAZ 1f
     LCB '0'
@@ -102,6 +258,9 @@ disp_board:
 # Display backtrack
 # pos is the position
 disp_backtrack:
+    LDB pos
+    LDA back,B
+    STO A __paper
     LDA pos
     LCB @9
     STO A%B __xpos
@@ -115,6 +274,9 @@ disp_backtrack:
 # pos is the position
 # try is the guess
 disp_guess:
+    LDB pos
+    LDA back,B
+    STO A __paper
     LDA pos
     LCB @9
     STO A%B __xpos
@@ -224,6 +386,12 @@ solve:
     LCA @1
     STO A try
 1:
+    INA
+    LCB 'x'
+    JEQ end
+    LCB 'q'
+    JEQ start
+
     LDB pos
     LDA board,B
     JAZ 2f
@@ -242,7 +410,6 @@ solve:
     JAZ 3f
 
 # Found posible
-    #OUT '.'
     LDB pos
     LDA try
     STO A board,B
@@ -264,9 +431,11 @@ solve:
 
 # Backtrack
 5:
-    #OUT '<'
     LDB sp
     LDB B-1
+#Underflow
+    LCA $FF
+    JEQ failed
     STO B sp
     LDA ns,B
     STO A+1 try
@@ -289,11 +458,12 @@ solve:
 
 PAG
 #init: STR "210390405090007002003280010001002004040830027820040103000010738080063200304900050" # <1 sec
-init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030" # ~80 secs
+#init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030" # ~80 secs
 #init: STR "513400026004752010070316095069038001201500063735091000006070000000004000300000209" # Easy
+#init: STR "513490026004752010070316095069038001201500063735091000006070000000004000300000209" # Broken
 #init: STR "840060501000003040006900007020710006000630000900000050000040060200000180005000300" # Easy
 #init: STR "085319000000052600403000900009000800000027000034108000806004030000200008090835700" # Medium
-#init: STR "002090600000040003100008000730000002080000400000000008900000005050034020000620001" # Expert
+init: STR "002090600000040003100008000730000002080000400000000008900000005050034020000620001" # Expert
 #init: STR "000000000000000000000000000000000000000000000000000000000000000000000000000000000" #
 
 
@@ -304,6 +474,8 @@ ps:     BYTE
 PAG
 ns:     BYTE
 PAG
+back:   BYTE
+PAG
 sp:     BYTE
 count:  BYTE
 pos:    BYTE
@@ -311,5 +483,7 @@ p:      BYTE
 n:      BYTE
 result: BYTE
 try:    BYTE
+backgr: BYTE
+fwd:    BYTE
 
 #include "../Examples/monitor.h"
