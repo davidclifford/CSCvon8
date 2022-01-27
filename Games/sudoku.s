@@ -2,6 +2,7 @@
 # David Clifford 05/01/2021
 # Update to interactive 26/01/2022
 #
+restart:
     STO 0 __paper
     LCA $3c
     STO A __ink
@@ -13,9 +14,146 @@ start:
     STO A __ink
     JSR init_board
     JSR disp_board
+
+# Print SUDOKU at the top of the screen
+
+    STO 0 __paper
+    LCA @1
+    STO A __ypos
+    LCA @10
+    STO A __xpos
+
+    LCA $30
+    STO A __ink
+    LCA 'S'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LCA $3C
+    STO A __ink
+    LCA 'U'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LCA $0C
+    STO A __ink
+    LCA 'D'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LCA $33
+    STO A __ink
+    LCA 'O'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LCA $0F
+    STO A __ink
+    LCA 'K'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+    LCA $34
+    STO A __ink
+    LCA 'U'
+    STO A __char
+    JSR sys_pchar sys_pchar_ret
+
+# Print instructions
+    LCA     @20
+    LCB     @5
+    STO     A __sxpos
+    STO     B __sypos
+    LCA     $03
+    STO     A __sink
+    STO     0 __paper
+
+    LHA     instr0
+    LCB     instr0
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     @20
+    LCB     @6
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr1
+    LCB     instr1
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     @20
+    LCB     @7
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr1a
+    LCB     instr1a
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     $06
+    STO     A __sink
+    LCA     @20
+    LCB     @9
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr2
+    LCB     instr2
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     @20
+    LCB     @11
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr3
+    LCB     instr3
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     $04
+    STO     A __sink
+    LCA     @20
+    LCB     @13
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr4
+    LCB     instr4
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    LCA     $02
+    STO     A __sink
+    LCA     @20
+    LCB     @14
+    STO     A __sxpos
+    STO     B __sypos
+
+    LHA     instr5
+    LCB     instr5
+    STO     A __string
+    STO     B __string+1
+    JSR     sys_spstring sys_spstring_ret
+
+    STO 0 __paper
+    LCA $3c
+    STO A __ink
+
     STO 0 pos
     STO 0 fwd
 1:
+next:
 # Display cursor
     LCA $28
     STO A __paper
@@ -70,8 +208,12 @@ start:
     INA
     LCB 'g'
     JEQ go
+    LCB 'e'
+    JEQ load_example
     LCB 'x'
     JEQ exit
+    LCB 'r'
+    JEQ restart
     LCB 'a'
     JEQ left_cur
     LCB 'd'
@@ -80,6 +222,9 @@ start:
     JEQ up_cur
     LCB 's'
     JEQ down_cur
+    LCB ' '
+    STO 0 n
+    JEQ 7f
     LCB '0'
     JLO 1b
     LCB '9'
@@ -143,12 +288,25 @@ failed:
     JSR disp_board
     JMP end
 
-# Initialise the board from the init string
 init_board:
     STO 0 count
     STO 0 sp
 1:
     JSR set_background
+    LDB count
+    STO 0 board,B
+    LDA count
+    LCB @80
+    STO A+1 count
+    JLO 1b
+
+    RTS init_board
+
+# Load example board from the init string
+load_example:
+    STO 0 count
+    STO 0 sp
+1:
     LDB count
     LDA init,B
     LCB '0'
@@ -156,11 +314,12 @@ init_board:
     LDB count
     STO A board,B
     LDA count
-    LCB @81
+    LCB @80
     STO A+1 count
     JLO 1b
+    JSR disp_board
 
-    RTS init_board
+    JMP next
 
 # Display the board on the terminal
 disp_board_term:
@@ -389,7 +548,7 @@ solve:
     INA
     LCB 'x'
     JEQ end
-    LCB 'q'
+    LCB 'r'
     JEQ start
 
     LDB pos
@@ -460,11 +619,14 @@ PAG
 #init: STR "210390405090007002003280010001002004040830027820040103000010738080063200304900050" # <1 sec
 #init: STR "070250400800000903000003070700004020100000007040500008090600000401000005007082030" # ~80 secs
 #init: STR "513400026004752010070316095069038001201500063735091000006070000000004000300000209" # Easy
-#init: STR "513490026004752010070316095069038001201500063735091000006070000000004000300000209" # Broken
 #init: STR "840060501000003040006900007020710006000630000900000050000040060200000180005000300" # Easy
-#init: STR "085319000000052600403000900009000800000027000034108000806004030000200008090835700" # Medium
-init: STR "002090600000040003100008000730000002080000400000000008900000005050034020000620001" # Expert
-#init: STR "000000000000000000000000000000000000000000000000000000000000000000000000000000000" #
+init: STR "085319000000052600403000900009000800000027000034108000806004030000200008090835700" # Medium
+#init: STR "002090600000040003100008000730000002080000400000000008900000005050034020000620001" # Expert
+#init: STR "001000002000300067009080000000002000008000500000600000000050900270001000300000400" # Min start values
+#init: STR "100800340020934000300002070009700000080400500001009000050060000048000000000000289"  # ZX 1min 50sec
+#init: STR "130060020700000180000270000260504708000000000009080206045002600000000095903008000" # ZX 1min 25sec
+#init: STR "130060020700000180000270000260504708000000000009080206045002600000000095903008000" # ZX 1min 11sec
+#init: STR "000000000000000000000000000000000000000000000000000000000000000000000000000000000" # EMPTY
 
 
 PAG
@@ -475,6 +637,14 @@ PAG
 ns:     BYTE
 PAG
 back:   BYTE
+PAG
+instr0: STR "Move cursor over square"
+instr1: STR " and press number required"
+instr1a: STR " 0 or SPACE to delete number"
+instr2: STR "A left, D right, W up, S down"
+instr3: STR "Example, Go, Restart, eXit"
+instr4: STR "Red failed"
+instr5: STR "Green solved"
 PAG
 sp:     BYTE
 count:  BYTE
