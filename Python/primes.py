@@ -12,8 +12,7 @@ for p in prime:
     print(p, end=' ')
 
 for i in range(256, 65536, 256):
-    # print('From {} to {}'.format(i, i+256))
-    print()
+    print('\nPrimes {} - {}'.format(i, i+256))
     primes = [0] * 256
     a = i
     b = i+256
@@ -21,7 +20,7 @@ for i in range(256, 65536, 256):
         j = p*p
         if j < a:
             j = int((a+p-1)/p)*p
-            print('Calculate J =', j, p)
+            # print('Calculate J =', j, p)
 
         while j < b:
             primes[j-a] = 1
