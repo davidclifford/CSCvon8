@@ -98,7 +98,7 @@ div_16_8:
     RTS div_16_8
 
 PAG
-num:    HEX "ff ff"
+num:    HEX "00 41"
 div:    HEX "02"
 
 numerator:    BYTE

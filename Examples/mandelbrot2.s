@@ -40,9 +40,7 @@ next_i:
     LDB x+1
     STO A num1
     STO B num1+1
-    STO A num2
-    STO B num2+1
-    JSR mult16f
+    JSR squ16f
     LDA answ+1
     LDB answ+2
     STO A x2
@@ -53,9 +51,7 @@ next_i:
     LDB y+1
     STO A num1
     STO B num1+1
-    STO A num2
-    STO B num2+1
-    JSR mult16f
+    JSR squ16f
     LDA answ+1
     LDB answ+2
     STO A y2
@@ -224,5 +220,5 @@ xt: WORD
 t:  WORD
 plot_y: BYTE
 
-#include "mult.h"
+#include "mult16.h"
 #include "monitor.h"

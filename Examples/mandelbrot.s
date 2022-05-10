@@ -1,7 +1,7 @@
 #
 # Plot Mandelbrot set
 # 22/08/2021
-# Updated 30/12/2021 - Use mult 2 direcly by shift left 1 place
+# Updated 30/12/2021 - Use mult 2 directly by shift left 1 place
 # Timing - 2:05 @ 6.3Mhz
 #
 
@@ -43,9 +43,7 @@ next_i:
     LDB x+1
     STO A num1
     STO B num1+1
-    STO A num2
-    STO B num2+1
-    JSR mult16f
+    JSR squ16f
     LDA answ+1
     LDB answ+2
     STO A x2
@@ -56,9 +54,7 @@ next_i:
     LDB y+1
     STO A num1
     STO B num1+1
-    STO A num2
-    STO B num2+1
-    JSR mult16f
+    JSR squ16f
     LDA answ+1
     LDB answ+2
     STO A y2
@@ -213,7 +209,7 @@ break_out:
 1:
     JMP sys_cli
 
-#include "mult.h"
+#include "mult16.h"
 
 PAG
 px: BYTE

@@ -54,7 +54,7 @@ while True:
 #                        gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, (i % 4 * 64, i % 8 * 32, i % 16 * 16))
                         gfxdraw.pixel(screen, x*scale+xx, y*scale+yy, ((i % 4) * 64, ((i>>2) % 4) * 64, ((i>>4) % 4) * 64))
 
-            pygame.display.update()
+        pygame.display.update()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

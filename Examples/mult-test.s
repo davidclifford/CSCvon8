@@ -17,13 +17,13 @@
     STO     A count
 
 # init num1
-    LCA     $fe
+    LCA     $02
     STO     A num1
     LCA     $00
     STO     A num1+1
 
 # init num2
-    LCA     $fe
+    LCA     $03
     STO     A num2
     LCA     $00
     STO     A num2+1
@@ -85,5 +85,5 @@ print:
 PAG
 count:  BYTE
 
-#include "mult.h"
+#include "mult16.h"
 #include "monitor.h"

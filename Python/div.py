@@ -1,6 +1,6 @@
 from numpy import uint16, uint8
 
-a = 0x1234
+a = 0xffff
 b = 0xfd
 
 
