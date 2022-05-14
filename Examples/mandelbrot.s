@@ -43,7 +43,8 @@ next_i:
     LDB x+1
     STO A num1
     STO B num1+1
-    JSR squ16f
+#    JSR squ16f
+#include "squ16i.h"
     LDA answ+1
     LDB answ+2
     STO A x2
@@ -54,7 +55,8 @@ next_i:
     LDB y+1
     STO A num1
     STO B num1+1
-    JSR squ16f
+#    JSR squ16f
+#include "squ16i.h"
     LDA answ+1
     LDB answ+2
     STO A y2
@@ -127,7 +129,8 @@ next_i:
     STO A num2
     STO B num2+1
 # x*y
-    JSR mult16f
+#    JSR mult16f
+#include "mult16i.h"
 # 2*(x*y)
     LDA answ+2
     LCB @2
@@ -209,9 +212,9 @@ break_out:
 1:
     JMP sys_cli
 
-#include "mult16.h"
+#include "vars16i.h"
 
-PAG
+#PAG
 px: BYTE
 py: BYTE
 x:  WORD
