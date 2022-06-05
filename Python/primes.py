@@ -11,23 +11,35 @@ prime = [i for i in primes if i > 0]
 for p in prime:
     print(p, end=' ')
 
-for i in range(256, 65536, 256):
-    print('\nPrimes {} - {}'.format(i, i+256))
-    primes = [0] * 256
-    a = i
-    b = i+256
-    for p in prime:
-        j = p*p
-        if j < a:
-            j = int((a+p-1)/p)*p
-            # print('Calculate J =', j, p)
+# for i in range(256, 65536, 256):
+#     print(f'\nPrimes {i} - {i+256}')
+#     primes = [0] * 256
+#     a = i
+#     b = i+256
+#     for p in prime:
+#         j = p*p
+#         if j < a:
+#             j = int((a+p-1)/p)*p
+#             print(f'Calculate J = {j}, P = {p}')
+#
+#         while j < b:
+#             primes[j-a] = 1
+#             j += p
 
-        while j < b:
-            primes[j-a] = 1
+for i in range(256, 65536, 256):
+    print(f'\nPrimes {i} - {i + 256}')
+    primes = [0] * 256
+
+    for p in prime:
+        j = int(i/p)*p
+        print(f'Calculate J = {j}, P = {p}')
+
+        while j < i+256:
+            primes[j - i] = 1
             j += p
 
-    for j in range(a, b):
-        if primes[j - a] == 0:
+    for j in range(i, i+256):
+        if primes[j - i] == 0:
             print(j, end=' ')
 
 
