@@ -12,27 +12,29 @@ def f(x):
     return int((x*x) >> 2)
 
 
-for i in range(256):
-    for j in range(256):
+for i in range(2**16):
+    if i%256 == 0: print('.', end='')
+    for j in range(2**16):
         q = int(i*j) - mult(i, j)
         if q == 0:
-            print(i, j, int(i*j), mult(i, j))
+#            print(i, j, int(i*j), mult(i, j))
+            pass
         else:
             print('ERROR', i, j, int(i*j), mult(i, j))
             exit()
 
-a = 5
-b = 20
-
-if b > a:
-    t = b
-    b = a
-    a = t
-
-print(a, b, int(a*b), mult(a, b))
-
-for i in range(2**17):
-    x = int(i*i) >> 2
-    print(i, bin(i), x, bin(x))
-
-print(((2**16)-1) + ((2**16)-1))
+# a = 5
+# b = 20
+#
+# if b > a:
+#     t = b
+#     b = a
+#     a = t
+#
+# print(a, b, int(a*b), mult(a, b))
+#
+# for i in range(2**17):
+#     x = int(i*i) >> 2
+#     print(i, bin(i), x, bin(x))
+#
+# print(((2**16)-1) + ((2**16)-1))

@@ -7,47 +7,216 @@
 # David Clifford 29 May 2022
 #
 
+# Erase first 4k
+    STO 0 dest
+    STO 0 dest+1
+    JSR erase_sector
 # Show directory
     JSR dir
-    JMP sys_cli
 
-# Erase 4k block
-    LCA $2f
-    STO A dest
-    LCA $ff
-    STO A dest+1
-    JSR erase_sector
-
+# Copy f1 to filename
+    LHA f1
+    STO A fn_ptr
+    LCA f1
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a1
+    STO A addr
+    LDA a1+1
+    STO A addr+1
+# Set file size to 41
+    LDA s1
+    STO A size
+    LDA s1+1
+    STO A size+1
 # source = d1
     LHA d1
-    STO A source
+    STO A data
     LCA d1
-    STO A source+1
-# set address of data
-    LCA $80
-    STO A addr
-    STO 0 addr+1
-# set length of data
-    STO 0 length
-    LCA @38
-    STO A length+1
-# set destination address (in SD Drive)
-    LCA $00
-    STO A dest
-    LCA $00
-    STO A dest+1
-    JSR write_data
+    STO A data+1
+# write file
+    JSR write_file
+# show directory
+    JSR dir
 
+# Copy f2 to filename
+    LHA f2
+    STO A fn_ptr
+    LCA f2
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a2
+    STO A addr
+    LDA a2+1
+    STO A addr+1
+# Set file size to size of d2
+    LDA s2
+    STO A size
+    LDA s2+1
+    STO A size+1
+# source = d2
+    LHA d2
+    STO A data
+    LCA d2
+    STO A data+1
+# write file
+    JSR write_file
+# show directory
+    JSR dir
+
+# exit
     JMP sys_cli
 
+###############################
 # Write file
-# in: filename, size, source address
+# input: filename, size, addr
 write_file:
-# TODO
+# find end of file system
+    STO 0 ptrA
+    STO 0 ptrA+1
+write_find_next:
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ write_start
+    LDA ptrA+1
+    LCB @22
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get size of next block
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length+1
+# Add length to pointer
+    LDA ptrA+1
+    LDB length+1
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# ptrA++
+    LDA ptrA+1
+    STO A+1 ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+    LDA ptrA
+    LDB length
+    STO A+B ptrA
+    JMP write_find_next
+
+write_start:
+# write filename
+# ptrA points to EEPROM address to write to
+    LDA ptrA
+    STO A dest
+    LDA ptrA+1
+    STO A dest+1
+    LHA filename
+    STO A source
+    LCA filename
+    STO A source+1
+    LCA @20
+    STO 0 length
+    STO A length+1
+    JSR write_data
+#  dest SHOULD still be the correct address (start+20)
+# write address
+    LHA addr
+    STO A source
+    LCA addr
+    STO A source+1
+    LCA @2
+    STO 0 length
+    STO A length+1
+    JSR write_data
+# write size
+    LHA size
+    STO A source
+    LCA size
+    STO A source+1
+    LCA @2
+    STO 0 length
+    STO A length+1
+    JSR write_data
+# write data
+    LDA data
+    STO A source
+    LDA data+1
+    STO A source+1
+    LDA size
+    STO A length
+    LDA size+1
+    STO A length+1
+    JSR write_data
+
     RTS write_file
 
+###########################################
 # Dir - Output directory of contents of SSD
 dir:
+    OUT '\n'
     STO 0 ptrB
     STO 0 ptrB+1
 
@@ -84,11 +253,10 @@ dir_filename_done:
 # Skip over filename to get address
     LCB @20
     LDA ptrB+1
-    TST A+B JC 1f
     STO A+B ptrB+1
+    TST A+B JC 1f
     JMP 2f
 1:
-    STO A+B ptrB+1
     LDA ptrB
     STO A+1 ptrB
 2:
@@ -173,11 +341,10 @@ dir_filename_done:
 2:
     LDA length+1
     LDB ptrB+1
-    TST A+B JC 1f
     STO A+B ptrB+1
+    TST A+B JC 1f
     JMP 2f
 1:
-    STO A+B ptrB+1
     LDA ptrB
     STO A+1 ptrB
 2:
@@ -185,6 +352,7 @@ dir_filename_done:
     LDB ptrB
     STO A+B ptrB
     JMP dir_next_filename
+
 dir_finish:
     OUT '\n'
     OUT 'U'
@@ -240,7 +408,7 @@ erase_sector:
     RTS erase_sector
 
 # Write data from source to destination
-# in: source, dest, length
+# input: source, dest, length
 write_data:
 1:
     LCA $AA
@@ -259,7 +427,7 @@ write_data:
     LDB dest+1
     VAI dest,B
     LDB char
-    OUT B
+#    OUT B
     JNE 10b
 
 # inc source
@@ -298,20 +466,31 @@ write_data:
 2:
     RTS write_data
 
-dest:   WORD
+    dest:   WORD
+
+PAG
+
 source: WORD
 addr:   WORD
 length: WORD
 size:   WORD
+data:   WORD
 char:   BYTE
 filename: BYTE @20
+fs:     BYTE
 fn_ptr: WORD
 ptrA:   WORD
 ptrB:   WORD
 
-ORG $8200
-f1:  STR "fred.txt"
-d1:  STR "This is some text for the file called fred"
+f1:  STR "file1.txt"
+a1:  HEX "A0 00"
+s1:  HEX "00 2A" # 42 decimal
+d1:  STR "This is some text for the file number one"
+
+f2:  STR "file2.txt"
+a2:  HEX "12 34"
+s2:  HEX "00 1C" # 28 decimal
+d2:  STR "For file two, some more text"
 
 #include "monitor.h"
 
