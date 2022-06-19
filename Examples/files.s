@@ -6,13 +6,16 @@
 #
 # David Clifford 29 May 2022
 #
-
 # Erase first 4k
     STO 0 dest
     STO 0 dest+1
-    JSR erase_sector
+#    JSR erase_sector
 # Show directory
     JSR dir
+
+### REMOVE ####
+#    JMP sys_cli
+### REMOVE ####
 
 # Copy f1 to filename
     LHA f1
@@ -216,7 +219,6 @@ write_start:
 ###########################################
 # Dir - Output directory of contents of SSD
 dir:
-    OUT '\n'
     STO 0 ptrB
     STO 0 ptrB+1
 
@@ -240,8 +242,8 @@ dir_next_filename:
     OUT A
     LDA ptrA+1
     LDA A+1
-    JAZ 2f
     STO A ptrA+1
+    JAZ 2f
     JMP 1b
 2:
     LDA ptrA
@@ -465,11 +467,10 @@ write_data:
     JMP 1b
 2:
     RTS write_data
-
-    dest:   WORD
+end_of_program:
 
 PAG
-
+dest:   WORD
 source: WORD
 addr:   WORD
 length: WORD
@@ -482,15 +483,15 @@ fn_ptr: WORD
 ptrA:   WORD
 ptrB:   WORD
 
-f1:  STR "file1.txt"
-a1:  HEX "A0 00"
-s1:  HEX "00 2A" # 42 decimal
-d1:  STR "This is some text for the file number one"
+f1:  STR "tet.bin"
+a1:  HEX "80 00"
+s1:  HEX "00 13"
+d1:  STR "The game of tetris"
 
-f2:  STR "file2.txt"
-a2:  HEX "12 34"
-s2:  HEX "00 1C" # 28 decimal
-d2:  STR "For file two, some more text"
+f2:  STR "fred.img"
+a2:  HEX "00 00"
+s2:  HEX "00 19" # 29 decimal
+d2:  STR "An image of Fred, my cat"
 
 #include "monitor.h"
 
