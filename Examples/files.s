@@ -9,13 +9,9 @@
 # Erase first 4k
     STO 0 dest
     STO 0 dest+1
-#    JSR erase_sector
+    JSR erase_sector
 # Show directory
     JSR dir
-
-### REMOVE ####
-#    JMP sys_cli
-### REMOVE ####
 
 # Copy f1 to filename
     LHA f1
@@ -105,21 +101,41 @@
 # show directory
     JSR dir
 
+# load second file
+# Copy f2 to filename
+    LHA f2
+    STO A fn_ptr
+    LCA f2
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+    JSR load_file
+
 # exit
     JMP sys_cli
 
-###############################
-# Write file
-# input: filename, size, addr
-write_file:
-# find end of file system
-    STO 0 ptrA
-    STO 0 ptrA+1
-write_find_next:
-    LDB ptrA+1
-    VAI ptrA,B
-    LCB $FF
-    JEQ write_start
+#####################
+# Find next file
+# input: ptrA
+#####################
+file_find_next:
     LDA ptrA+1
     LCB @22
     STO A+B ptrA+1
@@ -167,8 +183,193 @@ write_find_next:
     LDA ptrA
     LDB length
     STO A+B ptrA
-    JMP write_find_next
+    RTS file_find_next
+###############################
 
+######################################
+# Load file
+# input: filename
+# output: 'not found' or 'file loaded'
+######################################
+load_file:
+    STO 0 ptrA
+    STO 0 ptrA+1
+1:
+# detect end of file system
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 5f
+# copy ptrA to ptrB
+    OUT '\n'
+    LDA ptrA
+    STO A ptrB
+    LDA ptrA+1
+    STO A ptrB+1
+# compare filename to file-system
+    LCA filename
+    STO A fn_ptr+1
+3:
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A char
+
+    LDB fn_ptr+1
+    LDA filename,B
+    LDB char
+    JEQ 2f
+# Filenames don't match
+    JSR file_find_next
+    JMP 1b
+2:
+    JAZ 4f
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    JMP 3b
+4:
+# print out 'file found'
+    LHA fld
+    STO A string
+    LCA fld
+    STO A string+1
+    JSR pstring
+# ptrA += 20
+    LDA ptrA+1
+    LCB @20
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get address MSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A addr
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get address LSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A addr+1
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get length MSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get length LSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length+1
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Copy from ptrA to addr
+9:
+    LDB ptrA+1
+    VAI ptrA,B
+    OUT A
+    LDB addr+1
+    STI A addr,B
+# incr addr
+    LDA addr+1
+    LDA A+1
+    STO A addr+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA addr
+    STO A+1 addr
+2:
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# decr length
+    LDA length+1
+    LDA A-1
+    STO A length+1
+    JAZ 1f
+    JMP 9b
+1:
+    LDA length
+    JAZ 6f
+    STO A-1 length
+    JMP 9b
+5:
+# print out 'file not found'
+    LHA fnf
+    STO A string
+    LCA fnf
+    STO A string+1
+    JSR pstring
+6:
+    RTS load_file
+
+###############################
+# Write file
+# input: filename, size, addr
+write_file:
+# find end of file system
+    STO 0 ptrA
+    STO 0 ptrA+1
+write_find_next:
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ write_start
+    JSR file_find_next
+    JMP write_find_next
 write_start:
 # write filename
 # ptrA points to EEPROM address to write to
@@ -356,12 +557,12 @@ dir_filename_done:
     JMP dir_next_filename
 
 dir_finish:
-    OUT '\n'
-    OUT 'U'
-    OUT 's'
-    OUT 'e'
-    OUT 'd'
-    OUT ' '
+    LHA used
+    STO A string
+    LCA used
+    STO A string+1
+    JSR pstring
+
     LDA ptrB
     STO A __number
     LDA ptrB+1
@@ -376,13 +577,11 @@ dir_finish:
     LDB B+1
     JMP 1b
 2:
-    OUT ' '
-    OUT 'B'
-    OUT 'y'
-    OUT 't'
-    OUT 'e'
-    OUT 's'
-    OUT '\n'
+    LHA bytes
+    STO A string
+    LCA bytes
+    STO A string+1
+    JSR pstring
     RTS dir
 
 # Erase sector
@@ -429,7 +628,6 @@ write_data:
     LDB dest+1
     VAI dest,B
     LDB char
-#    OUT B
     JNE 10b
 
 # inc source
@@ -467,6 +665,18 @@ write_data:
     JMP 1b
 2:
     RTS write_data
+
+pstring:
+    LDB string+1
+2:
+    LAI string,B
+    JAZ 1f
+    OUT A
+    LDB B+1
+    JMP 2b
+1:
+    RTS pstring
+
 end_of_program:
 
 PAG
@@ -474,22 +684,28 @@ dest:   WORD
 source: WORD
 addr:   WORD
 length: WORD
+ptrA:   WORD
+ptrB:   WORD
 size:   WORD
 data:   WORD
 char:   BYTE
 filename: BYTE @20
 fs:     BYTE
 fn_ptr: WORD
-ptrA:   WORD
-ptrB:   WORD
+string: WORD
+
+fnf:    STR "file not found"
+fld:    STR "file found"
+used:   STR "Used "
+bytes:  STR " Bytes\n"
 
 f1:  STR "tet.bin"
-a1:  HEX "80 00"
+a1:  HEX "90 00"
 s1:  HEX "00 13"
 d1:  STR "The game of tetris"
 
 f2:  STR "fred.img"
-a2:  HEX "00 00"
+a2:  HEX "A0 00"
 s2:  HEX "00 19" # 29 decimal
 d2:  STR "An image of Fred, my cat"
 
@@ -498,3 +714,5 @@ d2:  STR "An image of Fred, my cat"
     ORG $E000
 # Temp store 4k of data when erasing blocks
 data_buffer:
+
+EXPORT end_of_program
