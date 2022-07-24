@@ -1,1 +1,1 @@
-end_of_program: EQU $8569
+end_of_program: EQU $879d

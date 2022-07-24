@@ -7,8 +7,8 @@
 # David Clifford 29 May 2022
 #
 # Erase first 4k
-    STO 0 dest
-    STO 0 dest+1
+    STO 0 start
+    STO 0 start+1
     JSR erase_sector
 # Show directory
     JSR dir
@@ -42,7 +42,7 @@
     STO A addr
     LDA a1+1
     STO A addr+1
-# Set file size to 41
+# Set file size
     LDA s1
     STO A size
     LDA s1+1
@@ -98,14 +98,14 @@
     STO A data+1
 # write file
     JSR write_file
+
 # show directory
     JSR dir
 
-# load second file
-# Copy f2 to filename
-    LHA f2
+# Copy f3 to filename
+    LHA f3
     STO A fn_ptr
-    LCA f2
+    LCA f3
     STO A fn_ptr+1
     LCA filename
     STO A fs
@@ -126,8 +126,54 @@
     STO A+1 fs
     JMP 1b
 2:
-    JSR load_file
+# set address
+    LDA a3
+    STO A addr
+    LDA a3+1
+    STO A addr+1
+# Set file size to size of d3
+    LDA s3
+    STO A size
+    LDA s3+1
+    STO A size+1
+# source = d3
+    LHA d3
+    STO A data
+    LCA d3
+    STO A data+1
+# write file
+    JSR write_file
 
+# show directory
+    JSR dir
+
+# Erase file
+# Copy to filename
+    LHA f1
+    STO A fn_ptr
+    LCA f1
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+    JSR erase_file
+    JSR dir
 # exit
     JMP sys_cli
 
@@ -186,12 +232,12 @@ file_find_next:
     RTS file_find_next
 ###############################
 
-######################################
-# Load file
+#################
+# Find File
 # input: filename
-# output: 'not found' or 'file loaded'
-######################################
-load_file:
+# output: ptrA - points to found file or 0xFF
+#################
+find_file:
     STO 0 ptrA
     STO 0 ptrA+1
 1:
@@ -199,9 +245,8 @@ load_file:
     LDB ptrA+1
     VAI ptrA,B
     LCB $FF
-    JEQ 5f
+    JEQ 4f
 # copy ptrA to ptrB
-    OUT '\n'
     LDA ptrA
     STO A ptrB
     LDA ptrA+1
@@ -236,6 +281,20 @@ load_file:
 2:
     JMP 3b
 4:
+    RTS find_file
+
+######################################
+# Load file
+# input: filename
+# output: 'not found' or 'file loaded'
+######################################
+load_file:
+    JSR find_file
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 5f
+### FILE FOUND ###
 # print out 'file found'
     LHA fld
     STO A string
@@ -359,6 +418,7 @@ load_file:
 ###############################
 # Write file
 # input: filename, size, addr
+###############################
 write_file:
 # find end of file system
     STO 0 ptrA
@@ -371,6 +431,7 @@ write_find_next:
     JSR file_find_next
     JMP write_find_next
 write_start:
+### FOUND END OF FS ###
 # write filename
 # ptrA points to EEPROM address to write to
     LDA ptrA
@@ -584,8 +645,216 @@ dir_finish:
     JSR pstring
     RTS dir
 
+##################
+# Erase File
+# input: filename
+# output: 'file not found' or 'file deleted'
+##################
+erase_file:
+    JSR find_file
+# was it found?
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+# NOT found so abort
+    JEQ 9f
+# FILE FOUND
+# Save start of found file
+    LDA ptrA
+    STO A start
+    LDA ptrA+1
+    STO A start+1
+# Save end (i.e. start of next file)
+    JSR file_find_next
+    LDA ptrA
+    STO A end
+    LDA ptrA+1
+    STO A end+1
+1:
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 2f
+# next file
+    JSR file_find_next
+    JMP 1b
+2:
+# Save very end
+    LDA ptrA
+    STO A very_end
+    LDA ptrA+1
+    STO A very_end+1
+# start, end and very_end have been found
+# Set destination address (0xE000)
+    LCA $E0
+    STO A dest
+    STO 0 dest+1
+# find start of 4k block (12 LSBs set to 0)
+    STO 0 source+1
+    LDA start
+    LCB $FC
+    STO A&B source
+# exit early if source == start
+    LDA source
+    LDB start
+    JNE 2f
+    LDA source+1
+    LDB start+1
+    JEQ 6f
+# copy block from fs to mem ($e000) from start of 4k to 'start'
+2:
+    LDB dest+1
+3:
+    VAI source,B
+    STI A dest,B
+# incr B
+    LDB B+1
+    JBZ 1f
+    JMP 4f
+# carry
+1:
+    LDA source
+    STO A+1 source
+    LDA dest
+    STO A+1 dest
+4:
+    LDA start+1
+    JEQ 5f
+    JMP 3b
+5:
+    STO B dest+1
+    LDA start
+    LDB source
+    JEQ 6f
+    JMP 2b
+6:
+# copy rest from 'end' to rest of block
+    LDA end
+    STO A source
+    LDA end+1
+    STO A source+1
+1:
+# (dest) = (source)
+    LDB source+1
+    VAI source,B
+    LDB dest+1
+    STI A dest,B
+# incr source and dest
+    LDA source+1
+    LDA A+1
+    STO A source+1
+    JAZ 2f
+3:
+    LDA dest+1
+    LDA A+1
+    STO A dest+1
+    JAZ 4f
+# loop to next mem to copy
+    JMP 1b
+2:
+    LDA source
+    STO A+1 source
+    JMP 3b
+4:
+    LDA dest
+    LDA A+1
+    STO A dest
+    LCB $F0
+    JEQ 5f
+    JMP 1b
+5:
+# 4k buffer filled - erase fs block
+    JSR erase_sector
+
+# copy buffer back to fs
+    LCA $E0
+    STO A source
+    STO 0 source+1
+    LDA start
+    LCB $FC
+    STO A&B dest
+    STO 0 dest+1
+    LCA $10
+    STO A length
+    STO 0 length+1
+    JSR write_data
+
+    LDA dest
+    STO A start
+    LDA dest+1
+    STO A start+1
+
+# Move rest of fs down as needed
+erase_file_loop:
+# Save next block to RAM
+    LCA $E0
+    STO A dest
+    STO 0 dest+1
+1:
+    LDB end+1
+    VAI end,B
+    LDB dest+1
+    STI A dest,B
+# incr end
+    LDA end+1
+    LDA A+1
+    STO A end+1
+    JAZ 2f
+    JMP 3f
+# carry
+2:
+    LDA end
+    STO A+1 end
+3:
+# incr dest
+    LDA dest+1
+    LDA A+1
+    STO A dest+1
+    JAZ 4f
+    JMP 1b
+4:
+    LDA dest
+    LDA A+1
+    STO A dest
+    LCB $F0
+    JEQ 5f
+    JMP 1b
+5:
+# erase from start position
+    JSR erase_sector
+# copy buffer back to fs
+    LCA $E0
+    STO A source
+    STO 0 source+1
+    LDA start
+    STO A dest
+    LDA start+1
+    STO A dest+1
+    LCA $10
+    STO A length
+    STO 0 length+1
+    JSR write_data
+
+# print out 'file deleted'
+    LHA fdel
+    STO A string
+    LCA fdel
+    STO A string+1
+    JSR pstring
+
+    RTS erase_file
+9:
+# print out 'file not found'
+    LHA fnf
+    STO A string
+    LCA fnf
+    STO A string+1
+    JSR pstring
+    RTS erase_file
+
+
 # Erase sector
-# Input: dest - address in SSD of block to erase
+# Input: source - address in SSD of block to erase
 erase_sector:
     LCA $AA
     STO A $5555
@@ -598,11 +867,11 @@ erase_sector:
     LCA $55
     STO A $2AAA
     LCA $30
-    LDB dest+1
-    STI A dest,B
+    LDB start+1
+    STI A start,B
 1:
-    LDB dest+1
-    VAI dest,B
+    LDB start+1
+    VAI start,B
     JAN 2f
     JMP 1b
 2:
@@ -625,6 +894,7 @@ write_data:
 
 # Wait for write to complete
 10:
+    OUT '-'
     LDB dest+1
     VAI dest,B
     LDB char
@@ -694,20 +964,32 @@ fs:     BYTE
 fn_ptr: WORD
 string: WORD
 
-fnf:    STR "file not found"
-fld:    STR "file found"
-used:   STR "Used "
-bytes:  STR " Bytes\n"
+start:  WORD
+end:    WORD
+very_end: WORD
+block:  WORD
 
-f1:  STR "tet.bin"
+
+fnf:    STR "file not found\n"
+fld:    STR "file found\n"
+fdel:   STR "file deleted\n\n"
+used:   STR "Used "
+bytes:  STR " Bytes\n\n"
+
+f1:  STR "tetris.bin"
 a1:  HEX "90 00"
 s1:  HEX "00 13"
 d1:  STR "The game of tetris"
 
 f2:  STR "fred.img"
 a2:  HEX "A0 00"
-s2:  HEX "00 19" # 29 decimal
+s2:  HEX "00 19" # 25 decimal
 d2:  STR "An image of Fred, my cat"
+
+f3:  STR "draw_lines"
+a3:  HEX "B0 00"
+s3:  HEX "00 15" # 21 decimal
+d3:  STR "Draw lines on screen"
 
 #include "monitor.h"
 

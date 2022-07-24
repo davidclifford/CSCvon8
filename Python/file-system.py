@@ -5,7 +5,7 @@ import random
 
 fs = [0xff for i in range(32768)]
 mem = [random.randint(33, 96) for i in range(65536)]
-BLOCK_SIZE = 0x1000
+BLOCK_SIZE = 0x40
 
 
 def directory():
@@ -100,13 +100,13 @@ def print_fs():
 
 
 def delete(filename):
+    # start, end, very_end, block
     print_fs()
-    ptrA = find_file(filename)
-    if fs[ptrA] == 0xff:
+    start = find_file(filename)
+    if fs[start] == 0xff:
         print(filename, 'not found!')
         return
-    start = ptrA
-    end = find_next_file(ptrA)
+    end = find_next_file(start)
     very_end = end
     while True:
         if fs[very_end] == 0xFF:
@@ -117,6 +117,7 @@ def delete(filename):
     memPtr = BLOCK_SIZE*(start//BLOCK_SIZE)  # start of 4k block (in bytes)
     # print('Block address (start)', memPtr)
     block = 0xe000
+    # copy to mem data before start
     for p in range(memPtr, start):
         mem[block] = fs[p]
         block += 1
@@ -128,16 +129,18 @@ def delete(filename):
         mem[block] = fs[end]
         block += 1
         end += 1
+
+    # Erase the 4k block in FS
     erase(start)
-    # print('Start', start, 'End', end)
-    # copy buffer to fs
+
+    # copy buffer back to FS from start
     block = 0xe000
-    s = BLOCK_SIZE*(start//BLOCK_SIZE)
+    start = BLOCK_SIZE*(start//BLOCK_SIZE)
     while block < 0xe000 + BLOCK_SIZE:
-        fs[s] = mem[block]
+        fs[start] = mem[block]
         # print_fs()
         block += 1
-        s += 1
+        start += 1
     # print('S', hex(s), 'End', hex(end), 'Very End', hex(very_end))
     while True:
         # copy next block to RAM
@@ -148,31 +151,32 @@ def delete(filename):
             if block > 0xe000 + BLOCK_SIZE:
                 break
             end += 1
-        erase(s)
+        # Erase block
+        erase(start)
         for a in range(BLOCK_SIZE):
-            fs[s] = mem[a+0xe000]
+            fs[start] = mem[a+0xe000]
             # print_fs()
-            s += 1
+            start += 1
         if end > very_end:
             break
 
     while True:
-        erase(s)
-        s += BLOCK_SIZE
-        if s > very_end:
+        erase(start)
+        start += BLOCK_SIZE
+        if start > very_end:
             break
     print_fs()
     print(filename, 'deleted')
 
 
 directory()
-save("fred.txt", 0x8000, 15200)
-save("alice.txt", 0x8100, 7600)
-save("jake.txt", 0x8200, 760)
-save("josh.txt", 0x8300, 760)
-save("alex.txt", 0x8400, 76)
-save('jen.txt', 0x8900, 760)
-save("dave.txt", 0x8800, 760)
+save("fred.txt", 0x8000, 208)
+save("alice.txt", 0x8100, 12)
+save("jake.txt", 0x8200, 13)
+save("josh.txt", 0x8300, 14)
+save("alex.txt", 0x8400, 15)
+save('jen.txt', 0x8500, 16)
+save("dave.txt", 0x8600, 17)
 directory()
 delete('fred.txt')
 directory()
