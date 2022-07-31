@@ -2,10 +2,13 @@
 # File system simulator
 # 3/7/2022
 import random
+import time
 
 fs = [0xff for i in range(32768)]
 mem = [random.randint(33, 96) for i in range(65536)]
-BLOCK_SIZE = 0x40
+BLOCK_SIZE = 0x1000
+WRITE_WAIT = 0
+ERASE_WAIT = 0
 
 
 def directory():
@@ -43,6 +46,7 @@ def save(filename, address, length):
             fn_ptr = 0
             while fn_ptr < len(filename):
                 fs[ptrA] = ord(filename[fn_ptr])
+                time.sleep(WRITE_WAIT)
                 ptrA += 1
                 fn_ptr += 1
             fs[ptrA] = 0
@@ -51,9 +55,11 @@ def save(filename, address, length):
             fs[ptrB+1] = address % 256
             fs[ptrB+2] = length // 256
             fs[ptrB+3] = length % 256
+            time.sleep(WRITE_WAIT*5)
             ptrB += 4
             for i in range(address, address+length):
                 fs[ptrB] = mem[i]
+                time.sleep(WRITE_WAIT)
                 ptrB += 1
             return
 
@@ -82,14 +88,16 @@ def load(filename):
 
 
 def erase(address):
+    print('ERASE', hex(address))
     addr = BLOCK_SIZE*(address//BLOCK_SIZE)
     # print('ERASING', addr, addr+BLOCK_SIZE)
     for i in range(addr, addr+BLOCK_SIZE):
         fs[i] = 0xff
+    time.sleep(ERASE_WAIT)
 
 
 def print_fs():
-    for i in range(0x1000):
+    for i in range(0x8000):
         if i > 0 and i % BLOCK_SIZE == 0:
             print('| |', end='')
         if fs[i] >= 0x80 or fs[i] < 0x20:
@@ -99,96 +107,115 @@ def print_fs():
     print()
 
 
+def set_fs(addr, data):
+    # print('SET', hex(addr))
+    if fs[addr] != 0xff:
+        raise RuntimeError
+    fs[addr] = data
+    time.sleep(WRITE_WAIT)
+
+
 def delete(filename):
-    # start, end, very_end, block
+    # start, source, very_end, ptrA
     print_fs()
     start = find_file(filename)
     if fs[start] == 0xff:
         print(filename, 'not found!')
         return
-    end = find_next_file(start)
-    very_end = end
+    source = find_next_file(start)
+    very_end = source
     while True:
         if fs[very_end] == 0xFF:
             break
         very_end = find_next_file(very_end)
-    # print('Start', start, 'End', end, 'Very End', very_end)
+    # print('Start', start, 'End', source, 'Very End', very_end)
 
-    memPtr = BLOCK_SIZE*(start//BLOCK_SIZE)  # start of 4k block (in bytes)
-    # print('Block address (start)', memPtr)
-    block = 0xe000
+    dest = BLOCK_SIZE * (start // BLOCK_SIZE)  # start of 4k sector
+    ptrB = dest
+
+    ptrA = 0xe000
     # copy to mem data before start
-    for p in range(memPtr, start):
-        mem[block] = fs[p]
-        block += 1
-
-    # copy block to RAM
     while True:
-        if block >= 0xe000 + BLOCK_SIZE:
+        if ptrB == start:
             break
-        mem[block] = fs[end]
-        block += 1
-        end += 1
+        mem[ptrA] = fs[ptrB]
+        ptrA += 1
+        ptrB += 1
 
-    # Erase the 4k block in FS
-    erase(start)
-
-    # copy buffer back to FS from start
-    block = 0xe000
-    start = BLOCK_SIZE*(start//BLOCK_SIZE)
-    while block < 0xe000 + BLOCK_SIZE:
-        fs[start] = mem[block]
-        # print_fs()
-        block += 1
-        start += 1
-    # print('S', hex(s), 'End', hex(end), 'Very End', hex(very_end))
+    # copy rest of fs to RAM to fill 4k of ram buffer
     while True:
-        # copy next block to RAM
-        block = 0xe000
+        mem[ptrA] = fs[source]
+        source += 1
+        ptrA += 1
+        if ptrA == 0xe000 + BLOCK_SIZE:
+            break
+
+    # copy rest of file system down
+    while True:
+        # Erase sector
+        erase(dest)
+
+        # copy RAM to fs
+        ptrA = 0xe000
         while True:
-            mem[block] = fs[end]
-            block += 1
-            if block > 0xe000 + BLOCK_SIZE:
-                break
-            end += 1
-        # Erase block
-        erase(start)
-        for a in range(BLOCK_SIZE):
-            fs[start] = mem[a+0xe000]
+            # print('PTRA', hex(ptrA))
+            set_fs(dest, mem[ptrA])
             # print_fs()
-            start += 1
-        if end > very_end:
+            dest += 1
+            ptrA += 1
+            if ptrA == 0xe000 + BLOCK_SIZE:
+                break
+
+        if source > very_end:
             break
 
+        # copy next 4k to RAM
+        ptrA = 0xe000
+        while True:
+            mem[ptrA] = fs[source]
+            source += 1
+            ptrA += 1
+            if ptrA == 0xe000 + BLOCK_SIZE:
+                break
+            if source > 0x7fff:
+                break
+
     while True:
-        erase(start)
-        start += BLOCK_SIZE
-        if start > very_end:
+        if dest > very_end:
             break
+        erase(dest)
+        dest += BLOCK_SIZE
+
     print_fs()
     print(filename, 'deleted')
 
 
 directory()
-save("fred.txt", 0x8000, 208)
-save("alice.txt", 0x8100, 12)
-save("jake.txt", 0x8200, 13)
-save("josh.txt", 0x8300, 14)
-save("alex.txt", 0x8400, 15)
-save('jen.txt', 0x8500, 16)
-save("dave.txt", 0x8600, 17)
+save("fred.txt", 0x8000, 160)
 directory()
-delete('fred.txt')
+save("alice.txt", 0x8100, 29000)
 directory()
+save("jake.txt", 0x8200, 160)
+directory()
+# save("josh.txt", 0x8300, 200)
+# directory()
+# save("alex.txt", 0x8400, 15)
+# directory()
+# save('jen.txt', 0x8500, 16)
+# directory()
+# save("dave.txt", 0x8600, 17)
+# directory()
+# delete('fred.txt')
+# directory()
+# delete('fred.txt')
+# directory()
 delete('alice.txt')
 directory()
-delete('jake.txt')
-directory()
-delete('josh.txt')
-directory()
-delete('alex.txt')
-directory()
-delete('jen.txt')
-directory()
-delete('dave.txt')
-directory()
+# delete('jake.txt')
+# directory()
+# delete('alex.txt')
+# directory()
+# delete('jen.txt')
+# directory()
+# delete('dave.txt')
+# directory()
