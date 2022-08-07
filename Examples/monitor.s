@@ -203,12 +203,12 @@ changeloop:
 	JINA			# Get a character and echo it
 	JOUT(A)
 	LCB ' '
-	JEQ changeloop		# Start afresh for spaces and newlines
+	JEQ changeloop	# Start afresh for spaces and newlines
 	LCB '\n'
 	JEQ changeloop
 	LCB '\r'
 	JEQ changeloop
-	LCB 'Z'			# If we get a 'Z' or 'z', end of changes
+	LCB 'Z'         # when we get a Z or z, end of changes
 	JEQ sys_cli
 	LCB 'z'
 	JEQ sys_cli
@@ -216,16 +216,16 @@ changeloop:
 	JINA			# Get a character and echo it
 	JOUT(A)
 	LCB ' '
-	JEQ changeloop		# Start afresh for spaces and newlines
+	JEQ changeloop	# Start afresh for spaces and newlines
 	LCB '\n'
 	JEQ changeloop
 	LCB '\r'
 	JEQ changeloop
-	LCB 'Z'			# If we get a 'Z' or 'z', end of changes
+	LCB 'Z'	        # when we get a Z or z, end of changes
 	JEQ sys_cli
 	LCB 'z'
 	JEQ sys_cli
-	STO A __hex2		# Store second hex nibble
+	STO A __hex2	# Store second hex nibble
 
 	JSR bytecvt		# Convert to a single byte in cmdchar
 	LDA cmdchar

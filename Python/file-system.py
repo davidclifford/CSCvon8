@@ -46,7 +46,7 @@ def save(filename, address, length):
             fn_ptr = 0
             while fn_ptr < len(filename):
                 fs[ptrA] = ord(filename[fn_ptr])
-                time.sleep(WRITE_WAIT)
+                sleep(WRITE_WAIT)
                 ptrA += 1
                 fn_ptr += 1
             fs[ptrA] = 0
@@ -55,11 +55,11 @@ def save(filename, address, length):
             fs[ptrB+1] = address % 256
             fs[ptrB+2] = length // 256
             fs[ptrB+3] = length % 256
-            time.sleep(WRITE_WAIT*5)
+            sleep(WRITE_WAIT*5)
             ptrB += 4
             for i in range(address, address+length):
                 fs[ptrB] = mem[i]
-                time.sleep(WRITE_WAIT)
+                sleep(WRITE_WAIT)
                 ptrB += 1
             return
 
@@ -87,13 +87,17 @@ def load(filename):
     pass
 
 
+def sleep(ms):
+    time.sleep(ms)
+
+
 def erase(address):
     print('ERASE', hex(address))
     addr = BLOCK_SIZE*(address//BLOCK_SIZE)
-    # print('ERASING', addr, addr+BLOCK_SIZE)
+    print('ERASING', addr, '-', addr+BLOCK_SIZE-1)
     for i in range(addr, addr+BLOCK_SIZE):
         fs[i] = 0xff
-    time.sleep(ERASE_WAIT)
+    sleep(ERASE_WAIT)
 
 
 def print_fs():
@@ -112,7 +116,7 @@ def set_fs(addr, data):
     if fs[addr] != 0xff:
         raise RuntimeError
     fs[addr] = data
-    time.sleep(WRITE_WAIT)
+    sleep(WRITE_WAIT)
 
 
 def delete(filename):
@@ -144,7 +148,9 @@ def delete(filename):
 
     # copy rest of fs to RAM to fill 4k of ram buffer
     while True:
-        mem[ptrA] = fs[source]
+        mem[ptrA] = 0xff
+        if source < 0x8000:
+            mem[ptrA] = fs[source]
         source += 1
         ptrA += 1
         if ptrA == 0xe000 + BLOCK_SIZE:
@@ -158,9 +164,7 @@ def delete(filename):
         # copy RAM to fs
         ptrA = 0xe000
         while True:
-            # print('PTRA', hex(ptrA))
             set_fs(dest, mem[ptrA])
-            # print_fs()
             dest += 1
             ptrA += 1
             if ptrA == 0xe000 + BLOCK_SIZE:
@@ -191,31 +195,29 @@ def delete(filename):
 
 
 directory()
-save("fred.txt", 0x8000, 160)
+save("fred.txt", 0x8000, 9024)
 directory()
-save("alice.txt", 0x8100, 29000)
+save("alice.txt", 0x8100, 8048)
 directory()
-save("jake.txt", 0x8200, 160)
+save("jake.txt", 0x8200, 5000)
 directory()
-# save("josh.txt", 0x8300, 200)
-# directory()
-# save("alex.txt", 0x8400, 15)
-# directory()
-# save('jen.txt', 0x8500, 16)
-# directory()
-# save("dave.txt", 0x8600, 17)
-# directory()
-# delete('fred.txt')
-# directory()
-# delete('fred.txt')
-# directory()
+save("josh.txt", 0x8300, 2965)
+directory()
+save("alex.txt", 0x8400, 1256)
+directory()
+save('jen.txt', 0x8500, 4321)
+directory()
+save("dave.txt", 0x8600, 999)
+directory()
+delete('fred.txt')
+directory()
 delete('alice.txt')
 directory()
-# delete('jake.txt')
-# directory()
-# delete('alex.txt')
-# directory()
-# delete('jen.txt')
-# directory()
-# delete('dave.txt')
-# directory()
+delete('jake.txt')
+directory()
+delete('alex.txt')
+directory()
+delete('jen.txt')
+directory()
+delete('dave.txt')
+directory()
