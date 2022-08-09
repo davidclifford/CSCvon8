@@ -4,90 +4,268 @@
 # filename address  length  data
 # <- 20 -> <-  2 -> <- 2 -> <- data x length ->|<-- next file -->|<-- FF FF FF ... -->|
 #
-# David Clifford 09 Aug 2022
+# David Clifford 29 May 2022
 #
-
-#define print(str) LHA str; STO A string; LCA str; STO A string+1; JSR pstring
-
-sys_file_system:
-    print(prompt)
-99:
-    print(prompt2)
-    LHA command
-    STO A com_ptr
-    LDA command
-    STO A com_ptr+1
-1:
-    JIU .
-    INA
-    LDB com_ptr+1
-    STI A com_ptr,B
-    OUT A
-    LCB '\n'
-    JNE 3f
-    LDB com_ptr+1
-    STI 0 com_ptr,B
-    JMP 4f
-3:
-    LDA com_ptr+1
-    STO A+1 com_ptr+1
-    JMP 1b
-
-# Scan command and do whatev's
-4:
-    LDA command
-    STO A com_ptr+1
-1:
-    LDB com_ptr+1
-    LAI com_ptr,B
-# d - directory
-    LCB 'd'
-    JNE 2f
-    JSR dir
-    JMP 99b
-2:
-# f - format
-    LCB 'f'
-    JNE 2f
-    JSR file_format
-    JMP 99b
-2:
-# ? - help
-    LCB '?'
-    JNE 2f
-    JMP sys_file_system
-2:
-# MUST BE LAST
-# x - eXit file system
-    LCB 'x'
-    JNE 3f
-    print(bye)
-    JMP sys_cli
-3:
-    print(cnr)
-    JMP sys_file_system
-
-#####################
-# Format file system
-#####################
-file_format:
+# Erase first 8k
     STO 0 dest
     STO 0 dest+1
-1:
     JSR erase_sector
-    LDA dest
-    LCB $10
-    LDA A+B
+    LCA $10
     STO A dest
-    LCB $80
-    JNE 1b
-    RTS file_format
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $20
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $30
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $40
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $50
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $60
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+    LCA $70
+    STO A dest
+    STO 0 dest+1
+    JSR erase_sector
+
+# Show directory
+    JSR dir
+# Copy f1 to filename
+    LHA f1
+    STO A fn_ptr
+    LCA f1
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a1
+    STO A addr
+    LDA a1+1
+    STO A addr+1
+# Set file size
+    LDA s1
+    STO A size
+    LDA s1+1
+    STO A size+1
+# source = d1
+    LHA d1
+    STO A data
+    LCA d1
+    STO A data+1
+# write file
+    JSR write_file
+# show directory
+    JSR dir
+
+# Copy f2 to filename
+    LHA f2
+    STO A fn_ptr
+    LCA f2
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a2
+    STO A addr
+    LDA a2+1
+    STO A addr+1
+# Set file size to size of d2
+    LDA s2
+    STO A size
+    LDA s2+1
+    STO A size+1
+# source = d2
+    LHA d2
+    STO A data
+    LCA d2
+    STO A data+1
+# write file
+    JSR write_file
+
+# show directory
+    JSR dir
+
+# Copy f3 to filename
+    LHA f3
+    STO A fn_ptr
+    LCA f3
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a3
+    STO A addr
+    LDA a3+1
+    STO A addr+1
+# Set file size to size of d3
+    LDA s3
+    STO A size
+    LDA s3+1
+    STO A size+1
+# source = d3
+    LHA d3
+    STO A data
+    LCA d3
+    STO A data+1
+# write file
+    JSR write_file
+
+# show directory
+    JSR dir
+
+# Erase file
+# Copy to filename
+    LHA f2
+    STO A fn_ptr
+    LCA f2
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+    JSR erase_file
+    JSR dir
+
+# Copy f4 to filename
+    LHA f4
+    STO A fn_ptr
+    LCA f4
+    STO A fn_ptr+1
+    LCA filename
+    STO A fs
+1:
+# Get char from filename pointer
+    LDB fn_ptr+1
+    LAI fn_ptr,B
+# Put character in filename store
+    LDB fs
+    STO A filename,B
+# finish on \0
+    JAZ 2f
+# fn_ptr++
+    LDA fn_ptr+1
+    STO A+1 fn_ptr+1
+# fs++
+    LDA fs
+    STO A+1 fs
+    JMP 1b
+2:
+# set address
+    LDA a4
+    STO A addr
+    LDA a4+1
+    STO A addr+1
+# Set file size to size of d4
+    LDA s4
+    STO A size
+    LDA s4+1
+    STO A size+1
+# source = d4
+    LHA d4
+    STO A data
+    LCA d4
+    STO A data+1
+# write file
+    JSR write_file
+
+# show directory
+    JSR dir
+
+# exit
+    JMP sys_cli
 
 #####################
 # Find next file
 # input: ptrA
 #####################
 file_find_next:
+    OUT 'F'
+
+    LDA ptrA
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA ptrA+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
+
     LDA ptrA+1
     LCB @22
     STO A+B ptrA+1
@@ -97,6 +275,15 @@ file_find_next:
     LDA ptrA
     STO A+1 ptrA
 2:
+    OUT 'a'
+    LDA ptrA
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA ptrA+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
+
 # Get size of next block
     LDB ptrA+1
     VAI ptrA,B
@@ -113,6 +300,16 @@ file_find_next:
     LDB ptrA+1
     VAI ptrA,B
     STO A length+1
+
+    OUT 'L'
+    LDA length
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA length+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
+
 # ptrA++
     LDB ptrA+1
     LDB B+1
@@ -136,6 +333,15 @@ file_find_next:
     LDA ptrA
     LDB length
     STO A+B ptrA
+
+    OUT 'a'
+    LDA ptrA
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA ptrA+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
 
     RTS file_find_next
 ###############################
@@ -279,7 +485,7 @@ load_file:
 9:
     LDB ptrA+1
     VAI ptrA,B
-#    OUT A
+    OUT A
     LDB addr+1
     STI A addr,B
 # incr addr
@@ -329,6 +535,8 @@ load_file:
 ###############################
 write_file:
 # find end of file system
+    OUT '\n'
+    OUT 'W'
     STO 0 ptrA
     STO 0 ptrA+1
 write_find_next:
@@ -389,7 +597,6 @@ write_start:
 ###########################################
 # Dir - Output directory of contents of SSD
 dir:
-    OUT '\n'
     STO 0 ptrB
     STO 0 ptrB+1
 
@@ -640,8 +847,7 @@ erase_file:
     LDB ptrA+1
     LCA $FF
     STI A ptrA,B
-# check to see not off end of FS
-# TODO: change when FS > $8000 bytes (>32kb)
+# check to see not off end of FS TODO: change when FS > $8000 bytes (>32kb)
     LDA source
     LCB $80
     JEQ erase_file_loop
@@ -676,12 +882,18 @@ erase_file:
     LCB $F0
     JNE 6b
 # Finish loop
-
 # MAIN LOOP
 erase_file_loop:
 
 # 4k buffer filled - erase fs block
     JSR erase_sector
+#    LDA dest
+#    STO A __hex
+#    JSR sys_phex sys_phex_ret
+#    LDA dest+1
+#    STO A __hex
+#    JSR sys_phex sys_phex_ret
+
 # Set ptrA to $E000
     LCA $E0
     STO A ptrA
@@ -781,6 +993,25 @@ erase_file_loop:
     JMP 2b
 10:
 # Erase any blocks not yet erased
+    OUT '\n'
+    OUT 'D'
+    LDA dest
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA dest+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
+
+    OUT 'V'
+    LDA very_end
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    LDA very_end+1
+    STO A __hex
+    JSR sys_phex sys_phex_ret
+    OUT '\n'
+
     LDA dest
     LDB very_end
     JEQ 5f
@@ -913,18 +1144,6 @@ pstring:
 end_of_program:
 
 PAG
-prompt: STR "FILE SYSTEM - Load, Save, Dir, Erase, Format, eXit, ? - Help \n"
-prompt2:STR ">> "
-cnr:    STR "Command not recognised\n"
-bye:    STR "File system exited\n"
-fnf:    STR "file not found\n"
-fld:    STR "file found\n"
-fdel:   STR "file deleted\n\n"
-used:   STR "Used "
-bytes:  STR " Bytes\n\n"
-
-end_of_data:
-PAG
 dest:   WORD
 source: WORD
 addr:   WORD
@@ -944,18 +1163,37 @@ end:    WORD
 very_end: WORD
 block:  WORD
 
-command: BYTE @32
-com_ptr: WORD
 
-end_of_vars:
+fnf:    STR "file not found\n"
+fld:    STR "file found\n"
+fdel:   STR "file deleted\n\n"
+used:   STR "Used "
+bytes:  STR " Bytes\n\n"
+
+f1:  STR "one.bin"
+a1:  HEX "88 88"
+s1:  HEX "00 E7"
+d1:  STR "The game of tetris"
+
+f2:  STR "two.img"
+a2:  HEX "99 99"
+s2:  HEX "7D E7" # 25 decimal
+d2:  STR "An image of Fred, my cat"
+
+f3:  STR "three"
+a3:  HEX "AA AA"
+s3:  HEX "00 E9" # 21 decimal
+d3:  STR "Draw lines on screen"
+
+f4:  STR "four"
+a4:  HEX "BB BB"
+s4:  HEX "00 E8" # 21 decimal
+d4:  STR "1234567890ABCDEF"
 
 #include "monitor.h"
-
 
     ORG $E000
 # Temp store 4k of data when erasing blocks
 data_buffer:
 
 EXPORT end_of_program
-EXPORT end_of_data
-EXPORT end_of_vars
