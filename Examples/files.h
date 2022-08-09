@@ -1,1 +1,1 @@
-end_of_program: EQU $895c
+end_of_program: EQU $895f

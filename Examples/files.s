@@ -948,11 +948,12 @@ erase_file_loop:
     LDB very_end
     JEQ 1f
     JHI 10f
+    JMP 7f
 1:
     LDA source+1
     LDB very_end+1
     JHI 10f
-
+7:
 # Copy next 4k to RAM
     LCA $E0
     STO A ptrA
@@ -1176,17 +1177,17 @@ d1:  STR "The game of tetris"
 
 f2:  STR "two.img"
 a2:  HEX "99 99"
-s2:  HEX "4F F8" # 25 decimal
+s2:  HEX "6C E7" # 25 decimal
 d2:  STR "An image of Fred, my cat"
 
 f3:  STR "three"
 a3:  HEX "AA AA"
-s3:  HEX "10 E8" # 21 decimal
+s3:  HEX "01 E8" # 21 decimal
 d3:  STR "Draw lines on screen"
 
 f4:  STR "four"
 a4:  HEX "BB BB"
-s4:  HEX "10 E8" # 21 decimal
+s4:  HEX "01 E8" # 21 decimal
 d4:  STR "1234567890ABCDEF"
 
 #include "monitor.h"
