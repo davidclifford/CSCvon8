@@ -8,6 +8,7 @@
 #
 
 #define print(str) LHA str; STO A string; LCA str; STO A string+1; JSR pstring
+    ORG $d000
 
 sys_file_system:
     print(prompt)
@@ -57,6 +58,21 @@ sys_file_system:
     JNE 2f
     JMP sys_file_system
 2:
+# \n
+    LDB 0
+    JNE 2f
+    JMP 99b
+2:
+# s - save
+    LCB 's'
+    JNE 2f
+    JMP save_file
+2:
+# l - load
+    LCB 'l'
+    JNE 2f
+    JMP load_command
+2:
 # MUST BE LAST
 # x - eXit file system
     LCB 'x'
@@ -68,9 +84,154 @@ sys_file_system:
     JMP sys_file_system
 
 #####################
+# Load file command
+#####################
+load_command:
+1:
+    LDB com_ptr+1
+    LDB B+1
+    STO B com_ptr+1
+    LDA command,B
+    JAZ 4f
+    LCB ' '
+    JEQ 1b
+# copy to filename variable
+1:
+    LCA filename
+    STO A fn_ptr+1
+2:
+    LDB com_ptr+1
+    STO B+1 com_ptr+1
+    LDA command,B
+    JAZ 3f
+    LDB fn_ptr+1
+    STO B+1 fn_ptr+1
+    STO A filename,B
+    JMP 2b
+3:
+    LDB fn_ptr+1
+    STO 0 filename,B
+# Filename known
+    JSR load_file
+    JMP 5f
+4:
+    print(abort)
+5:
+    JMP 99b
+
+#####################
+# Save file command
+#####################
+# TODO: Check duplicate filename & if enough space in SSD before writing file
+save_file:
+1:
+    LDB com_ptr+1
+    LDB B+1
+    STO B com_ptr+1
+    LDA command,B
+    JAZ 4f
+    LCB ' '
+    JEQ 1b
+# copy to filename variable
+1:
+    LCA filename
+    STO A fn_ptr+1
+2:
+    LDB com_ptr+1
+    STO B+1 com_ptr+1
+    LDA command,B
+    LCB ' '
+    JEQ 3f
+    JAZ 4f
+    LDB fn_ptr+1
+    STO B+1 fn_ptr+1
+    STO A filename,B
+    JMP 2b
+3:
+    LDB fn_ptr+1
+    STO 0 filename,B
+# start of address
+    LDB com_ptr+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+1
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+2
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+3
+    STO B+1 com_ptr+1
+    JSR hexcvt
+    LDA num16
+    STO A addr
+    LDA num16+1
+    STO A addr+1
+1:
+    LDB com_ptr+1
+    LDA command,B
+    JAZ 4f
+    LCB ' '
+    JNE 2f
+    LDB com_ptr+1
+    STO B+1 com_ptr+1
+    JMP 1b
+
+# start of size
+2:
+    LDB com_ptr+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+1
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+2
+    LDB B+1
+    LDA command,B
+    JAZ 4f
+    STO A __hex+3
+    LDB B+1
+    LDA command,B
+# If not \0 ABORT!
+    JAZ 3f
+    JMP 4f
+3:
+    JSR hexcvt
+    LDA num16
+    STO A size
+    LDA num16+1
+    STO A size+1
+# Write the flipping file NOW!
+    JSR write_file
+    JMP 99b
+4:
+    print(abort)
+    JMP 99b
+
+#####################
 # Format file system
 #####################
 file_format:
+    print(sure)
+    JIU .
+    INA
+    LCB 'Y'
+    JEQ 2f
+    LCB 'y'
+    JEQ 2f
+    JMP 3f
+2:
     STO 0 dest
     STO 0 dest+1
 1:
@@ -81,7 +242,12 @@ file_format:
     STO A dest
     LCB $80
     JNE 1b
+    print(formatted)
+4:
     RTS file_format
+3:
+    print(abort)
+    JMP 4b
 
 #####################
 # Find next file
@@ -374,9 +540,9 @@ write_start:
     STO A length+1
     JSR write_data
 # write data
-    LDA data
+    LDA addr
     STO A source
-    LDA data+1
+    LDA addr+1
     STO A source+1
     LDA size
     STO A length
@@ -642,6 +808,7 @@ erase_file:
     STI A ptrA,B
 # check to see not off end of FS
 # TODO: change when FS > $8000 bytes (>32kb)
+#
     LDA source
     LCB $80
     JEQ erase_file_loop
@@ -831,20 +998,26 @@ erase_sector:
     LCA $30
     LDB dest+1
     STI A dest,B
-    OUT '\n'
 1:
     LDB dest+1
     VAI dest,B
     JAN 2f
     JMP 1b
 2:
-    OUT '\n'
     RTS erase_sector
 
 # Write data from source to destination
 # input: source, dest, length
 write_data:
 1:
+# Exit when length is $0000
+    LDA length+1
+    JAZ 8f
+    JMP 9f
+8:
+    LDA length
+    JAZ 2f
+9:
     LCA $AA
     STO A $5555
     LCA $55
@@ -886,13 +1059,11 @@ write_data:
 6:
 # decrement length
     LDA length+1
-    LDA A-1
-    STO A length+1
+    STO A-1 length+1
     JAZ 7f
     JMP 1b
 7:
     LDA length
-    JAZ 2f
     STO A-1 length
 # loop
     JMP 1b
@@ -910,6 +1081,59 @@ pstring:
 1:
     RTS pstring
 
+## hexcvt subroutine. Given four hex digits stored in the __hex
+#	buffer, convert them into a 16-bit big endian address
+#	stored in addr.
+hexcvt:
+    LDB __hex		# Get the first character
+	LCA $3F			# Add on $3F
+	LDA A+B
+	JAN 1f			# If -ve, was A-F
+	LDA B
+	JMP 2f			# Otherwise, was a 0-9 char
+1:	LCB $0A			# Add on $0A to convert char to nibble
+	LDA A+B
+2:	LCB $04
+	STO num16 A<<B		# Save top nibble into addr
+
+	LDB __hex+1		# Repeat the process on the 2nd char
+	LCA $3F			# Add on $3F
+	LDA A+B
+	JAN 3f			# If -ve, was A-F
+	LDA B
+	JMP 4f			# Otherwise, was a 0-9 char
+3:	LCB $0A			# Add on $0A to convert char to nibble
+	LDA A+B
+4:	LCB $0F			# Get the low nibble
+	LDB A&B
+	LDA num16
+	STO num16 A|B		# Combine both nibbles and store
+
+	LDB __hex+2		# Repeat the process on the 3rd char
+	LCA $3F			# Add on $3F
+	LDA A+B
+	JAN 5f			# If -ve, was A-F
+	LDA B
+	JMP 6f			# Otherwise, was a 0-9 char
+5:	LCB $0A			# Add on $0A to convert char to nibble
+	LDA A+B
+6:	LCB $04
+	STO num16+1 A<<B		# Save top nibble into addr
+
+	LDB __hex+3		# Repeat the process on the 4th char
+	LCA $3F			# Add on $3F
+	LDA A+B
+	JAN 7f			# If -ve, was A-F
+	LDA B
+	JMP 8f			# Otherwise, was a 0-9 char
+7:	LCB $0A			# Add on $0A to convert char to nibble
+	LDA A+B
+8:	LCB $0F			# Get the low nibble
+	LDB A&B
+	LDA num16+1
+	STO num16+1 A|B		# Combine both nibbles and store
+	RTS hexcvt
+
 end_of_program:
 
 PAG
@@ -917,11 +1141,14 @@ prompt: STR "FILE SYSTEM - Load, Save, Dir, Erase, Format, eXit, ? - Help \n"
 prompt2:STR ">> "
 cnr:    STR "Command not recognised\n"
 bye:    STR "File system exited\n"
-fnf:    STR "file not found\n"
-fld:    STR "file found\n"
-fdel:   STR "file deleted\n\n"
+fnf:    STR "File not found\n"
+fld:    STR "File loaded\n"
+fdel:   STR "File deleted\n\n"
 used:   STR "Used "
 bytes:  STR " Bytes\n\n"
+sure:   STR "Are you sure? Y/N\n"
+formatted: STR "SSD formatted\n"
+abort: STR "Command aborted\n"
 
 end_of_data:
 PAG
@@ -929,6 +1156,7 @@ dest:   WORD
 source: WORD
 addr:   WORD
 length: WORD
+num16:  WORD
 ptrA:   WORD
 ptrB:   WORD
 size:   WORD
@@ -944,7 +1172,7 @@ end:    WORD
 very_end: WORD
 block:  WORD
 
-command: BYTE @32
+command: BYTE @48
 com_ptr: WORD
 
 end_of_vars:
