@@ -73,6 +73,11 @@ sys_file_system:
     JNE 2f
     JMP load_command
 2:
+# e - erase
+    LCB 'e'
+    JNE 2f
+    JMP erase_command
+2:
 # MUST BE LAST
 # x - eXit file system
     LCB 'x'
@@ -113,6 +118,51 @@ load_command:
     STO 0 filename,B
 # Filename known
     JSR load_file
+    JMP 5f
+4:
+    print(abort)
+5:
+    JMP 99b
+
+#####################
+# Erase file command
+#####################
+erase_command:
+1:
+    print(sure)
+    JIU .
+    INA
+    LCB 'Y'
+    JEQ 2f
+    LCB 'y'
+    JEQ 2f
+    JMP 4f
+2:
+    LDB com_ptr+1
+    LDB B+1
+    STO B com_ptr+1
+    LDA command,B
+    JAZ 4f
+    LCB ' '
+    JEQ 1b
+# copy to filename variable
+1:
+    LCA filename
+    STO A fn_ptr+1
+2:
+    LDB com_ptr+1
+    STO B+1 com_ptr+1
+    LDA command,B
+    JAZ 3f
+    LDB fn_ptr+1
+    STO B+1 fn_ptr+1
+    STO A filename,B
+    JMP 2b
+3:
+    LDB fn_ptr+1
+    STO 0 filename,B
+# Filename known
+    JSR erase_file
     JMP 5f
 4:
     print(abort)
@@ -1134,7 +1184,6 @@ hexcvt:
 	STO num16+1 A|B		# Combine both nibbles and store
 	RTS hexcvt
 
-end_of_program:
 
 PAG
 prompt: STR "FILE SYSTEM - Load, Save, Dir, Erase, Format, eXit, ? - Help \n"
@@ -1150,7 +1199,8 @@ sure:   STR "Are you sure? Y/N\n"
 formatted: STR "SSD formatted\n"
 abort: STR "Command aborted\n"
 
-end_of_data:
+end_of_program:
+
 PAG
 dest:   WORD
 source: WORD
@@ -1175,7 +1225,6 @@ block:  WORD
 command: BYTE @48
 com_ptr: WORD
 
-end_of_vars:
 
 #include "monitor.h"
 
@@ -1185,5 +1234,3 @@ end_of_vars:
 data_buffer:
 
 EXPORT end_of_program
-EXPORT end_of_data
-EXPORT end_of_vars

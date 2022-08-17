@@ -101,6 +101,8 @@ PAG
 num:    HEX "00 41"
 div:    HEX "02"
 
+end_of_program:
+
 numerator:    BYTE
 remainder:    BYTE
 quotient:     WORD
@@ -109,3 +111,5 @@ temp2:        BYTE
 i:            BYTE
 
 #include "monitor.h"
+
+EXPORT end_of_program

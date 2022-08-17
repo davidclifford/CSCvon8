@@ -33,6 +33,10 @@ print:
 1:
     RET
 
+end_of_program:
+
 count: BYTE
 
 #include "monitor.h"
+
+EXPORT end_of_program
