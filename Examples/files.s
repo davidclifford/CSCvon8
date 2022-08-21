@@ -9,6 +9,7 @@
 
 #define print(str) LHA str; STO A string; LCA str; STO A string+1; JSR pstring
     ORG $d000
+    RUN
 
 sys_file_system:
     print(prompt)
@@ -282,16 +283,7 @@ file_format:
     JEQ 2f
     JMP 3f
 2:
-    STO 0 dest
-    STO 0 dest+1
-1:
-    JSR erase_sector
-    LDA dest
-    LCB $10
-    LDA A+B
-    STO A dest
-    LCB $80
-    JNE 1b
+    JSR erase_chip
     print(formatted)
 4:
     RTS file_format
@@ -1056,6 +1048,23 @@ erase_sector:
 2:
     RTS erase_sector
 
+# Chip Erase
+# Input: none
+erase_chip:
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $80
+    STO A $5555
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $10
+    STO A $5555
+    RTS erase_chip
+
 # Write data from source to destination
 # input: source, dest, length
 write_data:
@@ -1224,7 +1233,6 @@ block:  WORD
 
 command: BYTE @48
 com_ptr: WORD
-
 
 #include "monitor.h"
 
