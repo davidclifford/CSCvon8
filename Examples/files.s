@@ -12,6 +12,9 @@
     RUN
 
 sys_file_system:
+# Set BANK register to 0xF0 for SSD
+    LCA $F0
+    STO A $F000
     print(prompt)
 99:
     print(prompt2)
@@ -84,6 +87,7 @@ sys_file_system:
     LCB 'x'
     JNE 3f
     print(bye)
+    STO 0 $F000
     JMP sys_cli
 3:
     print(cnr)
@@ -596,6 +600,8 @@ write_start:
 
 ###########################################
 # Dir - Output directory of contents of SSD
+###########################################
+# TODO: Output free space not used space (must know how big SSD is first)
 dir:
     OUT '\n'
     STO 0 ptrB
