@@ -6,7 +6,7 @@ import time
 
 fs = [0xff for i in range(32768)]
 mem = [random.randint(33, 96) for i in range(65536)]
-BLOCK_SIZE = 0x1000
+BLOCK_SIZE = 0x100
 WRITE_WAIT = 0
 ERASE_WAIT = 0
 
@@ -91,7 +91,7 @@ def sleep(ms):
     time.sleep(ms)
 
 
-def erase(address):
+def erase_block(address):
     print('ERASE', hex(address))
     addr = BLOCK_SIZE*(address//BLOCK_SIZE)
     print('ERASING', addr, '-', addr+BLOCK_SIZE-1)
@@ -119,105 +119,89 @@ def set_fs(addr, data):
     sleep(WRITE_WAIT)
 
 
-def delete(filename):
+def erase(filename):
     # start, source, very_end, ptrA
     print_fs()
-    start = find_file(filename)
-    if fs[start] == 0xff:
+    ssd_start = find_file(filename)
+    if fs[ssd_start] == 0xff:
         print(filename, 'not found!')
         return
-    source = find_next_file(start)
-    very_end = source
+    ssd_source = find_next_file(ssd_start)
+    ssd_very_end = ssd_source
     while True:
-        if fs[very_end] == 0xFF:
+        if fs[ssd_very_end] == 0xFF:
             break
-        very_end = find_next_file(very_end)
+        ssd_very_end = find_next_file(ssd_very_end)
     # print('Start', start, 'End', source, 'Very End', very_end)
 
-    dest = BLOCK_SIZE * (start // BLOCK_SIZE)  # start of 4k sector
-    ptrB = dest
+    ssd_dest = BLOCK_SIZE * (ssd_start // BLOCK_SIZE)  # start of 4k sector
+    ssd_save = ssd_dest
 
-    ptrA = 0xe000
+    mem_buffer = 0xe000
     # copy to mem data before start
     while True:
-        if ptrB == start:
+        if ssd_save == ssd_start:
             break
-        mem[ptrA] = fs[ptrB]
-        ptrA += 1
-        ptrB += 1
+        mem[mem_buffer] = fs[ssd_save]
+        mem_buffer += 1
+        ssd_save += 1
 
     # copy rest of fs to RAM to fill 4k of ram buffer
     while True:
-        mem[ptrA] = 0xff
-        if source < 0x8000:
-            mem[ptrA] = fs[source]
-        source += 1
-        ptrA += 1
-        if ptrA == 0xe000 + BLOCK_SIZE:
+        mem[mem_buffer] = 0xff
+        if ssd_source < 0x8000:
+            mem[mem_buffer] = fs[ssd_source]
+        ssd_source += 1
+        mem_buffer += 1
+        if mem_buffer == 0xe000 + BLOCK_SIZE:
             break
 
     # copy rest of file system down
     while True:
         # Erase sector
-        erase(dest)
+        erase_block(ssd_dest)
 
         # copy RAM to fs
-        ptrA = 0xe000
+        mem_buffer = 0xe000
         while True:
-            set_fs(dest, mem[ptrA])
-            dest += 1
-            ptrA += 1
-            if ptrA == 0xe000 + BLOCK_SIZE:
+            set_fs(ssd_dest, mem[mem_buffer])
+            ssd_dest += 1
+            mem_buffer += 1
+            if mem_buffer == 0xe000 + BLOCK_SIZE:
                 break
 
-        if source > very_end:
+        if ssd_source > ssd_very_end:
             break
 
         # copy next 4k to RAM
-        ptrA = 0xe000
+        mem_buffer = 0xe000
         while True:
-            mem[ptrA] = fs[source]
-            source += 1
-            ptrA += 1
-            if ptrA == 0xe000 + BLOCK_SIZE:
+            mem[mem_buffer] = fs[ssd_source]
+            ssd_source += 1
+            mem_buffer += 1
+            if mem_buffer == 0xe000 + BLOCK_SIZE:
                 break
-            if source > 0x7fff:
+            if ssd_source > 0x7fff:
                 break
 
     while True:
-        if dest > very_end:
+        if ssd_dest > ssd_very_end:
             break
-        erase(dest)
-        dest += BLOCK_SIZE
+        erase_block(ssd_dest)
+        ssd_dest += BLOCK_SIZE
 
     print_fs()
     print(filename, 'deleted')
 
 
 directory()
-save("fred.txt", 0x8000, 9024)
+save("1", 0x8000, BLOCK_SIZE-24)
 directory()
-save("alice.txt", 0x8100, 8048)
+save("2", 0x8000, (BLOCK_SIZE-24)*4)
 directory()
-save("jake.txt", 0x8200, 5000)
+save("3", 0x8000, BLOCK_SIZE-24)
 directory()
-save("josh.txt", 0x8300, 2965)
+save("4", 0x8000, BLOCK_SIZE-24)
 directory()
-save("alex.txt", 0x8400, 1256)
-directory()
-save('jen.txt', 0x8500, 4321)
-directory()
-save("dave.txt", 0x8600, 999)
-directory()
-delete('fred.txt')
-directory()
-delete('alice.txt')
-directory()
-delete('jake.txt')
-directory()
-delete('alex.txt')
-directory()
-delete('jen.txt')
-directory()
-delete('dave.txt')
+erase('2')
 directory()
