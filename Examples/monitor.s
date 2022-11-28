@@ -16,7 +16,7 @@ main:
     NOP
     NOP
 
-	LCB $00			# Print out the welcome message
+	LCB welcome			# Print out the welcome message
 1:	LDA welcome,B
 	JAZ prompt
 	JOUT(A)

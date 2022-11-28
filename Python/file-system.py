@@ -103,7 +103,7 @@ def erase_block(address):
 def print_fs():
     for i in range(0x8000):
         if i > 0 and i % BLOCK_SIZE == 0:
-            print('| |', end='')
+            print('|')
         if fs[i] >= 0x80 or fs[i] < 0x20:
             print('.', end='')
         else:
@@ -195,13 +195,13 @@ def erase(filename):
 
 
 directory()
-save("1", 0x8000, BLOCK_SIZE-24)
+save("1", 0x8000, BLOCK_SIZE-23)
 directory()
-save("2", 0x8000, (BLOCK_SIZE-24)*4)
+save("2", 0x8000, (BLOCK_SIZE-23)*4)
 directory()
-save("3", 0x8000, BLOCK_SIZE-24)
+save("3", 0x8000, BLOCK_SIZE-23)
 directory()
-save("4", 0x8000, BLOCK_SIZE-24)
+save("4", 0x8000, BLOCK_SIZE-23)
 directory()
 erase('2')
 directory()

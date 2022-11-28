@@ -66,7 +66,7 @@ def load_source_code(args):
         if len(line) == 0:
             continue
         if show_listing:
-            print("[{}] {}".format(count, line))
+            print(f'[{count}] {line}')
         line_numbers.append(count)
         processed_lines.append(line)
         count += 1
@@ -91,7 +91,8 @@ def load_opcodes():
             continue
         op_code, op_len, op_name = line.split(' ')
         opcode[op_name] = {'code': op_code, 'len': op_len}
-    print(opcode)
+    # print(opcode)
+
 
 args = get_command_arguments()
 load_opcodes()

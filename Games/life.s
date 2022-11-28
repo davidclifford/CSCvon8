@@ -203,6 +203,12 @@ next:
     LCB @118
     JNE 4b
 
+    JIU next_gen
+    INA
+    LCB 'q'
+    JEQ exit_game
+    LCB ' '
+    JEQ start
     JMP next_gen
 
 exit_game:

@@ -808,73 +808,73 @@ erase_file:
     LDA ptrA+1
     STO A very_end+1
 # start, end and very_end have been found
-# Set ptrA to buffer address (0xE000)
+# Set mem_buff to buffer address (0xE000)
     LCA $E0
-    STO A ptrA
-    STO 0 ptrA+1
-# find start of 4k block (12 LSBs set to 0) and set to dest and ptrB
+    STO A mem_buff
+    STO 0 mem_buff+1
+# find start of 4k block (12 LSBs set to 0) and set to dest and ssd_save
     STO 0 dest+1
-    STO 0 ptrB+1
+    STO 0 ssd_save+1
     LDA start
-    LCB $FC
+    LCB $F0
     STO A&B dest
-    STO A&B ptrB
+    STO A&B ssd_save
 # Start loop
 7:
-# exit early if ptrB == start
+# exit if ssd_save == start
     LDA start
-    LDB ptrB
+    LDB ssd_save
     JNE 2f
-    LDA ptrB+1
+    LDA ssd_save+1
     LDB start+1
     JEQ 6f
-# copy block from fs to mem ($e000) from start of 4k block to start of erased file
+# copy block from fs to mem buff ($e000) from start of 4k block to start of erased file
 2:
-    LDB ptrA+1
-3:
-    VAI ptrB,B
-    STI A ptrA,B
+    LDB mem_buff+1
+    VAI ssd_save,B
+    STI A mem_buff,B
 # incr B
     LDB B+1
-    STO B ptrA+1
-    STO B ptrB+1
+    STO B mem_buff+1
+    STO B ssd_save+1
     JBZ 1f
     JMP 7b
 # carry
 1:
-    LDA ptrA
-    STO A+1 ptrA
-    LDA ptrB
-    STO A+1 ptrB
+    LDA mem_buff
+    STO A+1 mem_buff
+    LDA ssd_save
+    STO A+1 ssd_save
     JMP 7b
 # End of loop
 6:
 # Copy rest to RAM
 # Make sure to fill FF
-    LDB ptrA+1
+    LDB mem_buff+1
     LCA $FF
-    STI A ptrA,B
+    STI A mem_buff,B
 # check to see not off end of FS
 # TODO: change when FS > $8000 bytes (>32kb)
 #
     LDA source
     LCB $80
-    JEQ erase_file_loop
+    JEQ 1f
 # copy FS to RAM
     LDB source+1
     VAI source,B
-    LDB ptrA+1
-    STI A ptrA,B
+    LDB mem_buff+1
+    STI A mem_buff,B
 # incr source
+1:
     LDA source+1
     LDA A+1
     STO A source+1
     JAZ 3f
-# incr ptrA
+# incr mem_buff
 4:
-    LDA ptrA+1
+    LDA mem_buff+1
     LDA A+1
-    STO A ptrA+1
+    STO A mem_buff+1
     JAZ 5f
     JMP 6b
 3:
@@ -882,12 +882,12 @@ erase_file:
     LDA source
     STO A+1 source
     JMP 4b
-# Carry ptrA
+# Carry mem_buff
 5:
-    LDA ptrA
+    LDA mem_buff
     LDA A+1
-    STO A ptrA
-# Check end of RAM buffer (ptrA)
+    STO A mem_buff
+# Check end of RAM buffer (mem_buff)
     LCB $F0
     JNE 6b
 # Finish loop
@@ -897,21 +897,21 @@ erase_file_loop:
 
 # 4k buffer filled - erase fs block
     JSR erase_sector
-# Set ptrA to $E000
+# Set mem_buff to $E000
     LCA $E0
-    STO A ptrA
-    STO 0 ptrA+1
+    STO A mem_buff
+    STO 0 mem_buff+1
 
 # Copy buffer back to fs
-1:
+erase_copy_loop:
     LCA $AA
     STO A $5555
     LCA $55
     STO A $2AAA
     LCA $A0
     STO A $5555
-# (ptrA) -> (dest)
-    LIA ptrA
+# (mem_buff) -> (dest)
+    LIA mem_buff
     STO A char
     SIA dest
 
@@ -921,16 +921,16 @@ erase_file_loop:
     VAI dest,B
     LDB char
     JNE 10b
-# inc ptrA
+# inc mem_buff
 11:
-    LDA ptrA+1
+    LDA mem_buff+1
     LDA A+1
-    STO A ptrA+1
+    STO A mem_buff+1
     JAZ 3f
     JMP 4f
 3:
-    LDA ptrA
-    STO A+1 ptrA
+    LDA mem_buff
+    STO A+1 mem_buff
 4:
 # inc dest
     LDA dest+1
@@ -942,10 +942,10 @@ erase_file_loop:
     LDA dest
     STO A+1 dest
 6:
-    LDA ptrA
+    LDA mem_buff
     LCB $F0
-    JNE 1b
-
+    JNE erase_copy_loop
+8:
 # Have we copied everything (source > very_end)?
     LDA source
     LDB very_end
@@ -959,13 +959,13 @@ erase_file_loop:
 7:
 # Copy next 4k to RAM
     LCA $E0
-    STO A ptrA
-    STO 0 ptrA+1
+    STO A mem_buff
+    STO 0 mem_buff+1
 2:
     LDB source+1
     VAI source,B
-    LDB ptrA+1
-    STI A ptrA,B
+    LDB mem_buff+1
+    STI A mem_buff,B
 # incr source
     LDA source+1
     LDA A+1
@@ -978,21 +978,23 @@ erase_file_loop:
     LDA A+1
     STO A source
     LCB $80 # TODO Change if FS > $8000
-    JEQ 10f
-# incr ptrA
+##    JEQ 10f
+    JEQ erase_file_loop
+# incr mem_buff
 4:
-    LDA ptrA+1
+    LDA mem_buff+1
     LDA A+1
-    STO A ptrA+1
+    STO A mem_buff+1
     JAZ 5f
     JMP 2b
-# ptrA carry
+# mem_buff carry
 5:
-    LDA ptrA
+    LDA mem_buff
     LDA A+1
-    STO A ptrA
+    STO A mem_buff
     LCB $F0
-    JEQ 10f
+##    JEQ 10f
+    JEQ erase_file_loop
     JMP 2b
 10:
 # Erase any blocks not yet erased
@@ -1208,7 +1210,7 @@ bye:    STR "File system exited\n"
 fnf:    STR "File not found\n"
 fld:    STR "File loaded\n"
 fdel:   STR "File deleted\n\n"
-used:   STR "Used "
+used:   STR "\nUsed "
 bytes:  STR " Bytes\n\n"
 sure:   STR "Are you sure? Y/N\n"
 formatted: STR "SSD formatted\n"
@@ -1236,6 +1238,8 @@ start:  WORD
 end:    WORD
 very_end: WORD
 block:  WORD
+mem_buff: WORD
+ssd_save: WORD
 
 command: BYTE @48
 com_ptr: WORD

@@ -187,7 +187,7 @@ draw_loop:
 
 draw_fin:
     RTS draw_line
-
+end:
 #PAG
 
 x0: BYTE

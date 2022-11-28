@@ -1,1 +1,1 @@
-end_of_program: EQU $dadd
+end_of_program: EQU $dade
