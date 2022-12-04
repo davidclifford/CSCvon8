@@ -1,7 +1,7 @@
 # Maze Generator
 # David Clifford Feb 2021
 #
-
+    NAME "maze"
 #define GRID_SIZE @6
 #define GRID_SIZE2 @3
 #define GRID_COLOUR $30

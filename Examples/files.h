@@ -1,1 +1,1 @@
-end_of_program: EQU $dade
+end_of_program: EQU $dc20

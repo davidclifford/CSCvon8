@@ -1,5 +1,6 @@
 # Explode over screen
 # David Clifford Jan 2022
+    NAME "explode"
 restart:
     STO 0 __paper
     JSR sys_cls sys_cls_ret

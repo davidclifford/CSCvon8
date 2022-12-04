@@ -28,6 +28,8 @@ sys_file_system:
     LDB com_ptr+1
     STI A com_ptr,B
     OUT A
+    LCB $08
+    JEQ bs
     LCB '\n'
     JNE 3f
     LDB com_ptr+1
@@ -36,6 +38,14 @@ sys_file_system:
 3:
     LDA com_ptr+1
     STO A+1 com_ptr+1
+    JMP 1b
+bs:
+    LDB com_ptr+1
+    STI 0 com_ptr,B
+    OUT ' '
+    OUT $08
+    LDA com_ptr+1
+    STO A-1 com_ptr+1
     JMP 1b
 
 # Scan command and do whatev's
@@ -130,6 +140,52 @@ load_command:
     JMP 99b
 
 #####################
+# Partition command
+#####################
+print_partition:
+    print(part)
+    LDA $F000
+    LCB $0F
+    LDA A&B
+    LCB 'A'
+    LDA A+B
+    OUT A
+    OUT '\n'
+    RTS print_partition
+
+partition_command:
+    LDB com_ptr+1
+    LDB B+1
+    STO B com_ptr+1
+    LDA command,B
+    JAZ 5f
+
+    LCB 'p'
+    JHI 3f
+    LCB '`'
+    JHI 1f
+    LCB 'P'
+    JHI 3f
+    LCB '@'
+    JHI 2f
+3:
+    print(inv_part)
+    JMP 5f
+1:
+    LCB 'a'
+    LDA A-B
+    JMP 4f
+2:
+    LCB 'A'
+    LDA A-B
+4:
+    LCB $F0
+    STO A|B $F000
+5:
+    JSR print_partition
+    JMP 99b
+
+#####################
 # Erase file command
 #####################
 erase_command:
@@ -184,7 +240,7 @@ save_file:
     LDB B+1
     STO B com_ptr+1
     LDA command,B
-    JAZ 4f
+    JAZ 5f
     LCB ' '
     JEQ 1b
 # copy to filename variable
@@ -272,6 +328,40 @@ save_file:
     JMP 99b
 4:
     print(abort)
+    JMP 99b
+5:
+    # Auto save
+    print(saved)
+    # filename, size, addr
+    LDA $F002
+    STO A addr
+    LDA $F003
+    STO A addr+1
+    LDA $F004
+    STO A size
+    LDA $F005
+    STO A size+1
+
+    LCB $06
+    STO B source
+    LCB filename
+    STO B dest
+6:
+    LDB source
+    LDA $F000,B
+    LDB B+1
+    STO B source
+    LDB dest
+    STO A filename,B
+    JAZ 7f
+    OUT A
+    LDB B+1
+    STO B dest
+    LCA @25
+    JHI 6b
+7:
+    OUT '\n'
+    JSR write_file
     JMP 99b
 
 #####################
@@ -603,6 +693,35 @@ write_start:
 ###########################################
 # TODO: Output free space not used space (must know how big SSD is first)
 dir:
+    LDB com_ptr+1
+    LDB B+1
+    STO B com_ptr+1
+    LDA command,B
+    JAZ 5f
+
+    LCB 'p'
+    JHI 3f
+    LCB '`'
+    JHI 1f
+    LCB 'P'
+    JHI 3f
+    LCB '@'
+    JHI 2f
+3:
+    print(inv_part)
+    JMP 5f
+1:
+    LCB 'a'
+    LDA A-B
+    JMP 4f
+2:
+    LCB 'A'
+    LDA A-B
+4:
+    LCB $F0
+    STO A|B $F000
+5:
+    JSR print_partition
     OUT '\n'
     STO 0 ptrB
     STO 0 ptrB+1
@@ -1205,14 +1324,18 @@ hexcvt:
 PAG
 prompt: STR "FILE SYSTEM - Load, Save, Dir, Erase, Format, eXit, ? - Help \n"
 prompt2:STR ">> "
+part:   STR "Directory "
+inv_part: STR "Invalid Directory - choose A-P\n"
 cnr:    STR "Command not recognised\n"
 bye:    STR "File system exited\n"
 fnf:    STR "File not found\n"
 fld:    STR "File loaded\n"
 fdel:   STR "File deleted\n\n"
 used:   STR "\nUsed "
-bytes:  STR " Bytes\n\n"
+bytes:  STR " Bytes\n"
 sure:   STR "Are you sure? Y/N\n"
+saved:  STR "Saved file "
+PAG
 formatted: STR "SSD formatted\n"
 abort: STR "Command aborted\n"
 
@@ -1240,7 +1363,7 @@ very_end: WORD
 block:  WORD
 mem_buff: WORD
 ssd_save: WORD
-
+PAG
 command: BYTE @48
 com_ptr: WORD
 

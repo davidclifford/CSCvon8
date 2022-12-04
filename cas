@@ -14,11 +14,12 @@ my $StartPC = 0x8000;# Start PC at 0x0000, or 0x8000 for $ramimage
 my @Line;            # Array of whole lines from input file
 my @Linenum;         # Line number for each line in @Line
 my @MEM = (0) x 65536;  # Contents of memory
-my %Label;              # Hash of labels
-my %Export;             # Hash of export symbols
-my @Numlabel;           # Sparse 2D array of numeric labels and at what location
-                        # they were defined.
+my %Label;           # Hash of labels
+my %Export;          # Hash of export symbols
+my @Numlabel;        # Sparse 2D array of numeric labels and at what location
+                     #  they were defined.
 my $RUN;             # Run program from
+my $PROGNAME;        # Name of program - to use in filesystem
 
 # Hash of instruction names, their opcode values and length in bytes.
 # Also, hash of known keywords that occur in instructions.
@@ -95,6 +96,8 @@ sub load_opcodes {
     $Keyword{EXPORT} = 1;
     $Inst{RUN}    = [ 0x10c, 0 ];
     $Keyword{RUN} = 1;
+    $Inst{NAME}    = [ 0x10d, 0 ];
+    $Keyword{NAME} = 1;
 
     open( my $IN, "<", "opcodes" ) || die("Cannot read opcodes: $!\n");
     while (<$IN>) {
@@ -498,6 +501,10 @@ sub parse2 {
             $RUN = $PC;
         }
 
+        if ( $inst eq "NAME" ) {
+            $PROGNAME = $string;
+        }
+
         # Increment PC to the start of the next page
         if ( $inst eq "PAG" ) {
             my $oldPC = $PC;
@@ -689,6 +696,19 @@ if ($ramimage) {
         print( $OUT "\n" ) if ( ( $i % 16 ) == 15 );
     }
     print( $OUT "Z\n" );
+    # output start address and length in $F002 and $F004
+    printf( $OUT "CF002\n%04x Z\n", $lomemused);
+    my $length = $himemused - $lomemused + 1;
+    printf( $OUT "CF004\n%04x Z\n", $length);
+    # output name as hex & \0 (max 20 chars)
+    if ($PROGNAME) {
+        print( $OUT "CF006\n");
+        my @chars = split("", $PROGNAME);
+        foreach ( @chars ) {
+            printf( $OUT "%02x ", ord($_));
+        }
+        print( $OUT "00 Z\n" );
+    }
     printf( $OUT "R%04x\n", $RUN ) if ($RUN);
     close($OUT);
     exit(0);

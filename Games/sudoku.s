@@ -2,6 +2,7 @@
 # David Clifford 05/01/2021
 # Update to interactive 26/01/2022
 #
+    NAME "sudoku"
 restart:
     STO 0 __paper
     LCA $3c

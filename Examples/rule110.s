@@ -2,7 +2,7 @@
 # RULE 110 to show turing completeness
 # David Clifford 10/10/2021
 #
-
+    NAME "rule110"
 # BOARD_CAP = 122
 # board = [0 for _ in range(BOARD_CAP)]
 #

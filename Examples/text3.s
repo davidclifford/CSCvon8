@@ -1,3 +1,4 @@
+    NAME "text3"
 start:
     STO 0 __sypos
     STO 0 __sxpos

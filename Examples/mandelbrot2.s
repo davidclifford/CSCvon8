@@ -1,7 +1,7 @@
 # Plot Mandelbrot set
 # 22/08/2021
 #
-
+    NAME "mand2"
 #   Init
 for_py:
 # for py=0 to 119

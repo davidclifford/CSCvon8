@@ -1,5 +1,7 @@
 # Bounce balls over screen
 # David Clifford Nov 2020
+    NAME "bounce"
+
 restart:
     STO 0 __paper
     JSR sys_cls sys_cls_ret

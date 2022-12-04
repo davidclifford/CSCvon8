@@ -1,6 +1,7 @@
 # Snake for the CSCvon8
 # By David Clifford Oct 2020
 #
+    NAME "snake"
 # Start
 start:
     STO 0 __paper

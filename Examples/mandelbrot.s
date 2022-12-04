@@ -4,6 +4,7 @@
 # Updated 30/12/2021 - Use mult 2 directly by shift left 1 place
 # Timing - 2:05 @ 6.3Mhz
 #
+    NAME "mand"
 
 #   Init
 for_py:

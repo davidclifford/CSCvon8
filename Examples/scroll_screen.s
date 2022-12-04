@@ -1,4 +1,6 @@
 # Scroll screen using indirect indexed instructions
+    NAME "scroll"
+
     STO 0 last
 1:
     INA

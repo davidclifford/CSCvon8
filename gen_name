@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+# compiles programs that include NAME
+
+fl=`grep -l NAME Examples/*.s`
+for f in $fl; do
+  echo $f;
+  ./cas $f;
+done
+fl=`grep -l NAME Games/*.s`
+for f in $fl; do
+  echo $f;
+  ./cas $f;
+done
