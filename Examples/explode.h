@@ -1,5 +1,5 @@
 iink: EQU $8900
-index: EQU $8244
+index: EQU $827f
 iox: EQU $8700
 ioy: EQU $8800
 ivx: EQU $8500

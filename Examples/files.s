@@ -41,7 +41,7 @@ sys_file_system:
     JMP 1b
 bs:
     LDB com_ptr+1
-    STI 0 com_ptr,B
+    STO 0 command,B
     OUT ' '
     OUT $08
     LDA com_ptr+1
@@ -349,16 +349,16 @@ save_file:
 6:
     LDB source
     LDA $F000,B
+    OUT A
     LDB B+1
     STO B source
     LDB dest
     STO A filename,B
     JAZ 7f
-    OUT A
+    JAN 7f
     LDB B+1
     STO B dest
-    LCA @25
-    JHI 6b
+    JMP 6b
 7:
     OUT '\n'
     JSR write_file
@@ -1322,8 +1322,7 @@ hexcvt:
 
 
 PAG
-prompt: STR "FILE SYSTEM - Load, Save, Dir, Erase, Format, eXit, ? - Help \n"
-prompt2:STR ">> "
+prompt: STR "FILE SYSTEM - Load, Save, Table, Erase, Format\n"
 part:   STR "Directory "
 inv_part: STR "Invalid Directory - choose A-P\n"
 cnr:    STR "Command not recognised\n"

@@ -1,6 +1,27 @@
 # a*b = f(a+b) - f(a-b)
 # f = x*x/4
 
+# make lookup table
+X2D4 = [0 for i in range(2**16)]
+
+for x in range(2**16):
+    y = x
+    if x >= 2**15:
+        y = (2**16) - x + 1
+    X2D4[x] = int((y*y) >> 2)
+
+print(X2D4[0])
+print(X2D4[1])
+print(X2D4[2])
+print(X2D4[3])
+print(X2D4[4])
+print(hex(X2D4[2**15]))
+print(hex(X2D4[2**15+1]))
+print(X2D4[2**16-4])
+print(X2D4[2**16-3])
+print(X2D4[2**16-2])
+print(X2D4[2**16-1])
+
 
 def mult(a, b):
     r1 = f(a+b)

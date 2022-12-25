@@ -25,15 +25,29 @@ main:
 
 prompt:	putc('>')		# Print out the prompt
 	putc(' ')
-	getc(cmdchar)		# Get the command letter and
-	JOUT(A)			# echo it out to the user
+#	getc(cmdchar)		# Get the command letter and
+1:
+    LDA __rand_seed+1
+    LDA A+1
+    STO A __rand_seed+1
+    JAZ 2f
+    JMP 3f
+2:
+    LDA __rand_seed
+    STO A+1 __rand_seed
+3:
+    JIU 1b
+    INA
+    STO A cmdchar
+    JOUT(A)			# echo it out to the user
 	LCB '\n'		# Loop when we get a newline
 	JEQ prompt
 	LCB '\r'		# Loop when we get a carriage return
 	JEQ prompt
 
 	STO 0 hexcnt		# Set count of hex chars to zero
-sploop: JINA			# Get further characters and echo them
+sploop:
+    JINA			# Get further characters and echo them
 	JOUT(A)
 	LCB ' '			# Skip spaces
 	JEQ sploop
@@ -43,7 +57,7 @@ sploop: JINA			# Get further characters and echo them
 	JEQ docmd
 	
 	LDB hexcnt		# Assume it's a hex digit, store it
-	STO A hexchar,B
+	STO A __hex,B
 	STO B+1 hexcnt		# Increment the counter
 	LCA $03
 	JEQ waitnl		# Exit loop when B==3 (highest offset)
@@ -68,6 +82,10 @@ docmd:	JOUT('\n')
 	JEQ dump
 	LCB 'd'
 	JEQ dump
+	LCB 'V'			# V and v, dump video memory
+	JEQ vdump
+	LCB 'v'
+	JEQ vdump
 	LCB 'R'			# R and r, run code at addr
 	JEQ run
 	LCB 'r'
@@ -99,19 +117,23 @@ run:	LCB $70			# Set a JMP instruction
 	JMP jmpaddr
 	JMP prompt
 
-dump:	LCB $0F			# Set a count of 15, which will be 16
+dump:
+    LCB $0F         # Set a count of 15, which will be 16
+    STO B count+1
+4:  LCB $0F			# Set a count of 15, which will be 16
 	STO B count
 	LDB addr		# Print out the address in hex
-	STO B hexchar
-	JSR prhex
+	STO B __hex
+	JSR sys_phex
 	LDB addr+1
-	STO B hexchar
-	JSR prhex
+	STO B __hex
+	JSR sys_phex
 	JOUT(':')
 	JOUT(' ')
-1:	LIA addr		# Get a byte through the pointer
-	STO A hexchar
-	JSR prhex		# Print it in hex
+1:	LDB addr+1
+    LAI addr,B		# Get a byte through the pointer
+	STO A __hex
+	JSR sys_phex		# Print it in hex
 	JOUT(' ')		# followed by a space
 	LDB count		# Decrement the count
 	LDB B-1
@@ -126,10 +148,54 @@ dump:	LCB $0F			# Set a count of 15, which will be 16
 	LDB addr+1		# Also bump up the address for the next dump
 	STO B+1 addr+1
 	TST B+1 JC 3f
-	JMP prompt
+5:	LDB count+1
+	LDB B-1
+	JBN prompt
+	STO B count+1
+	JMP 4b
 3:	LDB addr
 	STO B+1 addr
-	JMP prompt
+	JMP 5b
+
+vdump:
+    LCB $0F         # Set a count of 15, which will be 16
+    STO B count+1
+4:  LCB $0F			# Set a count of 15, which will be 16
+	STO B count
+	LDB addr		# Print out the address in hex
+	STO B __hex
+	JSR sys_phex
+	LDB addr+1
+	STO B __hex
+	JSR sys_phex
+	JOUT(':')
+	JOUT(' ')
+1:  LDB addr+1
+ 	VAI addr,B		# Get a byte through the pointer
+	STO A __hex
+	JSR sys_phex		# Print it in hex
+	JOUT(' ')		# followed by a space
+	LDB count		# Decrement the count
+	LDB B-1
+	JBN 2f			# Exit when we get to $FF
+	STO B count
+	LDB addr+1		# Keep going, so move the pointer up
+	STO B+1 addr+1
+	JMP 1b			# and loop back
+
+2:	JOUT('\r')
+	JOUT('\n')		# End of loop, print a newline
+	LDB addr+1		# Also bump up the address for the next dump
+	STO B+1 addr+1
+	TST B+1 JC 3f
+5:	LDB count+1
+	LDB B-1
+	JBN prompt
+	STO B count+1
+	JMP 4b
+3:	LDB addr
+	STO B+1 addr
+	JMP 5b
 
 change:
 	printstr(setstr)
@@ -137,29 +203,29 @@ changeloop:
 	JINA			# Get a character and echo it
 	JOUT(A)
 	LCB ' '
-	JEQ changeloop		# Start afresh for spaces and newlines
+	JEQ changeloop	# Start afresh for spaces and newlines
 	LCB '\n'
 	JEQ changeloop
 	LCB '\r'
 	JEQ changeloop
-	LCB 'Z'			# If we get a 'Z' or 'z', end of changes
+	LCB 'Z'         # when we get a Z or z, end of changes
 	JEQ sys_cli
 	LCB 'z'
 	JEQ sys_cli
-	STO A hexchar		# Store first hex nibble, do it again
+	STO A __hex		# Store first hex nibble, do it again
 	JINA			# Get a character and echo it
 	JOUT(A)
 	LCB ' '
-	JEQ changeloop		# Start afresh for spaces and newlines
+	JEQ changeloop	# Start afresh for spaces and newlines
 	LCB '\n'
 	JEQ changeloop
 	LCB '\r'
 	JEQ changeloop
-	LCB 'Z'			# If we get a 'Z' or 'z', end of changes
+	LCB 'Z'	        # when we get a Z or z, end of changes
 	JEQ sys_cli
 	LCB 'z'
 	JEQ sys_cli
-	STO A hexchar2		# Store second hex nibble
+	STO A __hex2	# Store second hex nibble
 
 	JSR bytecvt		# Convert to a single byte in cmdchar
 	LDA cmdchar
@@ -185,10 +251,11 @@ puts:	LIA strptr		# Get character through the ptr
 	JMP puts		# and loop back
 1:	RTS puts
 
-## hexcvt subroutine. Given four hex digits stored in the hexchar
+## hexcvt subroutine. Given four hex digits stored in the __hex
 #	buffer, convert them into a 16-bit big endian address
 #	stored in addr.
-hexcvt: LDB hexchar		# Get the first character
+hexcvt:
+    LDB __hex		# Get the first character
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 1f			# If -ve, was A-F
@@ -199,7 +266,7 @@ hexcvt: LDB hexchar		# Get the first character
 2:	LCB $04
 	STO addr A<<B		# Save top nibble into addr
 
-	LDB hexchar2		# Repeat the process on the 2nd char
+	LDB __hex2		# Repeat the process on the 2nd char
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 3f			# If -ve, was A-F
@@ -212,7 +279,7 @@ hexcvt: LDB hexchar		# Get the first character
 	LDA addr
 	STO addr A|B		# Combine both nibbles and store
 
-	LDB hexchar3		# Repeat the process on the 3rd char
+	LDB __hex3		# Repeat the process on the 3rd char
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 5f			# If -ve, was A-F
@@ -223,7 +290,7 @@ hexcvt: LDB hexchar		# Get the first character
 6:	LCB $04
 	STO addr+1 A<<B		# Save top nibble into addr
 
-	LDB hexchar4		# Repeat the process on the 4th char
+	LDB __hex4		# Repeat the process on the 4th char
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 7f			# If -ve, was A-F
@@ -237,10 +304,10 @@ hexcvt: LDB hexchar		# Get the first character
 	STO addr+1 A|B		# Combine both nibbles and store
 	RTS hexcvt
 
-## bytecvt subroutine. Given two hex digits stored in the hexchar
+## bytecvt subroutine. Given two hex digits stored in the __hex
 #	buffer, convert them into a 8-bit value stored in cmdchar
 bytecvt:
-	LDB hexchar		# Get the first character
+	LDB __hex		# Get the first character
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 1f			# If -ve, was A-F
@@ -251,7 +318,7 @@ bytecvt:
 2:	LCB $04
 	STO cmdchar A<<B	# Save top nibble into addr
 
-	LDB hexchar2		# Repeat the process on the 2nd char
+	LDB __hex2		# Repeat the process on the 2nd char
 	LCA $3F			# Add on $3F
 	LDA A+B
 	JAN 3f			# If -ve, was A-F
@@ -265,9 +332,9 @@ bytecvt:
 	STO cmdchar A|B		# Combine both nibbles and store
 	RTS bytecvt
 
-# prhex function: Print the value in hexchar
+# sys_phex function: Print the value in __hex
 # out as two hex digits
-prhex:	LDA hexchar	# Load a copy of A
+sys_phex:	LDA __hex	# Load a copy of A
 	LCB $04		# Get high nibble of A
 	LDA A>>B
 	LCB $09
@@ -278,7 +345,7 @@ prhex:	LDA hexchar	# Load a copy of A
 2:	LDA A+B
 	JOUT(A)
 
-	LDA hexchar	# Get A back again
+	LDA __hex	# Get A back again
 	LCB $0F		# Get the low nibble of A
 	LDA A&B
 	LCB $09
@@ -288,7 +355,7 @@ prhex:	LDA hexchar	# Load a copy of A
 1:	LCB $37		# Add 55 to get it in 'A' to 'F'
 2:	LDA A+B
 	JOUT(A)
-	RTS prhex
+	RTS sys_phex
 
 ## Clear screen. Using indirect addressing
 #
@@ -309,6 +376,10 @@ sys_cls:
     STO A+1 vidaddr
     LCB @120
     JNE 1b
+    LDA __paper
+    LCB $40
+    LDA A|B
+    STO A $789f
     RTS sys_cls
 
 ###############
@@ -316,8 +387,8 @@ sys_cls:
 ###############
 sys_pchar:
     LDA __char
-    LCB $20   # space ' '
-    JLT 9f # is control character
+    LCB ' ' # space
+    JLT 9f  # is control character
     LDA A-B
 
 # Calculate start of character bitmap
@@ -380,7 +451,9 @@ sys_pchar:
 6:
     LDA __xpos
     STO A+1 __xpos
-    RTS sys_pchar
+    LCB @25
+    JEQ 11f
+    JMP 10f
 7:
     LDA indx
     STO A+1 indx
@@ -395,7 +468,12 @@ sys_pchar:
 11:
     STO 0 __xpos
     LDA __ypos
+    LCB @14
+    JEQ 12f
     STO A+1 __ypos
+    JMP 10b
+12:
+    JSR sys_scroll8
     JMP 10b
 
 ###############
@@ -476,19 +554,369 @@ next_line:
 fin_char:
     LDA __sxpos
     STO A+1 __sxpos
+    LCB @52
+    JEQ 1f
     RTS sys_spchar
 control:
     # Do \n or \r (as same thing)
-    LCB $0A
+    LCB '\n'
     JEQ 1f
-    LCB $0D
-    JEQ 1f
-    RTS sys_spchar
+    LCB '\r'
+    JNE 2f
 1:
     STO 0 __sxpos
     LDA __sypos
+    LCB @29
+    JEQ 1f
     STO A+1 __sypos
+2:
     RTS sys_spchar
+1:
+    JSR sys_scroll4
+    JMP 2b
+
+###################################################
+# Scroll screen up 1 pixels and blank last line
+###################################################
+sys_scroll:
+    STO 0 scroll_to
+    LCB @1
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll
+
+###################################################
+# Scroll screen up 4 pixels and blank last 4 lines
+###################################################
+sys_scroll4:
+    STO 0 scroll_to
+    LCB @4
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll4
+
+###################################################
+# Scroll screen up 8 pixels and blank last 8 lines
+###################################################
+sys_scroll8:
+    STO 0 scroll_to
+    LCB @8
+    STO B scroll_from
+3:
+    LDB 0
+4:
+    VAI scroll_from,B
+    STI A scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 4b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LDA scroll_from
+    STO A+1 scroll_from
+    LCB @119
+    JNE 3b
+5:
+    LDB 0
+6:
+    STI 0 scroll_to,B
+    LDB B+1
+    LCA @160
+    JNE 6b
+    LDA scroll_to
+    STO A+1 scroll_to
+    LCB @120
+    JNE 5b
+    RTS sys_scroll8
+
+##################################
+# Print string in large characters
+##################################
+sys_pstring:
+2:
+    LIA __string
+    JAZ 1f
+    STO A __char
+    JSR sys_pchar
+    LDB __string+1
+    STO B+1 __string+1
+    JMP 2b
+1:
+    RTS sys_pstring
+
+##################################
+# Print string in small characters
+##################################
+sys_spstring:
+2:
+    LIA __string
+    JAZ 1f
+    STO A __schar
+    JSR sys_spchar
+    LDB __string+1
+    TST B+1 JC 3f
+    STO B+1 __string+1
+    JMP 2b
+1:
+    RTS sys_spstring
+3:
+    LDA __string
+    STO A+1 __string
+    STO 0 __string+1
+    JMP 2b
+
+###################################
+# Random number generator
+###################################
+sys_rand:
+# T = x^(x<<5)
+    LDA __rand_seed0+1
+    LCB @5
+    LDA AROLB
+    LCB $E0
+    STO A&B rand_temp+1
+    LCB $1F
+    STO A&B rand_temp
+
+    LDA __rand_seed0
+    LCB @5
+    LDA A<<B
+    LCB $E0
+    LDA A&B
+    LDB rand_temp
+    STO A|B rand_temp
+
+    LDA __rand_seed0
+    LDB rand_temp
+    STO A^B rand_temp
+    LDA __rand_seed0+1
+    LDB rand_temp+1
+    STO A^B rand_temp+1
+
+# X = Y
+    LDA __rand_seed
+    STO A __rand_seed0
+    LDA __rand_seed+1
+    STO A __rand_seed0+1
+
+# Z = T>>3
+    LDA rand_temp
+    LCB @3
+    LDA ARORB
+    LCB $E0
+    STO A&B rand_z+1
+    LCB $1F
+    STO A&B rand_z
+    LDA rand_temp+1
+    LCB @3
+    LDA A>>B
+    LDB rand_z+1
+    STO A|B rand_z+1
+
+# T = T^Z
+    LDA rand_z
+    LDB rand_temp
+    STO A^B rand_temp
+    LDA rand_z+1
+    LDB rand_temp+1
+    STO A^B rand_temp+1
+
+# Z = Y>>1
+    LDA __rand_seed
+    LCB @1
+    LDA ARORB
+    LCB $80
+    STO A&B rand_z+1
+    LCB $7F
+    STO A&B rand_z
+    LDA __rand_seed+1
+    LCB @1
+    LDA A>>B
+    LDB rand_z+1
+    STO A|B rand_z+1
+
+# Y = Y^Z
+    LDA __rand_seed
+    LDB rand_z
+    STO A^B __rand_seed
+    LDA __rand_seed+1
+    LDB rand_z+1
+    STO A^B __rand_seed+1
+
+# Y = Y^T
+    LDA __rand_seed
+    LDB rand_temp
+    STO A^B __rand_seed
+    LDA __rand_seed+1
+    LDB rand_temp+1
+    STO A^B __rand_seed+1
+
+    RTS sys_rand
+
+###############################################
+# Convert 32-bit number to string
+# Copy 32-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_32:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDB     AREMB
+
+    LDA     __number+1
+    STO     ADIVB __number+1
+    LDB     AREMB
+
+    LDA     __number+2
+    STO     ADIVB __number+2
+    LDB     AREMB
+
+    LDA     __number+3
+    STO     ADIVB __number+3
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    LDB     __number+1
+    LDA     A|B
+    LDB     __number+2
+    LDA     A|B
+    LDB     __number+3
+    LDA     A|B
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_32
+
+###############################################
+# Convert 16-bit number to string
+# Copy 16-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_16:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDB     AREMB
+
+    LDA     __number+1
+    STO     ADIVB __number+1
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    LDB     __number+1
+    LDA     A|B
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_16
+
+###############################################
+# Convert 8-bit number to string
+# Copy 8-bit unsigned integer to __number
+# Use __num_str as base and __num_ptr as offset
+#  of string to print out
+###############################################
+
+sys_num_str_8:
+    LCB     __num_str+10
+    STO     B __num_ptr
+    STO     0 __num_str+11
+1:  LDB     0
+
+    LDA     __number
+    STO     ADIVB __number
+    LDA     AREMB
+
+    LCB     '0'
+    LDA     A+B
+    LDB     __num_ptr
+    STO     A __num_str,B
+    STO     B-1 __num_ptr
+# is number now zero ?
+    LDA     __number
+    JAZ     1f
+    JMP     1b
+1:
+    LDA     __num_ptr
+    STO     A+1 __num_ptr
+    RTS     sys_num_str_8
 
 # Ascii chars 32-96
 # Large font
@@ -656,7 +1084,7 @@ small_font:
 	HEX "05 00 05 01 08 09 00 05 00 00 01 00" #  Y
 	HEX "01 03 0a 00 09 00 05 00 00 01 03 02" #  Z
 	HEX "00 0b 02 00 0a 00 00 0a 00 00 03 02" #  [
-	HEX "04 00 00 00 06 00 00 00 06 00 00 00" #  \
+	HEX "04 00 00 00 06 00 00 00 06 00 00 00" #  bslash
 PAG
 	HEX "00 03 0a 00 00 0a 00 00 0a 00 03 02" #  ]
 	HEX "00 09 08 01 00 01 00 00 00 00 00 00" #  ^
@@ -696,15 +1124,15 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.02, type ? for help\n\n"
-usage:	 STR "Usage: D dump, C change, R run, ? help, X exit\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.06, 01/01/2021\nType ? for help\n\n"
+usage:	 STR "Usage: D dump, V video dump, C change, R run, ? help, X clear/reset\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
 
-	  ORG $FD00
-hexchar:  HEX "00"		# Place to store four hex chars, page aligned
-hexchar2: HEX "00"
-hexchar3: HEX "00"
-hexchar4: HEX "00"
+	  ORG $FC00
+__hex:  HEX "00"		# Place to store four hex chars, page aligned
+__hex2: HEX "00"
+__hex3: HEX "00"
+__hex4: HEX "00"
 strptr:	  HEX "00"		# String pointer for puts
 	  HEX "00"
 cmdchar:  HEX "00"		# Command character
@@ -727,6 +1155,13 @@ __sypos: BYTE           # Small character Y position
 __sxpos: BYTE           # Small character X position
 __sink: BYTE            # Small character ink colour (0-7) rgb
 
+__string: WORD          # Address of zero terminated string to print
+
+__rand_seed: WORD       # Seed for RNG
+__rand_seed0: WORD      # Seed 0 for RNG
+rand_z:  WORD
+rand_temp:  WORD
+
 indx: HEX "00 00"       # Index of char
 asc:  HEX "00"          # Character minus 'space'
 ycoord: HEX "00"        # Y co-ord of char in pixels
@@ -740,11 +1175,23 @@ xscoord: BYTE
 yc: BYTE
 xc: BYTE
 ink: BYTE
+temp: BYTE
+scroll_to: BYTE
+scroll_from: BYTE
+
+__number: BYTE @4 # 32-bit number
+__num_str: BYTE @12 # String containing number in decimal
+__num_ptr: BYTE # offset into __num_str that is start of string
 
 EXPORT sys_cli
 EXPORT sys_cls
+
 EXPORT sys_pchar
 EXPORT sys_spchar
+
+EXPORT sys_scroll
+EXPORT sys_scroll4
+EXPORT sys_scroll8
 
 EXPORT __char
 EXPORT __xpos
@@ -756,3 +1203,21 @@ EXPORT __schar
 EXPORT __sypos
 EXPORT __sxpos
 EXPORT __sink
+
+EXPORT sys_phex
+EXPORT __hex
+
+EXPORT __string
+EXPORT sys_pstring
+EXPORT sys_spstring
+
+EXPORT __rand_seed
+EXPORT __rand_seed0
+EXPORT sys_rand
+
+EXPORT __number
+EXPORT __num_str
+EXPORT __num_ptr
+EXPORT sys_num_str_32
+EXPORT sys_num_str_16
+EXPORT sys_num_str_8

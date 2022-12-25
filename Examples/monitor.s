@@ -1,12 +1,15 @@
 # Warren's monitor ROM for the CSCvon8 CPU
 # (c) 2019, GPL3
-# Modified by David Clifford 2020
+# Modified by David Clifford 2020, 2022
+# With added Filesystem
 
 #define printstr(x)  LHA x; STO A strptr; LCA x; STO A strptr+1; JSR puts
 #define putc(x)	     LCA x; JOU .; OUT A
 #define getc(x)	     JIU .; INA; STO A x
 #define JOUT(x)	     JOU .; OUT x
 #define JINA	     JIU .; INA
+#define cmd_key()    JIU .; INA; JOUT(A); LDB cmd_ptr; STO A command,B; STO B+1 cmd_ptr
+#define nxt_cmd()    LDB cmd_ptr; LDA command,B; STO B+1 cmd_ptr
 
 main:
     NOP
@@ -16,6 +19,13 @@ main:
     NOP
     NOP
 
+# Reset drive partition to A ($F0)
+    LCA $F0
+    STO A partition
+start:
+# Reset banked memory to VGA
+    STO 0 $F000
+
 	LCB welcome			# Print out the welcome message
 1:	LDA welcome,B
 	JAZ prompt
@@ -23,9 +33,10 @@ main:
 	LDB B+1
 	JMP 1b
 
-prompt:	putc('>')		# Print out the prompt
-	putc(' ')
-#	getc(cmdchar)		# Get the command letter and
+prompt:
+    STO 0 cmd_ptr
+    JOUT('>')		# Print out the prompt
+	JOUT(' ')
 1:
     LDA __rand_seed+1
     LDA A+1
@@ -36,46 +47,35 @@ prompt:	putc('>')		# Print out the prompt
     LDA __rand_seed
     STO A+1 __rand_seed
 3:
-    JIU 1b
-    INA
+    cmd_key()       # get next keypress in command buffer
+	LCB '\n'		# Execute command when we get a newline
+	JEQ execute_cmd
+	LCB '\r'		# Execute command when we get a carriage return
+	JEQ execute_cmd
+	LCB $08
+	JEQ 4f
+	JMP 3b
+4:
+# Backspace
+	JOUT(' ')
+	LDB cmd_ptr
+	LDB B-1
+	STO B cmd_ptr
+	JBZ 3b
+	STO 0 command,B
+	STO B-1 cmd_ptr
+	JOUT($08)
+	JMP 3b
+
+execute_cmd:
+    LDB cmd_ptr
+    LDB B-1
+    STO 0 command,B # zero terminate command buffer
+    STO 0 cmd_ptr   # set command pointer to start of command
+
+docmd:
+    nxt_cmd()
     STO A cmdchar
-    JOUT(A)			# echo it out to the user
-	LCB '\n'		# Loop when we get a newline
-	JEQ prompt
-	LCB '\r'		# Loop when we get a carriage return
-	JEQ prompt
-
-	STO 0 hexcnt		# Set count of hex chars to zero
-sploop:
-    JINA			# Get further characters and echo them
-	JOUT(A)
-	LCB ' '			# Skip spaces
-	JEQ sploop
-	LCB '\n'		# Exit when we get a newline
-	JEQ docmd
-	LCB '\r'		# Exit when we get a carriage return
-	JEQ docmd
-	
-	LDB hexcnt		# Assume it's a hex digit, store it
-	STO A __hex,B
-	STO B+1 hexcnt		# Increment the counter
-	LCA $03
-	JEQ waitnl		# Exit loop when B==3 (highest offset)
-	JMP sploop		# Otherwise loop back
-
-waitnl: JINA			# Echo chars until a '\n' or '\r'
-	JOUT(A)
-	LCB '\n'
-	JEQ cvtaddr
-	LCB '\r'
-	JEQ cvtaddr
-	JMP waitnl
-
-cvtaddr: JSR hexcvt		# Convert the four characters into an address
-
-docmd:	JOUT('\n')
-
-	LDA cmdchar		# Get the command character
 	LCB '?'			# ?, print the usage
 	JEQ printusage
 	LCB 'D'			# D and d, dump memory
@@ -98,26 +98,95 @@ docmd:	JOUT('\n')
 	JEQ terminate
 	LCB 'x'
 	JEQ terminate
+	LCB 'T'			# T and t, table of contents
+	JEQ table
+	LCB 't'
+	JEQ table
+	LCB 'L'			# L and l, load file
+	JEQ load_command
+	LCB 'l'
+	JEQ load_command
+	LCB 'G'			# G and g, load file and go (run it!)
+	JEQ load_command
+	LCB 'g'
+	JEQ load_command
+	JMP prompt
 sys_cli:
-	JOUT('\r')
-	JOUT('\n')
+    JOUT('\n')
 	JMP prompt
 
 terminate:
     STO 0 __paper
     JSR sys_cls # Clear video memory
-	JMP $0000
+	JMP start
 
 printusage:
 	printstr(usage)
+	printstr(usage2)
 	JMP prompt
 
-run:	LCB $70			# Set a JMP instruction
-	STO B jmpaddr		# at the jmpaddr and go there
+run:
+    JSR cmd2addr
+    LCB $70			# Set a JMP instruction
+	STO B jmpaddr	# at the jmpaddr and go there
 	JMP jmpaddr
 	JMP prompt
 
+cmd2addr:
+    STO 0 addr
+    STO 0 addr+1
+1:
+    nxt_cmd()
+    LCB ' '
+    JEQ 1b
+    LCB '0'
+    JLT 2f
+    LCB ':'
+    JLT 3f
+    LCB 'A'
+    JLT 2f
+    LCB 'G'
+    JLT 5f
+    LCB 'a'
+    JLT 2f
+    LCB 'g'
+    JLT 6f
+    JMP 2f
+3:
+    LCB '0'
+    LDA A-B
+    JMP 4f
+5:
+    LCB 'A'
+    LDA A-B
+    LCB @10
+    LDA A+B
+    JMP 4f
+6:
+    LCB 'a'
+    LDA A-B
+    LCB @10
+    LDA A+B
+4:
+    STO A digit
+# Multiply addr by 16 and add digit
+    LCB @16
+    LDA addr
+    STO A*B addr
+    LDA addr+1
+    STO A*B addr+1
+    LDA A*BHI
+    LDB addr
+    STO A+B addr
+    LDA addr+1
+    LDB digit
+    STO A+B addr+1
+    JMP 1b
+2:
+    RTS cmd2addr
+
 dump:
+    JSR cmd2addr
     LCB $0F         # Set a count of 15, which will be 16
     STO B count+1
 4:  LCB $0F			# Set a count of 15, which will be 16
@@ -158,6 +227,7 @@ dump:
 	JMP 5b
 
 vdump:
+    JSR cmd2addr
     LCB $0F         # Set a count of 15, which will be 16
     STO B count+1
 4:  LCB $0F			# Set a count of 15, which will be 16
@@ -198,6 +268,7 @@ vdump:
 	JMP 5b
 
 change:
+    JSR cmd2addr
 	printstr(setstr)
 changeloop:
 	JINA			# Get a character and echo it
@@ -238,18 +309,6 @@ changeloop:
 1:	LDB addr
 	STO B+1 addr
 	JMP changeloop
-
-
-## puts subroutine
-##
-puts:	LIA strptr		# Get character through the ptr
-	JAZ 1f			# Exit when we get the NUL character
-	JOU .			# Print out the character
-	OUT A
-	LDB strptr+1		# Increment the low byte of the pointer
-	STO B+1 strptr+1
-	JMP puts		# and loop back
-1:	RTS puts
 
 ## hexcvt subroutine. Given four hex digits stored in the __hex
 #	buffer, convert them into a 16-bit big endian address
@@ -918,6 +977,503 @@ sys_num_str_8:
     STO     A+1 __num_ptr
     RTS     sys_num_str_8
 
+##########################################################################################
+# File system
+#
+# filename address  length  data
+# <- 20 -> <-  2 -> <- 2 -> <- data x length ->|<-- next file -->|<-- FF FF FF ... -->|
+#
+# David Clifford 23 Dec 2022
+##########################################################################################
+
+#####################
+# Partition command
+#####################
+print_partition:
+    printstr(part)
+    LDA $F000
+    LCB $0F
+    LDA A&B
+    LCB 'A'
+    LDA A+B
+    OUT A
+    OUT '\n'
+    RTS print_partition
+
+###########################################
+# Table - Output directory of contents of SSD
+###########################################
+# TODO: Output free space not used space (must know how big SSD is first)
+table:
+    LDA partition
+    STO A $F000
+    nxt_cmd()
+    JAZ 5f
+    LCB 'p'
+    JHI 3f
+    LCB '`'
+    JHI 1f
+    LCB 'P'
+    JHI 3f
+    LCB '@'
+    JHI 2f
+3:
+    printstr(inv_part)
+    JMP 5f
+1:
+    LCB 'a'
+    LDA A-B
+    JMP 4f
+2:
+    LCB 'A'
+    LDA A-B
+4:
+    LCB $F0
+    STO A|B $F000
+    STO A|B partition
+5:
+    JSR print_partition
+    OUT '\n'
+    STO 0 ptrB
+    STO 0 ptrB+1
+
+dir_next_filename:
+    LDA ptrB
+    STO A ptrA
+    LDA ptrB+1
+    STO A ptrA+1
+
+# While (ptrA) != FF
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ dir_finish
+
+# While (ptrA) != 0
+1:
+    LDB ptrA+1
+    VAI ptrA,B
+    JAZ dir_filename_done
+    OUT A
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 2f
+    JMP 1b
+2:
+    LDA ptrA
+    STO A+1 ptrA
+    JMP 1b
+dir_filename_done:
+    OUT ' '
+    OUT '$'
+# Skip over filename to get address
+    LCB @20
+    LDA ptrB+1
+    STO A+B ptrB+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+# Find address
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A addr
+# increment ptrB
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A addr+1
+# Got address, output as HEX
+    LDA addr
+    STO A __hex
+    JSR sys_phex
+    LDA addr+1
+    STO A __hex
+    JSR sys_phex
+    OUT ' '
+# Find length ...
+# increment ptrB
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A length
+# increment ptrB
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A length+1
+# Got length, convert to decimal
+    LDA length
+    STO A __number
+    LDA length+1
+    STO A __number+1
+    JSR sys_num_str_16
+# Printout ___num_str
+    LDB __num_ptr
+1:
+    LDA __num_str,B
+    JAZ 2f
+    OUT A
+    LDB B+1
+    JMP 1b
+2:
+    OUT '\n'
+# add length+1 to ptrB
+# increment ptrB
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    LDA length+1
+    LDB ptrB+1
+    STO A+B ptrB+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    LDA length
+    LDB ptrB
+    STO A+B ptrB
+    JMP dir_next_filename
+
+dir_finish:
+    printstr(used)
+
+    LDA ptrB
+    STO A __number
+    LDA ptrB+1
+    STO A __number+1
+    JSR sys_num_str_16
+# Printout ___num_str
+    LDB __num_ptr
+1:
+    LDA __num_str,B
+    JAZ 2f
+    OUT A
+    LDB B+1
+    JMP 1b
+2:
+    printstr(bytes)
+    STO 0 $F000
+    JMP prompt
+
+#####################
+# Load file command
+#####################
+load_command:
+    LDA partition
+    STO A $F000
+    LCA filename
+    STO A fn_ptr
+1:
+    nxt_cmd()
+    LCB ' '
+    JEQ 1b
+    LDB fn_ptr
+    STO A filename,B
+    STO B+1 fn_ptr
+# Filename known
+    JAZ 4f
+    JMP 1b
+4:
+    JSR load_file
+5:
+    JMP prompt
+
+######################################
+# Load file
+# input: filename
+# output: 'not found' or 'file loaded'
+######################################
+load_file:
+    JSR find_file
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 5f
+### FILE FOUND ###
+# ptrA += 20
+    LDA ptrA+1
+    LCB @20
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get address MSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A addr
+    STO A run_addr
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get address LSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A addr+1
+    STO A run_addr+1
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get length MSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# print out 'file found'
+    printstr(fld)
+    LDA run_addr
+    STO A __hex
+    JSR sys_phex
+    LDA run_addr+1
+    STO A __hex
+    JSR sys_phex
+    JOUT('\n')
+# Get length LSB
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length+1
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Copy from ptrA to addr
+9:
+    LDB ptrA+1
+    VAI ptrA,B
+    LDB addr+1
+    STI A addr,B
+# incr addr
+    LDA addr+1
+    LDA A+1
+    STO A addr+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA addr
+    STO A+1 addr
+2:
+# incr ptrA
+    LDA ptrA+1
+    LDA A+1
+    STO A ptrA+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# decr length
+    LDA length+1
+    LDA A-1
+    STO A length+1
+    JAZ 1f
+    JMP 9b
+1:
+    LDA length
+    JAZ 6f
+    STO A-1 length
+    JMP 9b
+5:
+    printstr(fnf)
+6:
+    STO 0 $F000
+    LDA cmdchar
+    LCB 'L'
+    JEQ sys_cli
+    LCB 'l'
+    JEQ sys_cli
+    LCB $70			# Set a JMP instruction
+	STO B runaddr	# at the jmpaddr and go there
+	JMP runaddr
+
+#################
+# Find File
+# input: filename
+# output: ptrA - points to found file or 0xFF
+#################
+find_file:
+    STO 0 ptrA
+    STO 0 ptrA+1
+1:
+# detect end of file system
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 4f
+# copy ptrA to ptrB
+    LDA ptrA
+    STO A ptrB
+    LDA ptrA+1
+    STO A ptrB+1
+# compare filename to file-system
+    LCA filename
+    STO A fn_ptr
+3:
+    LDB ptrB+1
+    VAI ptrB,B
+    STO A char
+
+    LDB fn_ptr
+    LDA filename,B
+    LDB char
+    JEQ 2f
+# Filenames don't match
+    JSR file_find_next
+    JMP 1b
+2:
+    JAZ 4f
+    LDA fn_ptr
+    STO A+1 fn_ptr
+    LDA ptrB+1
+    LDA A+1
+    STO A ptrB+1
+    JAZ 1f
+    JMP 2f
+1:
+    LDA ptrB
+    STO A+1 ptrB
+2:
+    JMP 3b
+4:
+    RTS find_file
+
+#####################
+# Find next file
+# input: ptrA
+#####################
+file_find_next:
+    LDA ptrA+1
+    LCB @22
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Get size of next block
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length
+# ptrA++
+    LDB B+1
+    STO B ptrA+1
+    JBZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+    LDB ptrA+1
+    VAI ptrA,B
+    STO A length+1
+# ptrA++
+    LDB ptrA+1
+    LDB B+1
+    STO B ptrA+1
+    JBZ 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+# Add length to pointer
+    LDA ptrA+1
+    LDB length+1
+    STO A+B ptrA+1
+    TST A+B JC 1f
+    JMP 2f
+1:
+    LDA ptrA
+    STO A+1 ptrA
+2:
+    LDA ptrA
+    LDB length
+    STO A+B ptrA
+
+    RTS file_find_next
+
+
+## puts subroutine
+##
+puts:
+    LIA strptr		# Get character through the ptr
+	JAZ 1f			# Exit when we get the NUL character
+	JOU .			# Print out the character
+	OUT A
+	LDB strptr+1		# Increment the low byte of the pointer
+	STO B+1 strptr+1
+	JMP puts		# and loop back
+1:	RTS puts
+
+
 # Ascii chars 32-96
 # Large font
     PAG
@@ -1124,9 +1680,25 @@ PAG
 
 # String constants
 	 PAG
-welcome: STR "[2J[HCSCvon8 Monitor, Revision: 2.06, 01/01/2021\nType ? for help\n\n"
+welcome: STR "[2J[HCSCvon8 Monitor, Revision: 3.00, 23/12/2022\nType ? for help\n\n"
 usage:	 STR "Usage: D dump, V video dump, C change, R run, ? help, X clear/reset\n"
+usage2:  STR "File system: L load, S save, T table, E erase, F format\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
+part:   STR "Directory "
+PAG
+inv_part: STR "Invalid Directory - choose A-P\n"
+cnr:    STR "Command not recognised\n"
+bye:    STR "File system exited\n"
+fnf:    STR "File not found\n"
+fld:    STR "File loaded at $"
+fdel:   STR "File deleted\n\n"
+used:   STR "\nUsed "
+bytes:  STR " Bytes\n"
+sure:   STR "Are you sure? Y/N\n"
+saved:  STR "Saved file "
+formatted: STR "SSD formatted\n"
+abort: STR "Command aborted\n"
+
 
 	  ORG $FC00
 __hex:  HEX "00"		# Place to store four hex chars, page aligned
@@ -1142,6 +1714,9 @@ addr:	  HEX "80"		# Address used by all commands
 	  HEX "00"
 count:	  HEX "00"		# 16-bit counter, used when loading a program
 	  HEX "00"
+digit:  BYTE
+runaddr: HEX "70"
+run_addr: WORD
 
 vidaddr: HEX "00 00"    # Video address
 __ypos: HEX "00"        # Character Y position
@@ -1179,9 +1754,21 @@ temp: BYTE
 scroll_to: BYTE
 scroll_from: BYTE
 
+length: WORD
+ptrA:   WORD
+ptrB:   WORD
+string: WORD
+partition: BYTE
+filename: BYTE @20
+fn_ptr: BYTE
+char:   BYTE
+
 __number: BYTE @4 # 32-bit number
 __num_str: BYTE @12 # String containing number in decimal
 __num_ptr: BYTE # offset into __num_str that is start of string
+PAG
+command: BYTE @32
+cmd_ptr: BYTE
 
 EXPORT sys_cli
 EXPORT sys_cls

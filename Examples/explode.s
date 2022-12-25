@@ -1,15 +1,29 @@
 # Explode over screen
 # David Clifford Jan 2022
     NAME "explode"
-restart:
+    STO 0 go
     STO 0 __paper
+restart:
+1:
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @160
+    JGT 1b
+    STO A xx
+2:
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @120
+    JGT 2b
+    STO A yy
+
     JSR sys_cls sys_cls_ret
     STO 0 index
 init:
     LDB index
-    LCA @80
+    LDA xx
     STO A ix,B
-    LCA @60
+    LDA yy
     STO A iy,B
 
     JSR sys_rand sys_rand_ret
@@ -155,9 +169,15 @@ next_ball:
 1:
 mid:
     # Out of bounds!!!
-    LCA @80
+    JSR sys_rand sys_rand_ret
+    LDA __rand_seed
+    LCB @4
+    LDA A/B
+    JAZ restart
+
+    LDA xx
     STO A x
-    LCA @60
+    LDA yy
     STO A y
 
     JSR sys_rand sys_rand_ret
@@ -310,6 +330,9 @@ ox: WORD
 oy: WORD
 ink: BYTE
 index: BYTE
+xx: BYTE
+yy: BYTE
+go: BYTE
 
 PAG
 ix: WORD @128
