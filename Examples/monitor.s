@@ -10,6 +10,7 @@
 #define JINA	     JIU .; INA
 #define cmd_key()    JIU .; INA; JOUT(A); LDB cmd_ptr; STO A command,B; STO B+1 cmd_ptr
 #define nxt_cmd()    LDB cmd_ptr; LDA command,B; STO B+1 cmd_ptr
+#define peek_cmd()   LDB cmd_ptr; LDA command,B
 
 main:
     NOP
@@ -22,7 +23,7 @@ main:
 # Reset drive partition to A ($F0)
     LCA $F0
     STO A partition
-start:
+reset:
 # Reset banked memory to VGA
     STO 0 $F000
 
@@ -35,6 +36,7 @@ start:
 
 prompt:
     STO 0 cmd_ptr
+    STO 0 $F000
     JOUT('>')		# Print out the prompt
 	JOUT(' ')
 1:
@@ -102,6 +104,10 @@ docmd:
 	JEQ table
 	LCB 't'
 	JEQ table
+	LCB 'S'			# S and s, save file
+	JEQ save_command
+	LCB 's'
+	JEQ save_command
 	LCB 'L'			# L and l, load file
 	JEQ load_command
 	LCB 'l'
@@ -110,6 +116,14 @@ docmd:
 	JEQ load_command
 	LCB 'g'
 	JEQ load_command
+	LCB 'E'			# E and e, erase file
+	JEQ erase_command
+	LCB 'e'
+	JEQ erase_command
+	LCB 'F'			# F and f, format SSD
+	JEQ format_ssd
+	LCB 'f'
+	JEQ format_ssd
 	JMP prompt
 sys_cli:
     JOUT('\n')
@@ -118,7 +132,7 @@ sys_cli:
 terminate:
     STO 0 __paper
     JSR sys_cls # Clear video memory
-	JMP start
+	JMP reset
 
 printusage:
 	printstr(usage)
@@ -137,8 +151,9 @@ cmd2addr:
     STO 0 addr+1
 1:
     nxt_cmd()
+    JAZ 2f
     LCB ' '
-    JEQ 1b
+    JEQ 2f
     LCB '0'
     JLT 2f
     LCB ':'
@@ -1188,7 +1203,6 @@ dir_finish:
     JMP 1b
 2:
     printstr(bytes)
-    STO 0 $F000
     JMP prompt
 
 #####################
@@ -1342,13 +1356,13 @@ load_file:
     JMP 9b
 5:
     printstr(fnf)
+    JMP prompt
 6:
-    STO 0 $F000
     LDA cmdchar
     LCB 'L'
-    JEQ sys_cli
+    JEQ prompt
     LCB 'l'
-    JEQ sys_cli
+    JEQ prompt
     LCB $70			# Set a JMP instruction
 	STO B runaddr	# at the jmpaddr and go there
 	JMP runaddr
@@ -1460,9 +1474,577 @@ file_find_next:
 
     RTS file_find_next
 
+#####################
+# Erase file command
+#####################
+erase_command:
+1:
+    printstr(sure)
+    JIU .
+    INA
+    LCB 'Y'
+    JEQ 2f
+    LCB 'y'
+    JEQ 2f
+    JMP 4f
+2:
+    LDA partition
+    STO A $F000
+3:
+    nxt_cmd()
+    STO A char
+    JAZ 4f
+    LCB ' '
+    JEQ 3b
+# copy to filename variable
+1:
+    LCA filename
+    STO A fn_ptr
+    LDA char
+2:
+    JAZ 3f
+    LDB fn_ptr
+    STO B+1 fn_ptr
+    STO A filename,B
+    nxt_cmd()
+    JMP 2b
+3:
+    LDB fn_ptr
+    STO 0 filename,B
+# Filename known
+    JSR erase_file
+    JMP 5f
+4:
+    printstr(abort)
+5:
+    JMP prompt
 
-## puts subroutine
-##
+##################
+# Erase File
+# input: filename
+# output: 'file not found' or 'file deleted'
+##################
+erase_file:
+    JSR find_file
+# was it found?
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+# NOT found so abort
+    JEQ 9f
+# FILE FOUND
+# Save start of found file
+    LDA ptrA
+    STO A start
+    LDA ptrA+1
+    STO A start+1
+# Save start of next file in source (i.e. start of next file)
+    JSR file_find_next
+    LDA ptrA
+    STO A source
+    LDA ptrA+1
+    STO A source+1
+1:
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ 2f
+# next file
+    JSR file_find_next
+    JMP 1b
+2:
+# Save very end
+    LDA ptrA
+    STO A very_end
+    LDA ptrA+1
+    STO A very_end+1
+# start, end and very_end have been found
+# Set mem_buff to buffer address (0xE000)
+    LCA $E0
+    STO A mem_buff
+    STO 0 mem_buff+1
+# find start of 4k block (12 LSBs set to 0) and set to dest and ssd_save
+    STO 0 dest+1
+    STO 0 ssd_save+1
+    LDA start
+    LCB $F0
+    STO A&B dest
+    STO A&B ssd_save
+# Start loop
+7:
+# exit if ssd_save == start
+    LDA start
+    LDB ssd_save
+    JNE 2f
+    LDA ssd_save+1
+    LDB start+1
+    JEQ 6f
+# copy block from fs to mem buff ($e000) from start of 4k block to start of erased file
+2:
+    LDB mem_buff+1
+    VAI ssd_save,B
+    STI A mem_buff,B
+# incr B
+    LDB B+1
+    STO B mem_buff+1
+    STO B ssd_save+1
+    JBZ 1f
+    JMP 7b
+# carry
+1:
+    LDA mem_buff
+    STO A+1 mem_buff
+    LDA ssd_save
+    STO A+1 ssd_save
+    JMP 7b
+# End of loop
+6:
+# Copy rest to RAM
+# Make sure to fill FF
+    LDB mem_buff+1
+    LCA $FF
+    STI A mem_buff,B
+# check to see not off end of FS
+# TODO: change when FS > $8000 bytes (>32kb)
+#
+    LDA source
+    LCB $80
+    JEQ 1f
+# copy FS to RAM
+    LDB source+1
+    VAI source,B
+    LDB mem_buff+1
+    STI A mem_buff,B
+# incr source
+1:
+    LDA source+1
+    LDA A+1
+    STO A source+1
+    JAZ 3f
+# incr mem_buff
+4:
+    LDA mem_buff+1
+    LDA A+1
+    STO A mem_buff+1
+    JAZ 5f
+    JMP 6b
+3:
+# Carry source
+    LDA source
+    STO A+1 source
+    JMP 4b
+# Carry mem_buff
+5:
+    LDA mem_buff
+    LDA A+1
+    STO A mem_buff
+# Check end of RAM buffer (mem_buff)
+    LCB $F0
+    JNE 6b
+# Finish loop
+
+# MAIN LOOP
+erase_file_loop:
+
+# 4k buffer filled - erase fs block
+    JSR erase_sector
+# Set mem_buff to $E000
+    LCA $E0
+    STO A mem_buff
+    STO 0 mem_buff+1
+
+# Copy buffer back to fs
+erase_copy_loop:
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $A0
+    STO A $5555
+# (mem_buff) -> (dest)
+    LIA mem_buff
+    STO A char
+    SIA dest
+
+# Wait for write to complete
+10:
+    LDB dest+1
+    VAI dest,B
+    LDB char
+    JNE 10b
+# inc mem_buff
+11:
+    LDA mem_buff+1
+    LDA A+1
+    STO A mem_buff+1
+    JAZ 3f
+    JMP 4f
+3:
+    LDA mem_buff
+    STO A+1 mem_buff
+4:
+# inc dest
+    LDA dest+1
+    LDA A+1
+    STO A dest+1
+    JAZ 5f
+    JMP 6f
+5:
+    LDA dest
+    STO A+1 dest
+6:
+    LDA mem_buff
+    LCB $F0
+    JNE erase_copy_loop
+8:
+# Have we copied everything (source > very_end)?
+    LDA source
+    LDB very_end
+    JEQ 1f
+    JHI 10f
+    JMP 7f
+1:
+    LDA source+1
+    LDB very_end+1
+    JHI 10f
+7:
+# Copy next 4k to RAM
+    LCA $E0
+    STO A mem_buff
+    STO 0 mem_buff+1
+2:
+    LDB source+1
+    VAI source,B
+    LDB mem_buff+1
+    STI A mem_buff,B
+# incr source
+    LDA source+1
+    LDA A+1
+    STO A source+1
+    JAZ 3f
+    JMP 4f
+# source carry
+3:
+    LDA source
+    LDA A+1
+    STO A source
+    LCB $80
+    JEQ erase_file_loop
+# incr mem_buff
+4:
+    LDA mem_buff+1
+    LDA A+1
+    STO A mem_buff+1
+    JAZ 5f
+    JMP 2b
+# mem_buff carry
+5:
+    LDA mem_buff
+    LDA A+1
+    STO A mem_buff
+    LCB $F0
+    JEQ erase_file_loop
+    JMP 2b
+10:
+# Erase any blocks not yet erased
+    LDA dest
+    LDB very_end
+    JEQ 5f
+    JHI 11f
+    JMP 6f
+5:
+    LDA dest+1
+    LDB very_end+1
+    JHI 11f
+6:
+    JSR erase_sector
+# Add $1000 (4k) to dest
+    LDA dest
+    LCB $10
+    STO A+B dest
+    JMP 10b
+11:
+# print out 'file deleted'
+    printstr(fdel)
+    JMP prompt
+9:
+# print out 'file not found'
+    printstr(fnf)
+    JMP prompt
+
+# Erase sector
+# Input: dest - address in SSD of block to erase
+erase_sector:
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $80
+    STO A $5555
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $30
+    LDB dest+1
+    STI A dest,B
+1:
+    LDB dest+1
+    VAI dest,B
+    JAN 2f
+    JMP 1b
+2:
+    RTS erase_sector
+
+#####################
+# Format file system
+#####################
+format_ssd:
+    printstr(sure)
+    JIU .
+    INA
+    LCB 'Y'
+    JEQ 2f
+    LCB 'y'
+    JEQ 2f
+    JMP 3f
+2:
+    STO 0 $F000
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $80
+    STO A $5555
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $10
+    STO A $5555
+    printstr(formatted)
+4:
+    JMP prompt
+3:
+    printstr(abort)
+    JMP 4b
+
+#####################
+# Save file command
+#####################
+# TODO: Check duplicate filename & if enough space in SSD before writing file
+save_command:
+    LDA partition
+    STO A $F000
+1:
+    peek_cmd()
+    JAZ 5f
+    LCB ' '
+    JNE 1f
+    nxt_cmd()
+    JMP 1b
+# copy to filename variable
+1:
+    LCA filename
+    STO A fn_ptr+1
+2:
+    nxt_cmd()
+    LCB ' '
+    JEQ 3f
+    JAZ 4f
+    LDB fn_ptr+1
+    STO B+1 fn_ptr+1
+    STO A filename,B
+    JMP 2b
+3:
+    LDB fn_ptr+1
+    STO 0 filename,B
+# start of address
+    JSR cmd2addr
+    LDA addr
+    STO A start_addr
+    LDA addr+1
+    STO A start_addr+1
+# start of size
+2:
+    JSR cmd2addr
+    LDA addr
+    STO A size
+    LDA addr+1
+    STO A size+1
+# Write the flipping file NOW!
+    JSR write_file
+    JMP prompt
+4:
+    printstr(abort)
+    JMP prompt
+5:
+    # Auto save
+    printstr(saved)
+    # filename, size, addr
+    LDA $F002
+    STO A start_addr
+    LDA $F003
+    STO A start_addr+1
+    LDA $F004
+    STO A size
+    LDA $F005
+    STO A size+1
+
+    LCB $06
+    STO B source
+    LCB filename
+    STO B dest
+6:
+    LDB source
+    LDA $F000,B
+    JOUT(A)
+    LDB B+1
+    STO B source
+    LDB dest
+    STO A filename,B
+    JAZ 7f
+    JAN 7f
+    LDB B+1
+    STO B dest
+    JMP 6b
+7:
+    JOUT('\n')
+    JSR write_file
+    JMP prompt
+
+###############################
+# Write file
+# input: filename, size, start_addr
+###############################
+write_file:
+# find end of file system
+    STO 0 ptrA
+    STO 0 ptrA+1
+write_find_next:
+    LDB ptrA+1
+    VAI ptrA,B
+    LCB $FF
+    JEQ write_start
+    JSR file_find_next
+    JMP write_find_next
+write_start:
+### FOUND END OF FS ###
+# write filename
+# ptrA points to EEPROM address to write to
+    LDA ptrA
+    STO A dest
+    LDA ptrA+1
+    STO A dest+1
+    LHA filename
+    STO A source
+    LCA filename
+    STO A source+1
+    LCA @20
+    STO 0 length
+    STO A length+1
+    JSR write_data
+#  dest SHOULD still be the correct address (start+20)
+# write address
+    LHA start_addr
+    STO A source
+    LCA start_addr
+    STO A source+1
+    LCA @2
+    STO 0 length
+    STO A length+1
+    JSR write_data
+# write size
+    LHA size
+    STO A source
+    LCA size
+    STO A source+1
+    LCA @2
+    STO 0 length
+    STO A length+1
+    JSR write_data
+# write data
+    LDA start_addr
+    STO A source
+    LDA start_addr+1
+    STO A source+1
+    LDA size
+    STO A length
+    LDA size+1
+    STO A length+1
+    JSR write_data
+
+    RTS write_file
+
+#######################################
+# Write data from source to destination
+# input: source, dest, length
+#######################################
+write_data:
+1:
+# Exit when length is $0000
+    LDA length+1
+    JAZ 8f
+    JMP 9f
+8:
+    LDA length
+    JAZ 2f
+9:
+    LCA $AA
+    STO A $5555
+    LCA $55
+    STO A $2AAA
+    LCA $A0
+    STO A $5555
+# (source) -> (dest)
+    LIA source
+    STO A char
+    SIA dest
+
+# Wait for write to complete
+10:
+    LDB dest+1
+    VAI dest,B
+    LDB char
+    JNE 10b
+
+# inc source
+11:
+    LDA source+1
+    LDA A+1
+    STO A source+1
+    JAZ 3f
+    JMP 4f
+3:
+    LDA source
+    STO A+1 source
+4:
+# inc dest
+    LDA dest+1
+    LDA A+1
+    STO A dest+1
+    JAZ 5f
+    JMP 6f
+5:
+    LDA dest
+    STO A+1 dest
+6:
+# decrement length
+    LDA length+1
+    STO A-1 length+1
+    JAZ 7f
+    JMP 1b
+7:
+    LDA length
+    STO A-1 length
+# loop
+    JMP 1b
+2:
+    RTS write_data
+
+##################
+# puts subroutine
+##################
 puts:
     LIA strptr		# Get character through the ptr
 	JAZ 1f			# Exit when we get the NUL character
@@ -1681,12 +2263,12 @@ PAG
 # String constants
 	 PAG
 welcome: STR "[2J[HCSCvon8 Monitor, Revision: 3.00, 23/12/2022\nType ? for help\n\n"
-usage:	 STR "Usage: D dump, V video dump, C change, R run, ? help, X clear/reset\n"
-usage2:  STR "File system: L load, S save, T table, E erase, F format\n"
+usage:	 STR "Usage: D dump, V video dump, C change, R run, X clear/reset, ? help\n"
+usage2:  STR "File system: L load, G go, S save, T table, E erase, F format\n"
 setstr:	 STR "Enter space separated hex digits, end with Z\n\n"
-part:   STR "Directory "
 PAG
-inv_part: STR "Invalid Directory - choose A-P\n"
+part:   STR "Table "
+inv_part: STR "Invalid Table - choose A-P\n"
 cnr:    STR "Command not recognised\n"
 bye:    STR "File system exited\n"
 fnf:    STR "File not found\n"
@@ -1762,6 +2344,16 @@ partition: BYTE
 filename: BYTE @20
 fn_ptr: BYTE
 char:   BYTE
+start:  WORD
+end:    WORD
+very_end: WORD
+block:  WORD
+mem_buff: WORD
+ssd_save: WORD
+dest:   WORD
+source: WORD
+start_addr: WORD
+size: WORD
 
 __number: BYTE @4 # 32-bit number
 __num_str: BYTE @12 # String containing number in decimal
@@ -1769,6 +2361,9 @@ __num_ptr: BYTE # offset into __num_str that is start of string
 PAG
 command: BYTE @32
 cmd_ptr: BYTE
+
+# Temp store 4k of data when erasing blocks
+data_buffer: EQU $E000
 
 EXPORT sys_cli
 EXPORT sys_cls
