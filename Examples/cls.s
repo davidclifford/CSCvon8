@@ -1,4 +1,6 @@
 # Clear screen as quickly as possible
+    NAME "cls"
+
     STO 0 plot
 1:
     LDB 0

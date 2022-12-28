@@ -17,7 +17,6 @@ sys_file_system:
     STO A $F000
     print(prompt)
 99:
-    print(prompt2)
     LHA command
     STO A com_ptr
     LDA command

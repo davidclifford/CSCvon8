@@ -34,10 +34,16 @@ reset:
 	LDB B+1
 	JMP 1b
 
+reset_vga:
+    STO 0 $F000
 prompt:
     STO 0 cmd_ptr
-    STO 0 $F000
     JOUT('>')		# Print out the prompt
+    LDA $F000
+    JAZ 5f
+    JOUT('>')
+    JMP 1f
+5:
 	JOUT(' ')
 1:
     LDA __rand_seed+1
@@ -201,7 +207,10 @@ cmd2addr:
     RTS cmd2addr
 
 dump:
+    peek_cmd()
+    JAZ 1f
     JSR cmd2addr
+1:
     LCB $0F         # Set a count of 15, which will be 16
     STO B count+1
 4:  LCB $0F			# Set a count of 15, which will be 16
@@ -242,7 +251,10 @@ dump:
 	JMP 5b
 
 vdump:
+    peek_cmd()
+    JAZ 1f
     JSR cmd2addr
+1:
     LCB $0F         # Set a count of 15, which will be 16
     STO B count+1
 4:  LCB $0F			# Set a count of 15, which will be 16
@@ -1203,7 +1215,7 @@ dir_finish:
     JMP 1b
 2:
     printstr(bytes)
-    JMP prompt
+    JMP reset_vga
 
 #####################
 # Load file command
@@ -1225,8 +1237,15 @@ load_command:
     JMP 1b
 4:
     JSR load_file
-5:
-    JMP prompt
+    LDA cmdchar
+    LCB 'L'
+    JEQ reset_vga
+    LCB 'l'
+    JEQ reset_vga
+    STO 0 $F000
+    LCB $70			# Set a JMP instruction
+	STO B runaddr	# at the jmpaddr and go there
+	JMP runaddr
 
 ######################################
 # Load file
@@ -1356,16 +1375,9 @@ load_file:
     JMP 9b
 5:
     printstr(fnf)
-    JMP prompt
+    JMP reset_vga
 6:
-    LDA cmdchar
-    LCB 'L'
-    JEQ prompt
-    LCB 'l'
-    JEQ prompt
-    LCB $70			# Set a JMP instruction
-	STO B runaddr	# at the jmpaddr and go there
-	JMP runaddr
+    RTS load_file
 
 #################
 # Find File
@@ -1517,7 +1529,7 @@ erase_command:
 4:
     printstr(abort)
 5:
-    JMP prompt
+    JMP reset_vga
 
 ##################
 # Erase File
@@ -1766,11 +1778,11 @@ erase_copy_loop:
 11:
 # print out 'file deleted'
     printstr(fdel)
-    JMP prompt
+    JMP reset_vga
 9:
 # print out 'file not found'
     printstr(fnf)
-    JMP prompt
+    JMP reset_vga
 
 # Erase sector
 # Input: dest - address in SSD of block to erase
@@ -1809,7 +1821,8 @@ format_ssd:
     JEQ 2f
     JMP 3f
 2:
-    STO 0 $F000
+    LCA $F0
+    STO A $F000
     LCA $AA
     STO A $5555
     LCA $55
@@ -1824,7 +1837,7 @@ format_ssd:
     STO A $5555
     printstr(formatted)
 4:
-    JMP prompt
+    JMP reset_vga
 3:
     printstr(abort)
     JMP 4b
@@ -1874,10 +1887,10 @@ save_command:
     STO A size+1
 # Write the flipping file NOW!
     JSR write_file
-    JMP prompt
+    JMP reset_vga
 4:
     printstr(abort)
-    JMP prompt
+    JMP reset_vga
 5:
     # Auto save
     printstr(saved)
@@ -1911,7 +1924,7 @@ save_command:
 7:
     JOUT('\n')
     JSR write_file
-    JMP prompt
+    JMP reset_vga
 
 ###############################
 # Write file
