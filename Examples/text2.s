@@ -45,12 +45,12 @@ nmstart:
     LDA y
     STO A+1 y
     LCB @119
-    JNE 7b6]i[p
+    JNE 7b
 8:
     LDA colour
     LCB @9
     STO A+B colour
-#    JMP 9b
+    JMP 9b
     LCA $00
     LDB $D0
 10:

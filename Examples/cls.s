@@ -1,17 +1,17 @@
 # Clear screen as quickly as possible
     NAME "cls"
 
-    STO 0 plot
+    LCA @0
+    LCB @119
+    STO B plot
 1:
-    LDB 0
-    LCA @160
+    LCB @160
 2:
+    LDB B-1
     STI 0 plot,B
-    LDB B+1
     JNE 2b
     LDB plot
-    STO B+1 plot
-    LCA @119
+    STO B-1 plot
     JNE 1b
 
     JMP sys_cli

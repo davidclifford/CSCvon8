@@ -583,29 +583,8 @@ START := MEMresult IRload PCincr
     MEMresult ALload PCincr
     MEMresult ARena AHload
 	ALUresult B ALload ARena
-	ARena VIDresult Aload
+	ARena VIDresult Bload
 	uSreset
-
-# Clear 4 bytes starting at address AB, B+=4
-a0 CL4_A_,B: ALUresult A AHload
-	ALUresult B ALload
-	ALUresult 0 ARena MEMload
-	ALUresult B+1 Bload
-	ALUresult B ALload
-	ALUresult 0 ARena MEMload
-	ALUresult B+1 Bload
-	ALUresult B ALload
-	ALUresult 0 ARena MEMload
-	ALUresult B+1 Bload
-	ALUresult B ALload
-	ALUresult 0 ARena MEMload
-    uSreset
-
-# Clear byte at address AB
-a1 CLR_A_,B: ALUresult A AHload
-	ALUresult B ALload
-	ALUresult 0 ARena MEMload
-    uSreset
 
 # Stack based instructions
 # Stack pointer is fixed at address $FFFF
