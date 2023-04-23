@@ -525,7 +525,150 @@ def do_instruction(opcode, carry, zero, neg, over):
                 ALUresult | B | ALload | ARena,
                 VIDresult | ARena | Bload]
 
-# A0 - DF Not used
+# EXTENDED INSTRUCTIONS
+    # A0 - LDA A+C
+    if opcode == 0xa0:
+        if carry:
+            return [ALUresult | Ainc | Aload]
+        else:
+            return [ALUresult | A | Aload]
+        # A1 - LDA A+B+C
+    if opcode == 0xa1:
+        if carry:
+            return [ALUresult | ApBp1 | Aload]
+        else:
+            return [ALUresult | ApB | Aload]
+
+        # A2 - LDA A-B-C
+    if opcode == 0xa2:
+        if carry:
+            return [ALUresult | AmBm1 | Aload]
+        else:
+            return [ALUresult | AmB | Aload]
+
+        # A3 - LDA B-A-C
+    if opcode == 0xa3:
+        if carry:
+            return [ALUresult | BmAm1 | Aload]
+        else:
+            return [ALUresult | BmA | Aload]
+
+        # A4 - LDA B+C
+    if opcode == 0xa4:
+        if carry:
+            return [ALUresult | Binc | Aload]
+        else:
+            return [ALUresult | B | Aload]
+
+        # A5 - LDA B-C
+    if opcode == 0xa5:
+        if carry:
+            return [ALUresult | Bdec | Aload]
+        else:
+            return [ALUresult | B | Aload]
+
+    # A6 - LDB A+C
+    if opcode == 0xa6:
+        if carry:
+            return [ALUresult | Ainc | Bload]
+        else:
+            return [ALUresult | A | Bload]
+
+    # A7 - LDB A+B+C
+    if opcode == 0xa7:
+        if carry:
+            return [ALUresult | ApBp1 | Bload]
+        else:
+            return [ALUresult | ApB | Bload]
+
+    # A8 - LDB A-B-C
+    if opcode == 0xa8:
+        if carry:
+            return [ALUresult | AmBm1 | Bload]
+        else:
+            return [ALUresult | AmB | Bload]
+
+    # A9 - LDB B-A-C
+    if opcode == 0xa9:
+        if carry:
+            return [ALUresult | BmAm1 | Bload]
+        else:
+            return [ALUresult | BmA | Bload]
+
+    # AA - LDB B+C
+    if opcode == 0xaa:
+        if carry:
+            return [ALUresult | Binc | Bload]
+        else:
+            return [ALUresult | B | Bload]
+
+    # A5 - LDB B-C
+    if opcode == 0xab:
+        if carry:
+            return [ALUresult | Bdec | Aload]
+        else:
+            return [ALUresult | B | Aload]
+
+    # EXTENDED - Conditional Jumps
+    if opcode == 0xb0:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+    if opcode == 0xb1:
+        if carry == 0:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+
+    if opcode == 0xb2:
+        if zero:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+    if opcode == 0xb3:
+        if zero == 0:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+
+    if opcode == 0xb4:
+        if neg:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+    if opcode == 0xb5:
+        if neg == 0:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+
+    if opcode == 0xb6:
+        if over:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
+    if opcode == 0xb7:
+        if over == 0:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ZERO | ARena | JumpZero]
+        else:
+            return [PCincr, PCincr]
 
     # Stack based instructions
     # Stack pointer is fixed at address $FFFF
@@ -740,10 +883,10 @@ def do_instruction(opcode, carry, zero, neg, over):
     return []
 
 
-for over in range(1):
-    for neg in range(1):
-        for zero in range(1):
-            for carry in range(1):
+for over in range(2):
+    for neg in range(2):
+        for zero in range(2):
+            for carry in range(2):
                 for opcode in range(256):
                     flags = carry | (zero << 1) | (neg << 2) | (over << 3)
                     control_list = do_instruction(opcode, carry, zero, neg, over)
@@ -769,6 +912,6 @@ rom = bytearray()
 for w in control:
     rom.append(w & 0xff)
     rom.append((w >> 8) & 0xff)
-rom_file = open("27Cucode.rom", "wb")
+rom_file = open("../27Cucode2.rom", "wb")
 rom_file.write(rom)
 rom_file.close()
