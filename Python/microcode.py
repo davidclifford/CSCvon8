@@ -532,47 +532,46 @@ def do_instruction(opcode, carry, zero, neg, over):
             return [ALUresult | Ainc | Aload]
         else:
             return [ALUresult | A | Aload]
-        # A1 - LDA A+B+C
+    # A1 - LDA A-C
     if opcode == 0xa1:
+        if carry:
+            return [ALUresult | Adec | Aload]
+        else:
+            return [ALUresult | A | Aload]
+    # A2 - LDA A+B+C
+    if opcode == 0xa2:
         if carry:
             return [ALUresult | ApBp1 | Aload]
         else:
             return [ALUresult | ApB | Aload]
 
-        # A2 - LDA A-B-C
-    if opcode == 0xa2:
+    # A3 - LDA A-B-C
+    if opcode == 0xa3:
         if carry:
             return [ALUresult | AmBm1 | Aload]
         else:
             return [ALUresult | AmB | Aload]
 
-        # A3 - LDA B-A-C
-    if opcode == 0xa3:
+    # A4 - LDA B-A-C
+    if opcode == 0xa4:
         if carry:
             return [ALUresult | BmAm1 | Aload]
         else:
             return [ALUresult | BmA | Aload]
 
-        # A4 - LDA B+C
-    if opcode == 0xa4:
-        if carry:
-            return [ALUresult | Binc | Aload]
-        else:
-            return [ALUresult | B | Aload]
-
-        # A5 - LDA B-C
+    # A5 - LDB B+C
     if opcode == 0xa5:
+        if carry:
+            return [ALUresult | Binc | Bload]
+        else:
+            return [ALUresult | B | Bload]
+
+    # A6 - LDB B-C
+    if opcode == 0xa6:
         if carry:
             return [ALUresult | Bdec | Aload]
         else:
             return [ALUresult | B | Aload]
-
-    # A6 - LDB A+C
-    if opcode == 0xa6:
-        if carry:
-            return [ALUresult | Ainc | Bload]
-        else:
-            return [ALUresult | A | Bload]
 
     # A7 - LDB A+B+C
     if opcode == 0xa7:
@@ -595,29 +594,91 @@ def do_instruction(opcode, carry, zero, neg, over):
         else:
             return [ALUresult | BmA | Bload]
 
-    # AA - LDB B+C
+    # AA - STO A+C
     if opcode == 0xaa:
         if carry:
-            return [ALUresult | Binc | Bload]
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | Ainc | ARena | MEMload]
         else:
-            return [ALUresult | B | Bload]
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | A | ARena | MEMload]
 
-    # A5 - LDB B-C
+    # AB - STO A-C
     if opcode == 0xab:
         if carry:
-            return [ALUresult | Bdec | Aload]
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | Adec | ARena | MEMload]
         else:
-            return [ALUresult | B | Aload]
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | A | ARena | MEMload]
+
+    # AC - STO A+B+C
+    if opcode == 0xac:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ApBp1 | ARena | MEMload]
+        else:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | ApB | ARena | MEMload]
+
+    # Ad - STO A-B-C
+    if opcode == 0xad:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | AmBm1 | ARena | MEMload]
+        else:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | AmB | ARena | MEMload]
+
+    # Ae - STO B-A-C
+    if opcode == 0xae:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | BmAm1 | ARena | MEMload]
+        else:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | BmA| ARena | MEMload]
+
+    # AF - STO B+C
+    if opcode == 0xaf:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | Binc | ARena | MEMload]
+        else:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | B | ARena | MEMload]
+    # B0 - STO B-C
+    if opcode == 0xb0:
+        if carry:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | Bdec | ARena | MEMload]
+        else:
+            return [MEMresult | AHload | PCincr,
+                    MEMresult | ALload | PCincr,
+                    ALUresult | B | ARena | MEMload]
 
     # EXTENDED - Conditional Jumps
-    if opcode == 0xb0:
+    if opcode == 0xb1:
         if carry:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
                     ALUresult | ZERO | ARena | JumpZero]
         else:
             return [PCincr, PCincr]
-    if opcode == 0xb1:
+    if opcode == 0xb2:
         if carry == 0:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
@@ -625,14 +686,14 @@ def do_instruction(opcode, carry, zero, neg, over):
         else:
             return [PCincr, PCincr]
 
-    if opcode == 0xb2:
+    if opcode == 0xb3:
         if zero:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
                     ALUresult | ZERO | ARena | JumpZero]
         else:
             return [PCincr, PCincr]
-    if opcode == 0xb3:
+    if opcode == 0xb4:
         if zero == 0:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
@@ -640,14 +701,14 @@ def do_instruction(opcode, carry, zero, neg, over):
         else:
             return [PCincr, PCincr]
 
-    if opcode == 0xb4:
+    if opcode == 0xb5:
         if neg:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
                     ALUresult | ZERO | ARena | JumpZero]
         else:
             return [PCincr, PCincr]
-    if opcode == 0xb5:
+    if opcode == 0xb6:
         if neg == 0:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
@@ -655,14 +716,14 @@ def do_instruction(opcode, carry, zero, neg, over):
         else:
             return [PCincr, PCincr]
 
-    if opcode == 0xb6:
+    if opcode == 0xb7:
         if over:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,
                     ALUresult | ZERO | ARena | JumpZero]
         else:
             return [PCincr, PCincr]
-    if opcode == 0xb7:
+    if opcode == 0xb8:
         if over == 0:
             return [MEMresult | AHload | PCincr,
                     MEMresult | ALload | PCincr,

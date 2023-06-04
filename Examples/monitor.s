@@ -38,6 +38,13 @@ reset_vga:
     STO 0 $F000
 prompt:
     STO 0 cmd_ptr
+    LDA partition
+    LCB $0F
+    LDA A&B
+    LCB 'A'
+    LDA A+B
+    JOUT(A)
+	JOUT(':')
     JOUT('>')		# Print out the prompt
     LDA $F000
     JAZ 5f
@@ -1023,8 +1030,8 @@ print_partition:
     LDA A&B
     LCB 'A'
     LDA A+B
-    OUT A
-    OUT '\n'
+    JOUT (A)
+    JOUT ('\n')
     RTS print_partition
 
 ###########################################

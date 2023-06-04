@@ -9,20 +9,20 @@ import time
 imgx = 640
 imgy = 480
 pygame.init()
-scale = 4
+scale = 1
 
-wid = 160
-height = 120
+wid = 640
+height = 480
 x_max = wid * 2 + 1
 y_max = height * 2 + 1
 screen = pygame.display.set_mode((x_max*scale, y_max*scale))
 max_ever = 0
 min_ever = wid * height
 
-NORTH = 1
-EAST = 2
-SOUTH = 4
-WEST = 8
+NORTH = 1 << 0
+EAST  = 1 << 1
+SOUTH = 1 << 2
+WEST  = 1 << 3
 
 
 def plot(x1, y1, c):
@@ -58,7 +58,7 @@ while True:
     screen.fill((0, 0, 0))
     plot(x * 2 + 1, y * 2 + 1, (128, 128, 128))
 
-    dir = ((0, -1), (1, 0), (0, 1), (-1, 0))
+    direct = ((0, -1, NORTH, SOUTH), (1, 0, EAST, WEST), (0, 1, SOUTH, NORTH), (-1, 0, WEST, EAST))
     # disp_grid()
 
     col = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
@@ -67,44 +67,41 @@ while True:
     choices = []
     while True:
         choices.clear()
-        for d in dir:
-            ix, iy = d
+        for d in direct:
+            ix, iy, _, _ = d
             nx = x + ix
             ny = y + iy
             if 0 <= nx < wid and 0 <= ny < height:
                 if maze[ny][nx] == 0:
-                    choices.append((ix, iy))
-
-        if len(choices) == 0:
-            col2 = col
-            while col == col2:
-                col2 = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
-            col = col2
-            x, y = stack.pop()
-            if len(stack) == 0:
-                print(x, y)
-                break
-
-        else:
+                    choices.append(d)
+        if choices:
             stack.append((x, y))
             if len(stack) > max_sp:
                 max_sp = len(stack)
 
             visited += 1
 
-            ix, iy = random.choice(choices)
+            ix, iy, c, n = random.choice(choices)
 
             plot(x * 2 + 1 + ix, y * 2 + 1 + iy, col)
 
-            d = NORTH if iy == -1 else SOUTH if iy == 1 else EAST if ix == 1 else WEST
-            e = NORTH if iy == 1 else SOUTH if iy == -1 else EAST if ix == -1 else WEST
-            maze[y][x] |= d
+            maze[y][x] |= c
 
             x += ix
             y += iy
 
-            maze[y][x] |= e
+            maze[y][x] |= n
+
             plot(x * 2 + 1, y * 2 + 1, col)
+        else:
+            col2 = col
+            while col == col2:
+                col2 = (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
+            col = col2
+            x, y = stack.pop()
+            if not stack:
+                break
+
     pygame.display.flip()
 
 

@@ -98,5 +98,7 @@ args = get_command_arguments()
 load_opcodes()
 lines, line_numbers = load_source_code(args)
 
+for l in lines:
+    print(l)
 for pas in range(1):
     print(pas)
